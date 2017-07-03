@@ -24,7 +24,7 @@
     "react"
   ],
   "devDependencies": {
-    "html-beautify": "^1.0.4",
+    "glob": "^7.1.2",
     "markdown": "*",
     "marked": "*",
     "prettydiff": "^99.0.1",
@@ -32,6 +32,7 @@
   },
   "scripts": {
     "test": "node test",
+    "test:compat": "node test/compatibility",
     "bench": "node test --bench"
   }
 }
