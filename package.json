@@ -7,14 +7,31 @@
   "preferGlobal": true,
   "repository": "git://github.com/chung-leong/mark-gor.git",
   "homepage": "https://github.com/chung-leong/mark-gor",
-  "bugs": { "url": "http://github.com/chung-leong/mark-gor/issues" },
+  "bugs": {
+    "url": "http://github.com/chung-leong/mark-gor/issues"
+  },
   "license": "MIT",
-  "keywords": ["markdown", "markup", "html", "react"],
-  "tags": ["markdown", "markup", "html", "react"],
+  "keywords": [
+    "markdown",
+    "markup",
+    "html",
+    "react"
+  ],
+  "tags": [
+    "markdown",
+    "markup",
+    "html",
+    "react"
+  ],
   "devDependencies": {
+    "html-beautify": "^1.0.4",
     "markdown": "*",
     "marked": "*",
+    "prettydiff": "^99.0.1",
     "showdown": "*"
   },
-  "scripts": { "test": "node test", "bench": "node test --bench" }
+  "scripts": {
+    "test": "node test",
+    "bench": "node test --bench"
+  }
 }
