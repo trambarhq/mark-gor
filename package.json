@@ -1,0 +1,20 @@
+{
+  "name": "mark-gor",
+  "description": "A markdown parser built for a better tomorrow",
+  "author": "Chung Leong",
+  "version": "0.0.1",
+  "main": "./lib/mark-gor.js",
+  "preferGlobal": true,
+  "repository": "git://github.com/chung-leong/mark-gor.git",
+  "homepage": "https://github.com/chung-leong/mark-gor",
+  "bugs": { "url": "http://github.com/chung-leong/mark-gor/issues" },
+  "license": "MIT",
+  "keywords": ["markdown", "markup", "html", "react"],
+  "tags": ["markdown", "markup", "html", "react"],
+  "devDependencies": {
+    "markdown": "*",
+    "marked": "*",
+    "showdown": "*"
+  },
+  "scripts": { "test": "node test", "bench": "node test --bench" }
+}
