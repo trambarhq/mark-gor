@@ -1,12 +1,9 @@
-
 var fs = require('fs');
 var path = require('path');
-var marked = require('marked');
 var glob = require('glob');
 var prettydiff = require("prettydiff").api;
-
-var Parser = require('../lib/parser');
-var HtmlRenderer = require('../lib/html-renderer');
+var marked = require('marked');
+var markGor = require('../');
 
 var options = {
   gfm: true,
@@ -34,16 +31,9 @@ console.log('Passed: ', passed);
 console.log('Failed: ', failed);
 
 function compareOutput(mdPath) {
-  var parser = new Parser();
   var markdown = fs.readFileSync(mdPath, { encoding: 'utf8' });
-
-  var tokens = parser.parse(markdown);
-  var renderer = new HtmlRenderer();
-  var mdHtml1 = renderer.render(tokens);
-  var mdHtml2 = marked(markdown, options);
-
-  mdHtml1 = beautify(mdHtml1);
-  mdHtml2 = beautify(mdHtml2);
+  var mdHtml1 = beautify(markGor.parse(markdown, options));
+  var mdHtml2 = beautify(marked.parse(markdown, options));
 
   // generate a diff file if the outputs aren't the same
   var testName = path.basename(mdPath);
