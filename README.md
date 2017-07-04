@@ -104,4 +104,4 @@ Currently, the React renderer ignores HTML tags embedded in the Markdown text.
 
 ## Performance
 
-Mark-Gor performs roughly as well as Marked. Generally it's just slightly slower.
+Mark-Gor performs roughly as well as Marked. Generally it's slightly slower.
