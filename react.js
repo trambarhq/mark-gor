@@ -11,8 +11,8 @@ function parse(text, options) {
     var parser = new Parser({ options: pick(options, Parser.defaults) });
     var renderer = new ReactRenderer({ options: pick(options, ReactRenderer.defaults) });
     var tokens = parser.parse(text);
-    var html = renderer.render(tokens);
-    return html;
+    var elements = renderer.render(tokens);
+    return elements;
 }
 
 exports.parse = parse;
