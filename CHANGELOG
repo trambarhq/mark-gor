@@ -1,0 +1,5 @@
+# CHANGELOG
+
+## 0.0.8
+
+* Added createElement() to ReactRenderer so it could be overidden.
