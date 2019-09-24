@@ -2,7 +2,7 @@
   "name": "mark-gor",
   "description": "A markdown parser built for a better tomorrow",
   "author": "Chung Leong",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "main": "./lib/index.js",
   "preferGlobal": false,
   "repository": "git://github.com/trambarhq/mark-gor.git",
