@@ -1,8 +1,8 @@
 import React from 'react';
 import { escape } from './helpers.mjs';
-import { JSONRenderer } from './json-renderer.mjs';
+import { BaseRenderer } from './base-renderer.mjs';
 
-class HTMLRenderer extends JSONRenderer {
+class HTMLRenderer extends BaseRenderer {
   createElement(type, props, children) {
     let html = `<${type}`;
     if (props) {
@@ -31,6 +31,10 @@ class HTMLRenderer extends JSONRenderer {
       html += `</${type}>`;
     }
     return new String(html);
+  }
+
+  render(tokens) {
+    return super.render(tokens).toString();
   }
 }
 
