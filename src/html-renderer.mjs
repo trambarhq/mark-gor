@@ -1,8 +1,7 @@
-import React from 'react';
 import { escape } from './helpers.mjs';
 import { BaseRenderer } from './base-renderer.mjs';
 
-class HTMLRenderer extends BaseRenderer {
+class HtmlRenderer extends BaseRenderer {
   createElement(type, props, children) {
     let html = `<${type}`;
     if (props) {
@@ -45,6 +44,6 @@ const isVoid = {
 };
 
 export {
-  HTMLRenderer,
-  HTMLRenderer as default,
+  HtmlRenderer,
+  HtmlRenderer as default,
 };

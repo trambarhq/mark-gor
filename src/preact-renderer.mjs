@@ -1,7 +1,7 @@
 import { h } from 'preact';
-import { JSONRenderer } from './json-renderer.mjs';
+import { BaseRenderer } from './base-renderer.mjs';
 
-class PreactRenderer extends JSONRenderer {
+class PreactRenderer extends BaseRenderer {
   createElement(type, props, children) {
     return h(type, props, children);
   }

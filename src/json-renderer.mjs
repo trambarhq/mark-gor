@@ -1,6 +1,6 @@
 import { BaseRenderer } from './base-renderer.mjs';
 
-class JSONRenderer extends BaseRenderer {
+class JsonRenderer extends BaseRenderer {
   createElement(type, props, children) {
     const el = { type };
     if (props) {
@@ -18,6 +18,6 @@ class JSONRenderer extends BaseRenderer {
 }
 
 export {
-  JSONRenderer,
-  JSONRenderer as default,
+  JsonRenderer,
+  JsonRenderer as default,
 };

@@ -1,7 +1,7 @@
-import React from 'react';
-import { JSONRenderer } from './json-renderer.mjs';
+import { React } from 'react';
+import { BaseRenderer } from './base-renderer.mjs';
 
-class ReactRenderer extends JSONRenderer {
+class ReactRenderer extends BaseRenderer {
   constructor(options, extra) {
     super(options, extra);
 

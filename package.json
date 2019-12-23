@@ -3,7 +3,12 @@
   "description": "A markdown parser built for a better tomorrow",
   "author": "Chung Leong",
   "version": "0.0.9",
-  "main": "./lib/index.js",
+  "main": "./lib/html.js",
+  "module": "./lib/html.esm.js",
+  "file": [
+    "lib/",
+    "src/"
+  ],
   "preferGlobal": false,
   "repository": "git://github.com/trambarhq/mark-gor.git",
   "homepage": "https://github.com/trambarhq/mark-gor",
@@ -21,11 +26,15 @@
     "markdown",
     "markup",
     "html",
-    "react"
+    "react",
+    "preact"
   ],
   "scripts": {
     "test": "./node_modules/karma/bin/karma start --single-run --",
-    "test:watch": "./node_modules/karma/bin/karma start --"
+    "test:watch": "./node_modules/karma/bin/karma start --",
+    "rollup": "npm run rollup:umd && npm run rollup:esm",
+    "rollup:umd": "rollup -c rollup.config.js",
+    "rollup:esm": "rollup -c rollup.config.esm.js"
   },
   "dependencies": {
     "marked": "^0.8.0"
@@ -37,6 +46,8 @@
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-react": "^7.7.4",
     "@babel/runtime": "^7.7.7",
+    "@rollup/plugin-commonjs": "^11.0.0",
+    "@rollup/plugin-node-resolve": "^6.0.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "chai": "^4.2.0",
@@ -52,11 +63,14 @@
     "karma-webpack": "^4.0.2",
     "markdown": "*",
     "mocha": "^6.2.2",
+    "preact": "^10.1.1",
+    "prettydiff": "^101.2.6",
     "react": "^16.10.2",
     "react-dom": "^16.12.0",
-    "webpack": "^4.41.4",
-    "prettydiff": "^101.2.6",
-    "showdown": "*"
+    "rollup": "^1.27.14",
+    "rollup-plugin-babel": "^4.3.3",
+    "showdown": "*",
+    "webpack": "^4.41.4"
   },
   "optionalDependencies": {
     "react": "*"
