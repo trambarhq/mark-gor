@@ -45,7 +45,11 @@ module.exports = function(config) {
                 'syntax-async-functions',
               ]
             }
-          }
+          },
+          {
+            test: /\.(txt|md|html)$/i,
+            use: 'raw-loader',
+          },
         ]
       },
     },

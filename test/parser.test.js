@@ -2,7 +2,6 @@ import { expect } from 'chai';
 
 import { Parser } from '../src/parser.mjs';
 
-
 describe('Parser', function() {
   it ('should process both block and inline tokens', function() {
     const parser = new Parser;
@@ -24,7 +23,6 @@ describe('Parser', function() {
     expect(items).to.have.lengthOf(2);
     expect(items[0]).to.have.property('type', 'list_item');
     const content = items[0].children[0];
-    expect(content).to.have.property('type', 'text');
-    expect(content).to.have.property('text', 'This should be');
+    expect(content).to.have.property('type', 'text_block');
   })
 })

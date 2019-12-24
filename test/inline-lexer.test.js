@@ -63,6 +63,15 @@ describe('InlineLexer', function() {
     expect(tokens[1]).to.have.property('type', 'url');
     expect(tokens[1]).to.have.property('href', 'http://hello.net');
   })
+  it ('should capture URL inside formatted text', function() {
+    const lexer = new InlineLexer;
+    const text = `*https://www.example.com/fhqwhgads.*`;
+    const tokens = lexer.tokenize(text);
+    expect(tokens[0]).to.have.property('type', 'em');
+    const link = tokens[0].children[0];
+    expect(link).to.have.property('type', 'url');
+    expect(link).to.have.property('href', 'https://www.example.com/fhqwhgads');
+  })
   it ('should capture e-mail address', function() {
     const lexer = new InlineLexer;
     const text = `My address: chernyshevsky@hotmail.com`;

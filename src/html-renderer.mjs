@@ -6,34 +6,41 @@ class HtmlRenderer extends BaseRenderer {
     let html = `<${type}`;
     if (props) {
       for (let [ key, value ] of Object.entries(props)) {
-        if (key === 'className') {
-            key = 'class';
+        if (value) {
+          if (key === 'className') {
+              key = 'class';
+          }
+          html += ` ${key}="${escape(value)}"`;
         }
-        html += ` ${key}="${escape(value)}"`;
       }
     }
     html += '>';
-    if (children) {
-      if (!(children instanceof Array)) {
-        children = [ children ];
-      }
-      const content = [];
-      for (let child of children) {
-        if (typeof(child) === 'string') {
-          child = escape(child);
-        }
-        content.push(child);
-      }
-      html += content.join('');
-    }
     if (!isVoid[type]) {
+      if (children) {
+        html += this.mergeElements(children);
+      }
       html += `</${type}>`;
     }
     return new String(html);
   }
 
+  mergeElements(elements) {
+    const content = [];
+    if (!(elements instanceof Array)) {
+      elements = [ elements ];
+    }
+    for (let element of elements) {
+      if (typeof(element) === 'string') {
+        element = escape(element);
+      }
+      content.push(element);
+    }
+    return content.join('');
+  }
+
   render(tokens) {
-    return super.render(tokens).toString();
+    const elements = this.renderTokens(tokens);
+    return this.mergeElements(elements);
   }
 }
 

@@ -26,7 +26,7 @@ class BaseRenderer {
   renderTokens(tokens) {
     const elements = [];
     for (let token of tokens) {
-      const element = this.renderToken(tokens[i]);
+      const element = this.renderToken(token);
       if (element instanceof Array) {
         for (let e of element) {
           elements.push(e);
@@ -74,10 +74,10 @@ class BaseRenderer {
   }
 
   renderCode(token) {
-    const { code, lang } = token;
+    const { text, lang } = token;
     const { langPrefix } = this.options;
     const props = (lang) ? { className: langPrefix + lang } : null;
-    const codespan = { type: 'codespan', text: code };
+    const codespan = { type: 'codespan', text };
     const children = this.renderTokens([ codespan ]);
     return this.createElement('pre', null, children);
   }
@@ -207,6 +207,7 @@ class BaseRenderer {
     if (!this.sanitizeUrl(href)) {
       return null;
     }
+    const children = this.renderChildren(token);
     return this.createElement('a', { href, title }, children);
   }
 

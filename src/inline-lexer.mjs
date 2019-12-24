@@ -79,8 +79,6 @@ class InlineLexer {
 
   captureToken() {
     const token = this.captureEscape()
-        || this.captureAutolink()
-        || this.captureUrl()
         || this.captureTag()
         || this.captureLink()
         || this.captureRefLink('reflink')
@@ -90,6 +88,8 @@ class InlineLexer {
         || this.captureCode()
         || this.captureLineBreak()
         || this.captureDeleted()
+        || this.captureAutolink()
+        || this.captureUrl()
         || this.captureText();
     if (!token) {
       if (this.remaining) {
@@ -135,8 +135,8 @@ class InlineLexer {
         let capZero = cap[0], prevCapZero;
         do {
           prevCapZero = capZero;
-          cap[0] = this.rules._backpedal.exec(cap[0])[0];
-        } while (prevCapZero !== cap[0]);
+          capZero = this.rules._backpedal.exec(capZero)[0];
+        } while (prevCapZero !== capZero);
         if (cap[0].length !== capZero.length) {
           this.backpedal(cap[0].substr(capZero.length));
         }

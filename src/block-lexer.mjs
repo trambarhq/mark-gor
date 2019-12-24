@@ -393,6 +393,10 @@ class BlockLexer {
       return { type, paragraph, markdown, children };
     }
   }
+
+  setRefLink(name, link) {
+    this.links[name] = link;
+  }
 }
 
 export {
