@@ -3,6 +3,13 @@ import { expect } from 'chai';
 import { InlineLexer } from '../src/inline-lexer.mjs';
 
 describe('InlineLexer', function() {
+  it ('should correctly handle normal text', function() {
+    const lexer = new InlineLexer;
+    const text = `Hello world`;
+    const tokens = lexer.tokenize(text);
+    expect(tokens[0]).to.have.property('type', 'text');
+    expect(tokens[0]).to.have.property('text', 'Hello world');
+  })
   it ('should capture emphasized text delimited by *', function() {
     const lexer = new InlineLexer;
     const text = `*Hello world*`;

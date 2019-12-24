@@ -52,6 +52,24 @@ This is only a test.
     expect(content).to.have.property('type', 'text_block');
     expect(content).to.have.property('markdown', 'Item 1');
   })
+  it ('should capture correct two separate lists', function() {
+    const lexer = new BlockLexer;
+    const text = `
+* This should be
+* An unordered list
+
+1. This should be
+2. An unordered list
+    `;
+    const tokens = lexer.tokenize(text);
+    expect(tokens).to.have.lengthOf(2);
+    expect(tokens[0]).to.have.property('type', 'list');
+    expect(tokens[0]).to.have.property('ordered', false);
+    expect(tokens[0].children).to.have.lengthOf(2);
+    expect(tokens[1]).to.have.property('type', 'list');
+    expect(tokens[1]).to.have.property('ordered', true);
+    expect(tokens[1].children).to.have.lengthOf(2);
+  });
   it ('should capture # style headings', function() {
     const lexer = new BlockLexer;
     const text = `
