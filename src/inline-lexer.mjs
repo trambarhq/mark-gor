@@ -10,6 +10,7 @@ class InlineLexer {
     this.offset = 0;
     this.options = defaults;
     this.rules = inline.normal;
+    this.tokens = [];
 
     if (options) {
       this.options = merge({}, defaults, options);
@@ -26,6 +27,40 @@ class InlineLexer {
     if (extra) {
       merge(this, extra);
     }
+  }
+
+  tokenize(text) {
+    this.initialize(text);
+    while (this.remaining) {
+      const token = this.captureToken();
+      this.append(token);
+    }
+    this.mergeHtmlTags();
+    return this.tokens;
+  }
+
+  initialize(text) {
+    this.input = this.remaining = text;
+    this.offset = 0;
+    this.tokens = [];
+  }
+
+  append(token) {
+    if (token.type === 'text') {
+      // merge adjacent text tokens
+      const prevToken = this.tokens[this.tokens.length - 1];
+      if (prevToken && prevToken.type === 'text') {
+        prevToken.text += token.text;
+        return;
+      }
+    }
+    if (token.markdown) {
+      // process children
+      const extra = { inLink: token.type === 'link' || this.inLink };
+      const lexer = new InlineLexer(this.options, extra);
+      token.children = lexer.tokenize(token.markdown);
+    }
+    this.tokens.push(token);
   }
 
   capture(name) {
@@ -49,32 +84,6 @@ class InlineLexer {
     if (link && link.href) {
       return link;
     }
-  }
-
-  tokenize(text) {
-    this.input = this.remaining = text;
-    this.offset = 0;
-
-    const tokens = [];
-    let prevToken = null;
-    while (this.remaining) {
-      const token = this.captureToken();
-      if (token.type === 'text') {
-        // merge adjacent text tokens
-        if (prevToken && prevToken.type === 'text') {
-          prevToken.text += token.text;
-          continue;
-        }
-      } else if (token.markdown) {
-        // process children
-        const extra = (token.type === 'link') ? { inLink: true } : {};
-        const lexer = new InlineLexer(this.options, extra);
-        token.children = lexer.tokenize(token.markdown);
-      }
-      tokens.push(token);
-      prevToken = token;
-    }
-    return tokens;
   }
 
   captureToken() {
@@ -150,14 +159,26 @@ class InlineLexer {
   captureTag() {
     const cap = this.capture('tag');
     if (cap) {
-      const type = 'html';
+      const type = 'html_tag';
       const html = cap[0];
-      if (!this.inLink && /^<a /i.test(html)) {
+      let tagType;
+      let tagName;
+      const tcap = /^<(\/?)([a-zA-Z][\w:-]*).*?(\/?)>$/.exec(html);
+      if (tcap) {
+        if (tcap[1]) {
+          tagType = 'close';
+        } else {
+          tagType = (tcap[3]) ? 'closed' : 'open';
+        }
+        tagName = tcap[2].toLowerCase();
+      }
+      const children = null;
+      if (!this.inLink && tagType === 'open' && tagName === 'a') {
         this.inLink = true;
-      } else if (this.inLink && /^<\/a>/i.test(html)) {
+      } else if (this.inLink && tagType === 'close' && tagName === 'a') {
         this.inLink = false;
       }
-      return { type, html };
+      return { type, tagType, tagName, html, children };
     }
   }
 
@@ -283,6 +304,36 @@ class InlineLexer {
       const type = 'text';
       const text = cap[0];
       return { type, text };
+    }
+  }
+
+  mergeHtmlTags(startIndex) {
+    let openTagIndex = -1;
+    for (let i = startIndex || 0; i < this.tokens.length; i++) {
+      const token = this.tokens[i];
+      if (token.type == 'html_tag') {
+        if (token.tagType === 'open') {
+          if (openTagIndex === -1) {
+            openTagIndex = i;
+          } else {
+            this.mergeHtmlTags(i);
+          }
+        } else if (token.tagType === 'close') {
+          if (openTagIndex === -1) {
+            break;
+          } else {
+            const openTag = this.tokens[openTagIndex];
+            if (token.tagName === openTag.tagName) {
+              const count = i - openTagIndex;
+              const removed = this.tokens.splice(openTagIndex + 1, count);
+              openTag.tagType = 'closed';
+              openTag.children = removed.slice(0, count - 1);
+              i = openTagIndex + 1;
+              openTagIndex = -1;
+            }
+          }
+        }
+      }
     }
   }
 }

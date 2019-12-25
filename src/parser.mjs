@@ -12,12 +12,6 @@ class Parser {
   }
 
   parse(text) {
-    text = text
-      .replace(/\r\n|\r/g, '\n')
-      .replace(/\t/g, '    ')
-      .replace(/\u00a0/g, ' ')
-      .replace(/\u2424/g, '\n');
-
     // process at block-level first
     const blockLexer = new BlockLexer(this.options);
     const tokens = blockLexer.tokenize(text);

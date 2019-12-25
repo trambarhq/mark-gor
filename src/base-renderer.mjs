@@ -56,7 +56,7 @@ class BaseRenderer {
       case 'paragraph': return this.renderParagraph(token);
       case 'code': return this.renderCode(token);
       case 'blockquote': return this.renderBlockquote(token);
-      case 'html': return this.renderHtml(token);
+      case 'html_tag': return this.renderHtmlTag(token);
       case 'heading': return this.renderHeading(token);
       case 'hr': return this.renderHorizontalRule(token);
       case 'list': return this.renderList(token);
@@ -87,7 +87,7 @@ class BaseRenderer {
     return this.createElement('blockquote', null, children);
   }
 
-  renderHtml(token) {
+  renderHtmlTag(token) {
   }
 
   renderHeading(token) {

@@ -12,6 +12,7 @@ class BlockLexer {
     this.offset = 0;
     this.options = defaults;
     this.rules = block.normal;
+    this.tokens = [];
 
     if (options) {
       this.options = merge({}, defaults, options);
@@ -27,28 +28,34 @@ class BlockLexer {
   }
 
   tokenize(text) {
+    this.initialize(text);
+    while (this.remaining) {
+      this.append(this.captureToken());
+    }
+    return this.tokens;
+  }
+
+  initialize(text) {
     this.input = this.remaining = text.replace(/^ +$/gm, '');
     this.offset = 0;
+    this.tokens = [];
+  }
 
-    const tokens = [];
-    let prevToken = null;
-    while (this.remaining) {
-      const token = this.captureToken();
-      if (token.type === 'text_block') {
-        // merge adjacent text tokens
-        if (prevToken && prevToken.type === 'text_block') {
-          if (prevToken.paragraph === token.paragraph) {
-            prevToken.markdown += '\n' + token.markdown;
-            continue;
-          }
+  append(token) {
+    if (token.type === 'text_block') {
+      const prevToken = this.tokens[this.tokens - 1];
+      // merge adjacent text tokens
+      if (prevToken && prevToken.type === 'text_block') {
+        if (prevToken.paragraph === token.paragraph) {
+          prevToken.markdown += '\n' + token.markdown;
+          return;
         }
-      } else if (token.type === 'ignore') {
-        continue;
       }
-      tokens.push(token);
-      prevToken = token;
     }
-    return tokens;
+    if (token.type === 'ignore') {
+      return;
+    }
+    this.tokens.push(token);
   }
 
   capture(rule) {
@@ -333,16 +340,20 @@ class BlockLexer {
   captureHtml() {
     const cap = this.capture('html');
     if (cap) {
-      const html = cap[0];
       const pre = cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style';
       if (!pre && !this.options.pedantic) {
         const type = 'html_block';
-        const markdown = html;
+        const markdown = cap[0];
         const children = null;
         return { type, markdown, children };
       } else {
-        const type = 'html';
-        return { type, html };
+        const type = 'html_tag';
+        const hcap = /(<[^>]*>)(.*)<\/\w+>\s*$/.exec(cap[0]);
+        const tagType = 'closed';
+        const tagName = cap[1];
+        const textContent = hcap[2];
+        const html = hcap[1];
+        return { type, tagType, tagName, html, textContent };
       }
     }
   }

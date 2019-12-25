@@ -42,6 +42,20 @@ class HtmlRenderer extends BaseRenderer {
     const elements = this.renderTokens(tokens);
     return this.mergeElements(elements);
   }
+
+  renderHtmlTag(token) {
+    const { tagType, tagName, html, children, textContent } = token;
+    if (tagType === 'closed') {
+      if (textContent) {
+        return new String(html + textContent + `</${tagName}>`);
+      } else if (children) {
+        const elements = this.renderTokens(children);
+        const content = this.mergeElements(elements);
+        return new String(html + content + `</${tagName}>`);
+      }
+    }
+    return new String(html);
+  }
 }
 
 const isVoid = {
