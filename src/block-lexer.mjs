@@ -36,7 +36,13 @@ class BlockLexer {
   }
 
   initialize(text) {
-    this.input = this.remaining = text.replace(/^ +$/gm, '');
+    if (this.topLevel) {
+      text = text
+              .replace(/\r\n|\r/g, '\n')
+              .replace(/\t/g, '    ')
+              .replace(/^ +$/gm, '');
+    }
+    this.input = this.remaining = text;
     this.offset = 0;
     this.tokens = [];
   }
@@ -339,7 +345,14 @@ class BlockLexer {
     const cap = this.capture('html');
     if (cap) {
       const pre = cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style';
-      if (!pre && !this.options.pedantic) {
+      const comment = !cap[1] && this.rules._comment.test(cap[0]);
+      if (comment) {
+        const type = 'html_tag';
+        const tagType = undefined;
+        const tagName = undefined;
+        const html = cap[0];
+        return { type, tagType, tagName, html };
+      } else if (!pre) {
         const type = 'html_block';
         const markdown = cap[0];
         const children = null;
