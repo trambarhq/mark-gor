@@ -276,6 +276,7 @@ class BlockLexer {
       const type = 'list';
       const bull = cap[2];
       const ordered = bull.length > 1;
+      const start = (ordered) ? parseInt(bull) : undefined;
 
       // Get each top-level item.
       const items = cap[0].match(this.rules.item);
@@ -322,7 +323,7 @@ class BlockLexer {
         // Recurse.
         children.push(this.lexListItem(item, loose));
       }
-      return { type, ordered, children };
+      return { type, ordered, start, children };
     }
   }
 

@@ -111,10 +111,11 @@ class BaseRenderer {
   }
 
   renderList(token) {
-    const { ordered } = token;
+    const { ordered, start } = token;
     const type = (ordered) ? 'ol' : 'ul';
+    const props = (ordered && start !== 1) ? { start } : null;
     const children = this.renderChildren(token);
-    return this.createElement(type, null, children);
+    return this.createElement(type, props, children);
   }
 
   renderListItem(token) {
