@@ -46,7 +46,6 @@ class InlineLexer {
   }
 
   append(token) {
-    //console.log(token);
     if (token.type === 'text') {
       // merge adjacent text tokens
       const prevToken = this.tokens[this.tokens.length - 1];
@@ -128,8 +127,9 @@ class InlineLexer {
     const cap = this.capture('autolink');
     if (cap) {
       const type = 'autolink';
-      const text = escape(cap[1]);
-      const href = (cap[2] === '@') ? href = `mailto:${text}` : text;
+      const text = cap[1];
+      const url = escape(text);
+      const href = (cap[2] === '@') ? href = `mailto:${url}` : url;
       return { type, href, text };
     }
   }
@@ -142,7 +142,8 @@ class InlineLexer {
     if (cap) {
       const type = 'url';
       if (cap[2] === '@') {
-          const text = escape(cap[0]);
+          const text = cap[0];
+          const url = escape(text);
           const href = `mailto:${text}`;
           return { type, href, text };
       } else {
@@ -155,8 +156,9 @@ class InlineLexer {
         if (cap[0].length !== capZero.length) {
           this.backpedal(cap[0].substr(capZero.length));
         }
-        const text = escape(capZero);
-        const href = (cap[1] === 'www.') ? `http://${text}` : text;
+        const text = capZero;
+        const url = escape(text);
+        const href = (cap[1] === 'www.') ? `http://${url}` : url;
         return { type, href, text };
       }
     }
