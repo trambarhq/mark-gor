@@ -15,7 +15,7 @@ function loadTestMD(path) {
   return blob.default;
 }
 
-const singleTest = 'headings_id.md';
+const singleTest = '';
 
 describe('Compatibility', function() {
   for (let mdFile of mdFiles) {

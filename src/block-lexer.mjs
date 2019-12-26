@@ -43,7 +43,7 @@ class BlockLexer {
 
   append(token) {
     if (token.type === 'text_block') {
-      const prevToken = this.tokens[this.tokens - 1];
+      const prevToken = this.tokens[this.tokens.length - 1];
       // merge adjacent text tokens
       if (prevToken && prevToken.type === 'text_block') {
         if (prevToken.paragraph === token.paragraph) {
