@@ -1,9 +1,11 @@
 import { merge } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
+import { Slugger } from './slugger.mjs';
 
 class BaseRenderer {
   constructor(options, extra) {
     this.options = defaults;
+    this.slugger = new Slugger;
 
     if (options) {
       this.options = merge({}, defaults, options);
@@ -11,6 +13,10 @@ class BaseRenderer {
     if (extra) {
       merge(this, extra);
     }
+  }
+
+  initialize() {
+    this.slugger = new Slugger;
   }
 
   createElement(type, props, children) { /* abstract */ }
@@ -91,9 +97,10 @@ class BaseRenderer {
   }
 
   renderHeading(token) {
-    const { name } = token;
     const { headerPrefix } = this.options;
     const type = `h${token.depth}`;
+    const plain = this.renderPlainText(token);
+    const name = this.slugger.slug(plain);
     const props = { id: headerPrefix + name };
     const children = this.renderChildren(token);
     return this.createElement(type, props, children);
@@ -236,6 +243,20 @@ class BaseRenderer {
   }
 
   renderSpace(token) {
+  }
+
+  renderPlainText(token) {
+    if (token.text) {
+      return token.text;
+    } else if (token.children) {
+      const content = [];
+      for (let child of token.children) {
+        content.push(this.renderPlainText(child));
+      }
+      return content.join('');
+    } else {
+      return '';
+    }
   }
 
   sanitizeUrl(href) {

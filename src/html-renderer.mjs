@@ -39,6 +39,7 @@ class HtmlRenderer extends BaseRenderer {
   }
 
   render(tokens) {
+    this.initialize();
     const elements = this.renderTokens(tokens);
     return this.mergeElements(elements);
   }

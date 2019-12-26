@@ -56,7 +56,10 @@ class InlineLexer {
     }
     if (token.markdown) {
       // process children
-      const extra = { inLink: token.type === 'link' || this.inLink };
+      const extra = {
+        inLink: token.type === 'link' || this.inLink,
+        links: this.links,
+      };
       const lexer = new InlineLexer(this.options, extra);
       token.children = lexer.tokenize(token.markdown);
     }

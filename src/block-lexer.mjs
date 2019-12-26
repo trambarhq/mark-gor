@@ -132,11 +132,10 @@ class BlockLexer {
     if (cap) {
       const type = 'heading';
       const variant = '#';
-      const name = cap[2].toLowerCase().replace(/[^\w]+/g, '-');
       const depth = cap[1].length;
       const markdown = cap[2];
       const children = null;
-      return { type, variant, name, depth, markdown, children };
+      return { type, variant, depth, markdown, children };
     }
   }
 
@@ -236,11 +235,10 @@ class BlockLexer {
     if (cap) {
       const type = 'heading';
       const variant = cap[2].charAt(0);
-      const name = cap[1].toLowerCase().replace(/[^\w]+/g, '-');
       const depth = (variant === '=') ? 1 : 2;
       const markdown = cap[1];
       const children = null;
-      return { type, variant, name, depth, markdown, children };
+      return { type, variant, depth, markdown, children };
     }
   }
 
@@ -365,9 +363,9 @@ class BlockLexer {
     const cap = this.capture('def');
     if (cap) {
       const type = 'def';
-      const name = cap[1].toLowerCase();
+      const name = cap[1].toLowerCase().replace(/\s+/g, ' ');
       const href = cap[2];
-      const title = cap[3];
+      const title = (cap[3]) ? cap[3].substring(1, cap[3].length - 1) : '';
       this.setRefLink(name, { href, title });
       return { type, name, href, title };
     }
@@ -406,7 +404,9 @@ class BlockLexer {
   }
 
   setRefLink(name, link) {
-    this.links[name] = link;
+    if (!this.links[name]) {
+      this.links[name] = link;
+    }
   }
 }
 
