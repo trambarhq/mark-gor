@@ -279,7 +279,7 @@ class InlineLexer {
     const cap = this.capture('code');
     if (cap) {
       const type = 'codespan';
-      const text = cap[2];
+      const text = cap[2].trim();
       return { type, text };
     }
   }
