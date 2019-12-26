@@ -6,7 +6,7 @@ class HtmlRenderer extends BaseRenderer {
     let html = `<${type}`;
     if (props) {
       for (let [ key, value ] of Object.entries(props)) {
-        if (value) {
+        if (value !== undefined) {
           if (key === 'className') {
               key = 'class';
           }

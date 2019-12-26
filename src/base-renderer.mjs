@@ -1,4 +1,4 @@
-import { merge } from './helpers.mjs';
+import { merge, cleanUrl } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
 import { Slugger } from './slugger.mjs';
 
@@ -198,9 +198,6 @@ class BaseRenderer {
 
   renderUrl(token) {
     const { href, text } = token;
-    if (!this.sanitizeUrl(href)) {
-      return '';
-    }
     const children = text;
     return this.createElement('a', { href }, children);
   }
@@ -211,16 +208,15 @@ class BaseRenderer {
 
   renderLink(token) {
     const { href, title } = token;
-    if (!this.sanitizeUrl(href)) {
-      return null;
-    }
     const children = this.renderChildren(token);
-    return this.createElement('a', { href, title }, children);
+    const url = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    return this.createElement('a', { href: url, title }, children);
   }
 
   renderImage(token) {
     const { href, title, text } = token;
-    return this.createElement('img', { src: href, alt: text, title });
+    const url = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    return this.createElement('img', { src: url, alt: text, title });
   }
 
   renderText(token) {
@@ -257,24 +253,6 @@ class BaseRenderer {
     } else {
       return '';
     }
-  }
-
-  sanitizeUrl(href) {
-    if (this.options.sanitize) {
-      try {
-        const prot = decodeURIComponent(href)
-          .replace(/[^\w:]/g, '')
-          .toLowerCase();
-        if (prot.indexOf('javascript:') === 0
-         || prot.indexOf('vbscript:') === 0
-         || prot.indexOf('data:') === 0) {
-          return false;
-        }
-      } catch (e) {
-        return false;
-      }
-    }
-    return true;
   }
 }
 

@@ -378,7 +378,10 @@ class BlockLexer {
       const type = 'def';
       const name = cap[1].toLowerCase().replace(/\s+/g, ' ');
       const href = cap[2];
-      const title = (cap[3]) ? cap[3].substring(1, cap[3].length - 1) : '';
+      let title;
+      if (cap[3]) {
+        title = cap[3].substring(1, cap[3].length - 1);
+      };
       this.setRefLink(name, { href, title });
       return { type, name, href, title };
     }
@@ -417,7 +420,7 @@ class BlockLexer {
   }
 
   setRefLink(name, link) {
-    if (!this.links[name]) {
+    if (!this.links.hasOwnProperty(name)) {
       this.links[name] = link;
     }
   }

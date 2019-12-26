@@ -46,6 +46,7 @@ class InlineLexer {
   }
 
   append(token) {
+    //console.log(token);
     if (token.type === 'text') {
       // merge adjacent text tokens
       const prevToken = this.tokens[this.tokens.length - 1];
@@ -83,9 +84,11 @@ class InlineLexer {
   }
 
   findRefLink(name) {
-    const link = this.links[name];
-    if (link && link.href) {
-      return link;
+    if (this.links.hasOwnProperty(name)) {
+      const link = this.links[name];
+      if (link.href) {
+        return link;
+      }
     }
   }
 
@@ -196,7 +199,7 @@ class InlineLexer {
         const start = (type === 'image') ? 5 : 4;
         const linkLen = start + cap[1].length + lastParenIndex;
         href = href.substring(0, lastParenIndex);
-        title = '';
+        title = undefined;
         const capZero = cap[0].substring(0, linkLen).trim();
         this.backpedal(cap[0].substr(capZero.length));
       }
@@ -206,11 +209,9 @@ class InlineLexer {
         if (link) {
           href = link[1];
           title = link[3];
-        } else {
-          title = '';
         }
-      } else {
-        title = title ? title.slice(1, -1) : '';
+      } else if (title) {
+        title = title.slice(1, -1);
       }
       href = href.trim().replace(/^<([\s\S]*)>$/, '$1');
       if (type === 'image') {

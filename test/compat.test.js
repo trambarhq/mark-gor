@@ -7,7 +7,7 @@ const requireTestMD = require.context('./specs', true, /\.md$/);
 const mdFiles = requireTestMD.keys();
 
 function removeExtraSpace(html) {
-  return html.replace(/>\n+</g, '><').trim();
+  return html.replace(/>\s+</g, '><').trim();
 }
 
 function loadTestMD(path) {
