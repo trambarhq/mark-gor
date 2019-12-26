@@ -146,9 +146,6 @@ class BlockLexer {
   }
 
   captureTable(rule) {
-    if (!this.topLevel) {
-      return;
-    }
     const cap = this.capture(rule);
     if (cap) {
       const type = 'table';
