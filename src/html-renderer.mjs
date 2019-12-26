@@ -31,7 +31,7 @@ class HtmlRenderer extends BaseRenderer {
     }
     for (let element of elements) {
       if (typeof(element) === 'string') {
-        element = escape(element);
+        element = escape(element, true);
       }
       content.push(element);
     }
