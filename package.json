@@ -37,6 +37,7 @@
     "rollup:esm": "rollup -c rollup.config.esm.js"
   },
   "dependencies": {
+    "entities": "^2.0.0",
     "marked": "^0.8.0"
   },
   "devDependencies": {

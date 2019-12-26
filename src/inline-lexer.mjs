@@ -1,6 +1,7 @@
 import { inline } from './rules.mjs';
-import { merge, escape, findClosingBracket } from './helpers.mjs';
+import { merge, escape, unescape, findClosingBracket } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
+import Entities from 'entities';
 
 class InlineLexer {
   constructor(options, extra) {
@@ -308,7 +309,7 @@ class InlineLexer {
     const cap = this.capture('text');
     if (cap) {
       const type = 'text';
-      const text = cap[0];
+      const text = Entities.decode(cap[0]);
       return { type, text };
     }
   }
