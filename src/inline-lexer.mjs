@@ -130,7 +130,7 @@ class InlineLexer {
       const type = 'autolink';
       const text = cap[1];
       const url = escape(text);
-      const href = (cap[2] === '@') ? href = `mailto:${url}` : url;
+      const href = (cap[2] === '@') ? `mailto:${url}` : url;
       return { type, href, text };
     }
   }
