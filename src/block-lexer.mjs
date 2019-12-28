@@ -4,6 +4,7 @@ import { defaults } from './defaults.mjs';
 
 class BlockLexer {
   constructor(options, props) {
+    this.states = [];
     this.topLevel = true;
     this.blockquote = false;
     this.links = {};
@@ -31,6 +32,7 @@ class BlockLexer {
     while (this.remaining) {
       this.append(this.captureToken());
     }
+    this.finalize();
     return this.tokens;
   }
 
@@ -44,6 +46,30 @@ class BlockLexer {
     this.input = this.remaining = text;
     this.offset = 0;
     this.tokens = [];
+  }
+
+  finalize() {
+  }
+
+  pushState() {
+    this.states.push({
+      input: this.input,
+      remaining: this.remaining,
+      offset: this.offset,
+      tokens: this.tokens,
+      topLevel: this.topLevel,
+      blockquote: this.blockquote,
+    });
+  }
+
+  popState() {
+    const state = this.states.pop();
+    this.input = state.input;
+    this.remaining = state.remaining;
+    this.offset = state.offset;
+    this.tokens = state.tokens;
+    this.topLevel = state.topLevel;
+    this.blockquote = state.blockquote;
   }
 
   append(token) {
@@ -260,11 +286,10 @@ class BlockLexer {
       const text = cap[0].replace(/^ *> ?/gm, '');
       // Keep the current "topLevel" state. This is exactly
       // how markdown.pl works.
-      const lexer = new BlockLexer(null, {
-        blockquote: true,
-        options: this.options,
-      });
-      const children = lexer.tokenize(text);
+      this.pushState();
+      this.blockquote = true;
+      const children = this.tokenize(text);
+      this.popState();
       return { type, children };
     }
   }
@@ -348,12 +373,11 @@ class BlockLexer {
       text = text.substr(checkbox.offset);
     }
     const loose = false;
-    const lexer = new BlockLexer(null, {
-      topLevel: false,
-      blockquote: false,
-      options: this.options,
-    });
-    const children = lexer.tokenize(text);
+    this.pushState();
+    this.topLevel = false;
+    this.blockquote = false;
+    const children = this.tokenize(text);
+    this.popState();
     return { type, checked, loose, children };
   }
 

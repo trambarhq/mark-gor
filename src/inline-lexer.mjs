@@ -5,9 +5,10 @@ import HTMLEntities from 'html-entities';
 
 class InlineLexer {
   constructor(options, props) {
+    this.states = [];
     this.inLink = false;
+    this.inMarkdownLink = false;
     this.inRawBlock = false;
-    this.parentType = '';
     this.links = {};
     this.remaining = '';
     this.offset = 0;
@@ -38,7 +39,7 @@ class InlineLexer {
       const token = this.captureToken();
       this.append(token);
     }
-    this.mergeHtmlTags();
+    this.finalize();
     return this.tokens;
   }
 
@@ -46,6 +47,29 @@ class InlineLexer {
     this.input = this.remaining = text;
     this.offset = 0;
     this.tokens = [];
+  }
+
+  finalize() {
+    this.mergeHtmlTags();
+  }
+
+  pushState() {
+    this.states.push({
+      input: this.input,
+      remaining: this.remaining,
+      offset: this.offset,
+      tokens: this.tokens,
+      inMarkdownLink: this.inMarkdownLink,
+    });
+  }
+
+  popState() {
+    const state = this.states.pop();
+    this.input = state.input;
+    this.remaining = state.remaining;
+    this.offset = state.offset;
+    this.tokens = state.tokens;
+    this.inMarkdownLink = state.inMarkdownLink;
   }
 
   append(token) {
@@ -59,14 +83,10 @@ class InlineLexer {
     }
     if (token.markdown) {
       // process children
-      const props = {
-        inLink: token.type === 'link' || this.inLink,
-        inRawBlock: this.inRawBlock,
-        parentType: this.parentType,
-        links: this.links,
-      };
-      const lexer = new InlineLexer(this.options, props);
-      token.children = lexer.tokenize(token.markdown);
+      this.pushState();
+      this.inMarkdownLink = (token.type === 'link');
+      token.children = this.tokenize(token.markdown);
+      this.popState();
     }
     this.tokens.push(token);
   }
@@ -140,7 +160,7 @@ class InlineLexer {
   }
 
   captureUrl() {
-    if (this.inLink) {
+    if (this.inLink || this.inMarkdownLink) {
       return;
     }
     const cap = this.capture('url');

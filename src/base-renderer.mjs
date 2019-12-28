@@ -293,14 +293,17 @@ class BaseRenderer {
   }
 
   renderPlainText(token) {
-    if (token.text) {
-      return this.transformText(token.text);
-    } else if (token.children) {
+    const { text, html, children } = token;
+    if (text) {
+      return this.transformText(text);
+    } else if (children) {
       const content = [];
-      for (let child of token.children) {
+      for (let child of children) {
         content.push(this.renderPlainText(child));
       }
       return content.join('');
+    } else if (html) {
+      return html;
     } else {
       return '';
     }
