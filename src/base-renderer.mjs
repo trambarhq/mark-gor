@@ -273,7 +273,7 @@ class BaseRenderer {
   }
 
   renderText(token) {
-    return token.text;
+    return this.transformText(token.text);
   }
 
   renderHtmlBlock(token) {
@@ -295,7 +295,7 @@ class BaseRenderer {
 
   renderPlainText(token) {
     if (token.text) {
-      return token.text;
+      return this.transformText(token.text);
     } else if (token.children) {
       const content = [];
       for (let child of token.children) {
@@ -305,6 +305,28 @@ class BaseRenderer {
     } else {
       return '';
     }
+  }
+
+  transformText(text) {
+    const { smartypants } = this.options;
+    if (smartypants) {
+      return text
+        // em-dashes
+        .replace(/---/g, '\u2014')
+        // en-dashes
+        .replace(/--/g, '\u2013')
+        // opening singles
+        .replace(/(^|[-\u2014/(\[{"\s])'/g, '$1\u2018')
+        // closing singles & apostrophes
+        .replace(/'/g, '\u2019')
+        // opening doubles
+        .replace(/(^|[-\u2014/(\[{\u2018\s])"/g, '$1\u201c')
+        // closing doubles
+        .replace(/"/g, '\u201d')
+        // ellipses
+        .replace(/\.{3}/g, '\u2026');
+    }
+    return text;
   }
 }
 
