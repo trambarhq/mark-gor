@@ -57,6 +57,11 @@ class HtmlRenderer extends BaseRenderer {
     }
     return new String(html);
   }
+
+  renderRaw(token) {
+    const { html } = token;
+    return new String(html);
+  }
 }
 
 const isVoid = {

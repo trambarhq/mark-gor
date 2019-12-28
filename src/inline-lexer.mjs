@@ -6,6 +6,7 @@ import Entities from 'entities';
 class InlineLexer {
   constructor(options, props) {
     this.inLink = false;
+    this.inRawBlock = false;
     this.parentType = '';
     this.links = {};
     this.remaining = '';
@@ -60,6 +61,7 @@ class InlineLexer {
       // process children
       const props = {
         inLink: token.type === 'link' || this.inLink,
+        inRawBlock: this.inRawBlock,
         parentType: this.parentType,
         links: this.links,
       };
@@ -189,6 +191,11 @@ class InlineLexer {
       } else if (this.inLink && tagType === 'close' && tagName === 'a') {
         this.inLink = false;
       }
+      if (!this.inRawBlock && /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+        this.inRawBlock = true;
+      } else if (this.inRawBlock && /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+        this.inRawBlock = false;
+      }
       return { type, tagType, tagName, html, children };
     }
   }
@@ -310,9 +317,15 @@ class InlineLexer {
   captureText() {
     const cap = this.capture('text');
     if (cap) {
-      const type = 'text';
-      const text = Entities.decode(cap[0]);
-      return { type, text };
+      if (!this.inRawBlock) {
+        const type = 'text';
+        const text = Entities.decode(cap[0]);
+        return { type, text };
+      } else {
+        const type = 'raw';
+        const html = cap[0];
+        return { type, html };
+      }
     }
   }
 

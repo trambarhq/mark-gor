@@ -74,6 +74,7 @@ class BaseRenderer {
       case 'table_header_cell': return this.renderTableHeaderCell(token);
       case 'table_row_cell': return this.renderTableRowCell(token);
       case 'def': return this.renderRefDefinition(token);
+      case 'raw': return this.renderRaw(token);
       case 'checkbox': return this.renderCheckbox(token);
       default:
         throw new Error('Unrecognized token: ' + token.type);
@@ -279,6 +280,9 @@ class BaseRenderer {
   }
 
   renderSpace(token) {
+  }
+
+  renderRaw(token) {
   }
 
   renderPlainText(token) {
