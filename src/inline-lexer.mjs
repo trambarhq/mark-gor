@@ -1,7 +1,7 @@
 import { inline } from './rules.mjs';
 import { merge, escape, unescape, findClosingBracket } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
-import Entities from 'entities';
+import HTMLEntities from 'html-entities';
 
 class InlineLexer {
   constructor(options, props) {
@@ -319,7 +319,7 @@ class InlineLexer {
     if (cap) {
       if (!this.inRawBlock) {
         const type = 'text';
-        const text = Entities.decode(cap[0]);
+        const text = this.decodeEntities(cap[0]);
         return { type, text };
       } else {
         const type = 'raw';
@@ -327,6 +327,10 @@ class InlineLexer {
         return { type, html };
       }
     }
+  }
+
+  decodeEntities(html) {
+    return HTMLEntities.Html5Entities.decode(html);
   }
 
   mergeHtmlTags(startIndex) {

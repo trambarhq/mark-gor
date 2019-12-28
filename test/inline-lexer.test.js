@@ -86,7 +86,7 @@ describe('InlineLexer', function() {
     expect(tokens[1]).to.have.property('type', 'url');
     expect(tokens[1]).to.have.property('href', 'mailto:chernyshevsky@hotmail.com');
   })
-  it ('should capture inline image', function () {
+  it ('should capture inline image', function() {
     const lexer = new InlineLexer;
     const text = `Image: ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png)`;
     const tokens = lexer.tokenize(text);
@@ -94,7 +94,7 @@ describe('InlineLexer', function() {
     expect(tokens[1]).to.have.property('text', 'alt text');
     expect(tokens[1]).to.have.property('href', 'https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png');
   })
-  it ('should capture inline image with title', function () {
+  it ('should capture inline image with title', function() {
     const lexer = new InlineLexer;
     const text = `Image: ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")`;
     const tokens = lexer.tokenize(text);
@@ -103,7 +103,7 @@ describe('InlineLexer', function() {
     expect(tokens[1]).to.have.property('href', 'https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png');
     expect(tokens[1]).to.have.property('title', 'Logo Title Text 1');
   })
-  it ('should capture inline image by ref', function () {
+  it ('should capture inline image by ref', function() {
     const links = {
       logo: {
         href: 'https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png',
@@ -118,11 +118,18 @@ describe('InlineLexer', function() {
     expect(tokens[1]).to.have.property('href', 'https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png');
     expect(tokens[1]).to.have.property('title', 'Logo Title Text 1');
   })
-  it ('should ignore inline image when ref is missing', function () {
+  it ('should ignore inline image when ref is missing', function() {
     const lexer = new InlineLexer;
     const text = `Image: ![alt text][logo]`;
     const tokens = lexer.tokenize(text);
     expect(tokens[0]).to.have.property('type', 'text');
     expect(tokens[0]).to.have.property('text', 'Image: ![alt text][logo]');
+  })
+  it ('should decode HTML entities', function() {
+    const lexer = new InlineLexer;
+    const text = `&amp;&lt;&nbsp;&mdash;&copy;`;
+    const tokens = lexer.tokenize(text);
+    expect(tokens[0]).to.have.property('type', 'text');
+    expect(tokens[0]).to.have.property('text', '&< —©');
   })
 })
