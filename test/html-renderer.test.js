@@ -27,4 +27,16 @@ describe('HtmlRenderer', function() {
       expect(html).to.equal('<li><a href="#foo">Hello world</a></li>');
     })
   })
+  describe('#renderCode()', function() {
+    it ('should use the "highlighted" prop when available', function() {
+      const renderer = new HtmlRenderer;
+      const token = {
+        type: 'code',
+        text: 'print("Hello world");',
+        highlighted: '<span>print(<em>"Hello world"</em>)</span>',
+      };
+      const html = renderer.renderCode(token) + '';
+      expect(html).to.equal('<pre><code><span>print(<em>"Hello world"</em>)</span></code></pre>');
+    })
+  })
 })

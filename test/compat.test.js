@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 import { parse as parseMarked } from 'marked';
 import FrontMatter from 'front-matter';
+import HTMLEntities from 'html-entities';
+import * as JSDiff from 'diff';
 
 import { parse } from '../src/html.mjs';
 
@@ -27,17 +29,10 @@ function test(desc, requireFunc, params) {
               options.sanitizer = eval(options.sanitizer);
             }
           }
-          const html1 = removeExtraSpace(parse(markdown, options));
-          const html2 = removeExtraSpace(parseMarked(markdown, options));
-          if (html1 !== html2) {
-            if (singleTest) {
-              if (options) {
-                console.log(options);
-              }
-              console.log(markdown);
-              console.log(html1);
-              console.log(html2);
-            }
+          const html1 = parse(markdown, options);
+          const html2 = parseMarked(markdown, options);
+          const showDiff = !!singleTest;
+          if (!compareHTML(html1, html2, showDiff)) {
             expect.fail('Not matching');
           }
         })
@@ -46,8 +41,29 @@ function test(desc, requireFunc, params) {
   })
 }
 
-function removeExtraSpace(html) {
-  return html.replace(/>\s+</g, '><').trim();
+function compareHTML(html1, html2, showDiff) {
+  html1 = html1.replace(/>\s+</g, '><').trim();
+  html2 = html2.replace(/>\s+</g, '><').trim();
+  if (html1 === html2) {
+    return true;
+  }
+  const decoded1 = HTMLEntities.Html5Entities.decode(html1);
+  const decoded2 = HTMLEntities.Html5Entities.decode(html2);
+  if (decoded1 === decoded2) {
+    return true;
+  }
+  if (showDiff) {
+    const diff = JSDiff.diffChars(html2, html1);
+    for (let part of diff) {
+      let text = part.value;
+      if (part.added) {
+        console.log(`OURS: ${text}`);
+      } else if (part.removed) {
+        console.log(`THEIRS: ${text}`);
+      }
+    }
+  }
+  return false;
 }
 
 describe('Compatibility', function() {
@@ -64,5 +80,8 @@ describe('Compatibility', function() {
   test('Marked specs (gfm = false)', require.context('./specs', true, /\.md$/), {
     frontMatter: false,
     options: { gfm: false }
+  });
+  test('GitHub READMEs', require.context('./github', true, /\.md$/), {
+    frontMatter: false,
   });
 })
