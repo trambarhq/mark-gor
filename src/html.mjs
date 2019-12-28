@@ -7,6 +7,13 @@ function parse(text, options) {
     const parser = new Parser(options);
     const renderer = new HtmlRenderer(options);
     const tokens = parser.parse(text);
+    if (options && options.highlight) {
+      for (let token of tokens) {
+        if (token.type === 'code') {
+          token.highlighted = options.highlight(token.text, token.lang);
+        }
+      }
+    }
     const html = renderer.render(tokens);
     return html;
 }

@@ -68,6 +68,10 @@ class HtmlRenderer extends BaseRenderer {
     return this.sanitize(html);
   }
 
+  packageCode(highlighted) {
+    return new String(highlighted);
+  }
+
   sanitize(html) {
     const { sanitize, sanitizer } = this.options;
     if (sanitize) {

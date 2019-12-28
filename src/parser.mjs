@@ -20,14 +20,14 @@ class Parser {
     });
   }
 
+  finalize() {
+  }
+
   parse(text) {
     this.initialize(text);
-
-    // process at block-level first
     this.processBlocks();
-
-    // recursively parse token containing inline markdown
     this.processInline(this.tokens);
+    this.finalize();
     return this.tokens;
   }
 
@@ -56,6 +56,7 @@ function parseJSON(text, options) {
 
 export {
   parseJSON,
+  parseJSON as parseJson,
   Parser,
   Parser as default,
 };

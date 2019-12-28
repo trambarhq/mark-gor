@@ -154,7 +154,8 @@ class BlockLexer {
       const type = 'code';
       const lang = cap[2] ? cap[2].trim() : undefined;
       const text = cap[3] || '';
-      return { type, lang, text };
+      const highlighted = null;
+      return { type, lang, text, highlighted };
     }
   }
 

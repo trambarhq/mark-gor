@@ -82,10 +82,11 @@ class BaseRenderer {
   }
 
   renderCode(token) {
-    const { text, lang } = token;
+    const { text, lang, highlighted } = token;
     const { langPrefix } = this.options;
     const props = (lang) ? { className: langPrefix + lang } : null;
-    const codespan = this.createElement('code', props, text);
+    const code = (highlighted) ? this.packageCode(highlighted) : text;
+    const codespan = this.createElement('code', props, code);
     return this.createElement('pre', null, [ codespan ]);
   }
 
@@ -329,6 +330,10 @@ class BaseRenderer {
         .replace(/\.{3}/g, '\u2026');
     }
     return text;
+  }
+
+  packageCode(highlighted) {
+    return highlighted;
   }
 }
 
