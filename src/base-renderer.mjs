@@ -3,15 +3,15 @@ import { defaults } from './defaults.mjs';
 import { Slugger } from './slugger.mjs';
 
 class BaseRenderer {
-  constructor(options, extra) {
+  constructor(options, props) {
     this.options = defaults;
     this.slugger = new Slugger;
 
     if (options) {
       this.options = merge({}, defaults, options);
     }
-    if (extra) {
-      merge(this, extra);
+    if (props) {
+      merge(this, props);
     }
   }
 
@@ -74,6 +74,7 @@ class BaseRenderer {
       case 'table_header_cell': return this.renderTableHeaderCell(token);
       case 'table_row_cell': return this.renderTableRowCell(token);
       case 'def': return this.renderRefDefinition(token);
+      case 'checkbox': return this.renderCheckbox(token);
       default:
         throw new Error('Unrecognized token: ' + token.type);
     }
@@ -119,12 +120,54 @@ class BaseRenderer {
   }
 
   renderListItem(token) {
-    const children = this.renderChildren(token);
+    const { checked, loose } = token;
+    let children;
+    if (checked === undefined) {
+      children = this.renderChildren(token);
+    } else {
+      // put checkbox in front of content, inserting it into the list of
+      // inline elements if that's what follow; otherwise (if the list item
+      // holds a block element), insert it into a separate block
+      const checkbox = { type: 'checkbox', checked };
+      let tokens = token.children.slice();
+      const first = tokens[0];
+      if (first && (first.type === 'text_block' || first.type === 'paragraph')) {
+        const space = {
+          type: 'text',
+          text: (loose) ? '  ' : ' '
+        };
+        const tb = {
+          type: first.type,
+          children: tokens[0].children.slice()
+        };
+        tb.children.unshift(space);
+        tb.children.unshift(checkbox);
+        tokens[0] = tb;
+      } else {
+        // put p tag around checkbox if item is loose
+        const tb = {
+          type: (loose) ? 'paragraph' : 'text_block',
+          children: [ checkbox ]
+        };
+        tokens.unshift(tb);
+      }
+      children = this.renderTokens(tokens);
+    }
     return this.createElement('li', null, children);
   }
 
   renderLooseItem(token) {
     return this.renderListItem(token);
+  }
+
+  renderCheckbox(token) {
+    const { checked } = token;
+    const props = {
+      checked: (checked) ? '' : undefined,
+      disabled: '',
+      type: 'checkbox',
+    };
+    return this.createElement('input', props);
   }
 
   renderParagraph(token) {
@@ -225,15 +268,11 @@ class BaseRenderer {
   }
 
   renderHtmlBlock(token) {
-    return this.renderTextBlock(token);
+    return this.renderChildren(token);
   }
 
   renderTextBlock(token) {
-    if (token.paragraph) {
-      return this.renderParagraph(token);
-    } else {
-      return this.renderChildren(token);
-    }
+    return this.renderChildren(token);
   }
 
   renderRefDefinition(token) {

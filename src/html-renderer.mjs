@@ -63,6 +63,7 @@ const isVoid = {
   br: true,
   hr: true,
   img: true,
+  input: true,
 };
 
 export {

@@ -4,8 +4,9 @@ import { defaults } from './defaults.mjs';
 import Entities from 'entities';
 
 class InlineLexer {
-  constructor(options, extra) {
+  constructor(options, props) {
     this.inLink = false;
+    this.parentType = '';
     this.links = {};
     this.remaining = '';
     this.offset = 0;
@@ -25,8 +26,8 @@ class InlineLexer {
         this.rules = inline.gfm;
       }
     }
-    if (extra) {
-      merge(this, extra);
+    if (props) {
+      merge(this, props);
     }
   }
 
@@ -57,11 +58,12 @@ class InlineLexer {
     }
     if (token.markdown) {
       // process children
-      const extra = {
+      const props = {
         inLink: token.type === 'link' || this.inLink,
+        parentType: this.parentType,
         links: this.links,
       };
-      const lexer = new InlineLexer(this.options, extra);
+      const lexer = new InlineLexer(this.options, props);
       token.children = lexer.tokenize(token.markdown);
     }
     this.tokens.push(token);

@@ -3,10 +3,9 @@ import { merge, splitCells } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
 
 class BlockLexer {
-  constructor(options, extra) {
+  constructor(options, props) {
     this.topLevel = true;
     this.blockquote = false;
-    this.looseItem = false;
     this.links = {};
     this.input = this.remaining = '';
     this.offset = 0;
@@ -22,8 +21,8 @@ class BlockLexer {
     } else if (this.options.gfm) {
       this.rules = block.gfm;
     }
-    if (extra) {
-      merge(this, extra);
+    if (props) {
+      merge(this, props);
     }
   }
 
@@ -281,7 +280,7 @@ class BlockLexer {
       // Get each top-level item.
       const items = cap[0].match(this.rules.item);
       const children = [];
-      let next = false;
+      let loose = false;
 
       for (let i = 0, l = items.length; i < l; i++) {
         let item = items[i];
@@ -289,7 +288,7 @@ class BlockLexer {
         // Remove the list item's bullet
         // so it is seen as the next token.
         let space = item.length;
-        item = item.replace(/^ *([*+-]|\d+\.) +/, '');
+        item = item.replace(/^ *([*+-]|\d+\.) */, '');
 
         // Outdent whatever the
         // list item contains. Hacky.
@@ -314,29 +313,58 @@ class BlockLexer {
         // Determine whether item is loose or not.
         // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
         // for discount behavior.
-        let loose = next || /\n\n(?!\s*$)/.test(item);
+        if (!loose) {
+          loose = /\n\n(?!\s*$)/.test(item);
+        }
         if (i !== l - 1) {
-          next = item.charAt(item.length - 1) === '\n';
-          if (!loose) loose = next;
+          if (!loose) {
+            loose = (item.charAt(item.length - 1) === '\n');
+          }
         }
 
         // Recurse.
-        children.push(this.lexListItem(item, loose));
+        children.push(this.lexListItem(item));
+      }
+      if (loose) {
+        for (let child of children) {
+          child.loose = loose;
+          for (let itemChild of child.children) {
+            if (itemChild.type === 'text_block') {
+              itemChild.type = 'paragraph';
+            }
+          }
+        }
       }
       return { type, ordered, start, children };
     }
   }
 
-  lexListItem(text, loose) {
+  lexListItem(text) {
     const type = 'list_item';
+    let checked;
+    const checkbox = this.lexCheckbox(text);
+    if (checkbox) {
+      checked = checkbox.checked;
+      text = text.substr(checkbox.offset);
+    }
+    const loose = false;
     const lexer = new BlockLexer(null, {
       topLevel: false,
-      looseItem: loose,
       blockquote: false,
       options: this.options,
     });
     const children = lexer.tokenize(text);
-    return { type, children };
+    return { type, checked, loose, children };
+  }
+
+  lexCheckbox(text) {
+    const ccap = /^\[([ xX])\] +/.exec(text);
+    if (ccap) {
+      return {
+        checked: (ccap[1] !== ' '),
+        offset: ccap[0].length,
+      };
+    }
   }
 
   captureHtml() {
@@ -404,16 +432,15 @@ class BlockLexer {
   captureText() {
     const cap = this.capture('text');
     if (cap) {
-      const type = 'text_block';
+      // put the text in a <p> if it's in a blockquote
+      const type = (this.blockquote) ? 'paragraph' : 'text_block';
       // Top-level should never reach here.
       if (this.topLevel) {
         console.warn('Unreachable code reached');
       }
-      // put the text in a <p> if it's in a blockquote or a loose item
-      const paragraph = this.blockquote || this.looseItem;
       const markdown = cap[0];
       const children = null;
-      return { type, paragraph, markdown, children };
+      return { type, markdown, children };
     }
   }
 

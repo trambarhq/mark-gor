@@ -2,8 +2,8 @@ import { React } from 'react';
 import { BaseRenderer } from './base-renderer.mjs';
 
 class ReactRenderer extends BaseRenderer {
-  constructor(options, extra) {
-    super(options, extra);
+  constructor(options, props) {
+    super(options, props);
 
     this.nextKey = 0;
     this.keyStack = [];

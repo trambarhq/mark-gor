@@ -4,10 +4,10 @@ import { defaults } from './defaults.mjs';
 import { merge } from './helpers.mjs';
 
 class Parser {
-  constructor(options, extra) {
+  constructor(options, props) {
     this.options = options;
-    if (extra) {
-      merge(this, extra);
+    if (props) {
+      merge(this, props);
     }
   }
 
