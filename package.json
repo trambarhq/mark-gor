@@ -1,10 +1,10 @@
 {
   "name": "mark-gor",
-  "description": "A markdown parser built for a better tomorrow",
+  "description": "A markdown parser for React/Preact",
   "author": "Chung Leong",
-  "version": "0.0.9",
-  "main": "./lib/html.js",
-  "module": "./lib/html.esm.js",
+  "version": "2.0.0",
+  "main": "./lib/react.js",
+  "module": "./lib/react.esm.js",
   "file": [
     "lib/",
     "src/"
@@ -18,12 +18,15 @@
   "license": "MIT",
   "keywords": [
     "markdown",
+    "marked",
     "markup",
     "html",
-    "react"
+    "react",
+    "preact"
   ],
   "tags": [
     "markdown",
+    "marked",
     "markup",
     "html",
     "react",
@@ -75,9 +78,6 @@
     "rollup": "^1.27.14",
     "rollup-plugin-babel": "^4.3.3",
     "showdown": "*",
-    "webpack": "^4.41.4"
-  },
-  "optionalDependencies": {
-    "react": "*"
+    "webpack": "^4.41.5"
   }
 }
