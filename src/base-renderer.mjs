@@ -85,9 +85,8 @@ class BaseRenderer {
     const { text, lang } = token;
     const { langPrefix } = this.options;
     const props = (lang) ? { className: langPrefix + lang } : null;
-    const codespan = { type: 'codespan', text };
-    const children = this.renderTokens([ codespan ]);
-    return this.createElement('pre', null, children);
+    const codespan = this.createElement('code', props, text);
+    return this.createElement('pre', null, [ codespan ]);
   }
 
   renderBlockquote(token) {

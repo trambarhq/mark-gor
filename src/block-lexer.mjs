@@ -126,7 +126,7 @@ class BlockLexer {
     const cap = this.capture('fences');
     if (cap) {
       const type = 'code';
-      const lang = cap[2];
+      const lang = cap[2] ? cap[2].trim() : undefined;
       const text = cap[3] || '';
       return { type, lang, text };
     }
