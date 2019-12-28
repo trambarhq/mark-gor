@@ -99,11 +99,11 @@ class BaseRenderer {
   }
 
   renderHeading(token) {
-    const { headerPrefix } = this.options;
+    const { headerIds, headerPrefix } = this.options;
     const type = `h${token.depth}`;
     const plain = this.renderPlainText(token);
     const name = this.slugger.slug(plain);
-    const props = { id: headerPrefix + name };
+    const props = (headerIds) ? { id: headerPrefix + name } : null;
     const children = this.renderChildren(token);
     return this.createElement(type, props, children);
   }
