@@ -31,6 +31,9 @@ function test(desc, requireFunc, params) {
           const html2 = removeExtraSpace(parseMarked(markdown, options));
           if (html1 !== html2) {
             if (singleTest) {
+              if (frontMatter) {
+                console.log(options);
+              }
               console.log(markdown);
               console.log(html1);
               console.log(html2);
@@ -48,6 +51,9 @@ function removeExtraSpace(html) {
 }
 
 describe('Compatibility', function() {
+  test('Marked specs (Front Matter options)', require.context('./specs', true, /\.md$/), {
+    frontMatter: true,
+  });
   test('Marked specs (default options)', require.context('./specs', true, /\.md$/), {
     frontMatter: false,
   });

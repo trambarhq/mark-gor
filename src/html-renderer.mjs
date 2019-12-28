@@ -47,19 +47,32 @@ class HtmlRenderer extends BaseRenderer {
   renderHtmlTag(token) {
     const { tagType, tagName, html, children, textContent } = token;
     if (tagType === 'closed') {
+      let content;
       if (textContent) {
-        return new String(html + textContent + `</${tagName}>`);
+        content = this.sanitize(textContent);
       } else if (children) {
         const elements = this.renderTokens(children);
-        const content = this.mergeElements(elements);
-        return new String(html + content + `</${tagName}>`);
+        content = this.mergeElements(elements);
+      }
+      if (content) {
+        const startTag = this.sanitize(html);
+        const endTag = this.sanitize(`</${tagName}>`);
+        return new String(startTag + content + endTag);
       }
     }
-    return new String(html);
+    return this.sanitize(html);
   }
 
   renderRaw(token) {
     const { html } = token;
+    return this.sanitize(html);
+  }
+
+  sanitize(html) {
+    const { sanitize, sanitizer } = this.options;
+    if (sanitize) {
+      html = (sanitizer) ? sanitizer(html) : escape(html);
+    }
     return new String(html);
   }
 }

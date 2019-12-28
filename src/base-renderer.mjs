@@ -253,14 +253,22 @@ class BaseRenderer {
 
   renderLink(token) {
     const { href, title } = token;
+    const { sanitize, baseUrl } = this.options;
     const children = this.renderChildren(token);
-    const url = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    const url = cleanUrl(sanitize, baseUrl, href);
+    if (url === null) {
+      return children;
+    }
     return this.createElement('a', { href: url, title }, children);
   }
 
   renderImage(token) {
     const { href, title, text } = token;
-    const url = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    const { sanitize, baseUrl } = this.options;
+    const url = cleanUrl(sanitize, baseUrl, href);
+    if (url === null) {
+      return text;
+    }
     return this.createElement('img', { src: url, alt: text, title });
   }
 
