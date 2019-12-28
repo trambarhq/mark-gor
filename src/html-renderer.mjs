@@ -46,7 +46,7 @@ class HtmlRenderer extends BaseRenderer {
 
   renderHtmlTag(token) {
     const { tagType, tagName, html, children, textContent } = token;
-    if (tagType === 'closed') {
+    if (tagType === 'parent') {
       let content;
       if (textContent) {
         content = this.sanitize(textContent);
@@ -54,11 +54,9 @@ class HtmlRenderer extends BaseRenderer {
         const elements = this.renderTokens(children);
         content = this.mergeElements(elements);
       }
-      if (content) {
-        const startTag = this.sanitize(html);
-        const endTag = this.sanitize(`</${tagName}>`);
-        return new String(startTag + content + endTag);
-      }
+      const startTag = this.sanitize(html);
+      const endTag = this.sanitize(`</${tagName}>`);
+      return new String(startTag + content + endTag);
     }
     return this.sanitize(html);
   }

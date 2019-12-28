@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { parse as parseMarked } from 'marked';
 import FrontMatter from 'front-matter';
 import HTMLEntities from 'html-entities';
-import * as JSDiff from 'diff';
 
 import { parse } from '../src/html.mjs';
 
@@ -42,28 +41,25 @@ function test(desc, requireFunc, params) {
 }
 
 function compareHTML(html1, html2, showDiff) {
-  html1 = html1.replace(/>\s+</g, '><').trim();
-  html2 = html2.replace(/>\s+</g, '><').trim();
+  html1 = removeSpaceBetween(html1);
+  html2 = removeSpaceBetween(html2);
   if (html1 === html2) {
     return true;
   }
-  const decoded1 = HTMLEntities.Html5Entities.decode(html1);
-  const decoded2 = HTMLEntities.Html5Entities.decode(html2);
+  const decoded1 = removeSpaceBetween(HTMLEntities.Html5Entities.decode(html1));
+  const decoded2 = removeSpaceBetween(HTMLEntities.Html5Entities.decode(html2));
   if (decoded1 === decoded2) {
     return true;
   }
   if (showDiff) {
-    const diff = JSDiff.diffChars(html2, html1);
-    for (let part of diff) {
-      let text = part.value;
-      if (part.added) {
-        console.log(`OURS: ${text}`);
-      } else if (part.removed) {
-        console.log(`THEIRS: ${text}`);
-      }
-    }
+    console.log(`OURS:\n${html1}\n`);
+    console.log(`THEIRS:\n${html2}\n`);
   }
   return false;
+}
+
+function removeSpaceBetween(html) {
+  return html.replace(/>\s+</g, '><').trim();
 }
 
 describe('Compatibility', function() {

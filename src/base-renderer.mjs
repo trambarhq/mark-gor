@@ -99,11 +99,9 @@ class BaseRenderer {
   }
 
   renderHeading(token) {
-    const { headerIds, headerPrefix } = this.options;
     const type = `h${token.depth}`;
-    const plain = this.renderPlainText(token);
-    const name = this.slugger.slug(plain);
-    const props = (headerIds) ? { id: headerPrefix + name } : null;
+    const id = this.generateHeadingId(token);
+    const props = (id) ? { id } : null;
     const children = this.renderChildren(token);
     return this.createElement(type, props, children);
   }
@@ -293,21 +291,39 @@ class BaseRenderer {
   renderRaw(token) {
   }
 
-  renderPlainText(token) {
-    const { text, html, children } = token;
+  renderPlainText(token, quirk) {
+    const { text, html, children, tagName } = token;
+    const { marked } = this.options;
     if (text) {
       return this.transformText(text);
     } else if (children) {
       const content = [];
       for (let child of children) {
-        content.push(this.renderPlainText(child));
+        content.push(this.renderPlainText(child, quirk));
+      }
+      if (marked && quirk) {
+        if (html && tagName) {
+          const startTag = html;
+          const endTag = `</${tagName}>`;
+          content.unshift(startTag);
+          content.push(endTag);
+        }
       }
       return content.join('');
     } else if (html) {
-      return html;
+      if (marked && quirk) {
+        return html;
+      }
     } else {
       return '';
     }
+  }
+
+  generateHeadingId(token) {
+    const { headerIds, headerPrefix } = this.options;
+    const plain = this.renderPlainText(token, true);
+    const name = this.slugger.slug(plain);
+    return headerPrefix + name;
   }
 
   transformText(text) {

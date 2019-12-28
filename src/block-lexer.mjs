@@ -411,7 +411,7 @@ class BlockLexer {
       } else {
         const type = 'html_tag';
         const hcap = /(<[^>]*>)(.*)<\/\w+>\s*$/.exec(cap[0]);
-        const tagType = 'closed';
+        const tagType = 'parent';
         const tagName = cap[1];
         const textContent = hcap[2];
         const html = hcap[1];

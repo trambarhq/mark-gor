@@ -372,7 +372,7 @@ class InlineLexer {
             if (token.tagName === openTag.tagName) {
               const count = i - openTagIndex;
               const removed = this.tokens.splice(openTagIndex + 1, count);
-              openTag.tagType = 'closed';
+              openTag.tagType = 'parent';
               openTag.children = removed.slice(0, count - 1);
               i = openTagIndex + 1;
               openTagIndex = -1;
