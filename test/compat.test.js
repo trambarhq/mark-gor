@@ -41,10 +41,10 @@ function test(desc, requireFunc, params) {
               options.sanitizer = eval(options.sanitizer);
             }
           }
-          const html1 = parse(markdown, options);
-          const html2 = parseMarked(markdown, options);
+          const ours = parse(markdown, options);
+          const theirs = parseMarked(markdown, options);
           const showDiff = !!singleTest;
-          if (!compareHTML(html1, html2, showDiff)) {
+          if (!compareHTML(ours, theirs, showDiff)) {
             expect.fail('Not matching');
           }
         })
@@ -53,31 +53,32 @@ function test(desc, requireFunc, params) {
   })
 }
 
-function compareHTML(html1, html2, showDiff) {
-  html1 = removeSpaceBetween(html1);
-  html2 = removeSpaceBetween(html2);
-  if (html1 === html2) {
+function compareHTML(ours, theirs, showDiff) {
+  ours = removeSpaceBetween(ours);
+  theirs = removeSpaceBetween(theirs);
+  if (ours === theirs) {
     return true;
   }
-  const decoded1 = removeSpaceBetween(decodeEntities(html1));
-  const decoded2 = removeSpaceBetween(decodeEntities(html2));
-  if (decoded1 === decoded2) {
-    return true;
-  }
-  const trimmed1 = decoded1.replace(/>\s+/g, '>');
-  const trimmed2 = decoded2.replace(/>\s+/g, '>');
-  if (trimmed1 === trimmed2) {
+  const oursAfter = processThruDOM(ours);
+  const theirsAfter = processThruDOM(theirs);
+  if (oursAfter === theirsAfter) {
     return true;
   }
   if (showDiff) {
-    console.log(`OURS:\n${html1}\n`);
-    console.log(`THEIRS:\n${html2}\n`);
+    console.log(`OURS:\n${ours}\n`);
+    console.log(`THEIRS:\n${theirs}\n`);
   }
   return false;
 }
 
 function removeSpaceBetween(html) {
   return html.replace(/>\s+</g, '><').trim();
+}
+
+function processThruDOM(html) {
+  const div = document.createElement('DIV');
+  div.innerHTML = html;
+  return div.innerHTML;
 }
 
 describe('Compatibility', function() {
