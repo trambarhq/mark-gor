@@ -1,5 +1,6 @@
 import { escape } from './helpers.mjs';
 import { BaseRenderer } from './base-renderer.mjs';
+import { isVoidElement } from './html-tag-attrs.mjs';
 
 class HtmlRenderer extends BaseRenderer {
   createElement(type, props, children) {
@@ -15,7 +16,7 @@ class HtmlRenderer extends BaseRenderer {
       }
     }
     html += '>';
-    if (!isVoid[type]) {
+    if (!isVoidElement(type)) {
       if (children) {
         html += this.mergeElements(children);
       }
@@ -78,13 +79,6 @@ class HtmlRenderer extends BaseRenderer {
     return new String(html);
   }
 }
-
-const isVoid = {
-  br: true,
-  hr: true,
-  img: true,
-  input: true,
-};
 
 export {
   HtmlRenderer,

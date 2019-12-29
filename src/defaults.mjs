@@ -5,6 +5,7 @@ const defaults = getDefaults();
 function getDefaults() {
   return {
     marked: true,
+    cleanHtml: false,
     ...imports.getDefaults()
   };
 }
