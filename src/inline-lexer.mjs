@@ -1,7 +1,7 @@
 import { inline } from './rules.mjs';
 import { merge, escape, unescape, findClosingBracket } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
-import HTMLEntities from 'html-entities';
+import { decodeEntities } from './html-entities.mjs';
 
 class InlineLexer {
   constructor(options, props) {
@@ -78,6 +78,12 @@ class InlineLexer {
       const prevToken = this.tokens[this.tokens.length - 1];
       if (prevToken && prevToken.type === 'text') {
         prevToken.text += token.text;
+        return;
+      }
+    } else if (token.type === 'br') {
+      // don't put line-break after HTML tags
+      const prevToken = this.tokens[this.tokens.length - 1];
+      if (prevToken && prevToken.type === 'html_tag') {
         return;
       }
     }
@@ -196,7 +202,7 @@ class InlineLexer {
       const html = cap[0];
       let tagType;
       let tagName;
-      const tcap = /^<(\/?)([a-zA-Z][\w:-]*).*?(\/?)>$/.exec(html);
+      const tcap = /^<(\/?)([a-zA-Z][\w:-]*)[\s\S]*?(\/?)>$/.exec(html);
       if (tcap) {
         if (tcap[1]) {
           tagType = 'close';
@@ -350,7 +356,7 @@ class InlineLexer {
   }
 
   decodeEntities(html) {
-    return HTMLEntities.Html5Entities.decode(html);
+    return decodeEntities(html);
   }
 
   mergeHtmlTags(startIndex) {

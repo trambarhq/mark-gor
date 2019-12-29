@@ -291,6 +291,12 @@ class BlockLexer {
       this.blockquote = true;
       const children = this.tokenize(text);
       this.popState();
+      // put the text in a <p>
+      for (let child of children) {
+        if (child.type === 'text_block') {
+          child.type = 'paragraph';
+        }
+      }
       return { type, children };
     }
   }
@@ -410,7 +416,7 @@ class BlockLexer {
         return { type, markdown, children };
       } else {
         const type = 'html_tag';
-        const hcap = /(<[^>]*>)(.*)<\/\w+>\s*$/.exec(cap[0]);
+        const hcap = /(<[^>]*>)([\s\S]*)<\/\w+>\s*$/.exec(cap[0]);
         const tagType = 'parent';
         const tagName = cap[1];
         const textContent = hcap[2];
@@ -457,8 +463,7 @@ class BlockLexer {
   captureText() {
     const cap = this.capture('text');
     if (cap) {
-      // put the text in a <p> if it's in a blockquote
-      const type = (this.blockquote) ? 'paragraph' : 'text_block';
+      const type = 'text_block';
       // Top-level should never reach here.
       if (this.topLevel) {
         console.warn('Unreachable code reached');

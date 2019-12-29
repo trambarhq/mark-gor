@@ -1,4 +1,4 @@
-import { merge, cleanUrl } from './helpers.mjs';
+import { merge, cleanUrl, unescape } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
 import { Slugger } from './slugger.mjs';
 
@@ -101,7 +101,7 @@ class BaseRenderer {
   renderHeading(token) {
     const type = `h${token.depth}`;
     const id = this.generateHeadingId(token);
-    const props = (id) ? { id } : null;
+    const props = (id !== undefined) ? { id } : null;
     const children = this.renderChildren(token);
     return this.createElement(type, props, children);
   }
@@ -242,7 +242,11 @@ class BaseRenderer {
   renderUrl(token) {
     const { href, text } = token;
     const children = text;
-    return this.createElement('a', { href }, children);
+    const url = this.cleanUrl(href);
+    if (url === null) {
+      return children;
+    }
+    return this.createElement('a', { href: url }, children);
   }
 
   renderAutolink(token) {
@@ -251,9 +255,8 @@ class BaseRenderer {
 
   renderLink(token) {
     const { href, title } = token;
-    const { sanitize, baseUrl } = this.options;
     const children = this.renderChildren(token);
-    const url = cleanUrl(sanitize, baseUrl, href);
+    const url = this.cleanUrl(href);
     if (url === null) {
       return children;
     }
@@ -262,8 +265,7 @@ class BaseRenderer {
 
   renderImage(token) {
     const { href, title, text } = token;
-    const { sanitize, baseUrl } = this.options;
-    const url = cleanUrl(sanitize, baseUrl, href);
+    const url = this.cleanUrl(href);
     if (url === null) {
       return text;
     }
@@ -291,7 +293,7 @@ class BaseRenderer {
   renderRaw(token) {
   }
 
-  renderPlainText(token, quirk) {
+  renderPlainText(token, nameGen) {
     const { text, html, children, tagName } = token;
     const { marked } = this.options;
     if (text) {
@@ -299,9 +301,9 @@ class BaseRenderer {
     } else if (children) {
       const content = [];
       for (let child of children) {
-        content.push(this.renderPlainText(child, quirk));
+        content.push(this.renderPlainText(child, nameGen));
       }
-      if (marked && quirk) {
+      if (marked && nameGen) {
         if (html && tagName) {
           const startTag = html;
           const endTag = `</${tagName}>`;
@@ -311,7 +313,7 @@ class BaseRenderer {
       }
       return content.join('');
     } else if (html) {
-      if (marked && quirk) {
+      if (marked && nameGen) {
         return html;
       }
     } else {
@@ -321,9 +323,18 @@ class BaseRenderer {
 
   generateHeadingId(token) {
     const { headerIds, headerPrefix } = this.options;
-    const plain = this.renderPlainText(token, true);
-    const name = this.slugger.slug(plain);
-    return headerPrefix + name;
+    if (headerIds) {
+      const plain = this.renderPlainText(token, true)
+      const filtered = plain.replace(/[&<>"\u00a0-\u00bf\u00f7]/g, '').trim();
+      const name = this.slugger.slug(filtered);
+      return headerPrefix + name;
+    }
+  }
+
+  cleanUrl(url) {
+    const { sanitize, baseUrl } = this.options;
+    const cleaned = cleanUrl(sanitize, baseUrl, url);
+    return cleaned;
   }
 
   transformText(text) {
