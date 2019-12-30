@@ -80,4 +80,11 @@ describe('Parser', function() {
     const html = parse(markdown, options)
     expect(html).to.equal('<ul><li>Hello</li><li>World</li><li><ul><li>!</li></ul></li></ul>');
   })
+  it ('should handle attribute without enclosing quotation marks', function() {
+    const options = { normalizeTags: true };
+    const markdown = `<img src=hello.png>`;
+    const html = parse(markdown, options)
+    expect(html).to.equal('<img src="hello.png">');
+  })
+
 })
