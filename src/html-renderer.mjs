@@ -46,19 +46,7 @@ class HtmlRenderer extends BaseRenderer {
   }
 
   renderHtmlTag(token) {
-    const { tagType, tagName, html, children, textContent } = token;
-    if (tagType === 'parent') {
-      let content;
-      if (textContent) {
-        content = this.sanitize(textContent);
-      } else if (children) {
-        const elements = this.renderTokens(children);
-        content = this.mergeElements(elements);
-      }
-      const startTag = this.sanitize(html);
-      const endTag = this.sanitize(`</${tagName}>`);
-      return new String(startTag + content + endTag);
-    }
+    const { html } = token;
     return this.sanitize(html);
   }
 

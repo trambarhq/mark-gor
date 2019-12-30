@@ -2,7 +2,6 @@ import { inline } from './rules.mjs';
 import { merge, escape, unescape, findClosingBracket } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
 import { decodeEntities } from './html-entities.mjs';
-import { isVoidElement, isTerminatingElement, isExpectedContent, getImplicitElements } from './html-tag-attrs.mjs';
 
 class InlineLexer {
   constructor(options, props) {
@@ -51,9 +50,6 @@ class InlineLexer {
   }
 
   finalize() {
-    if (this.options.cleanHtml) {
-      this.mergeHtmlTags();
-    }
   }
 
   pushState() {
@@ -203,17 +199,9 @@ class InlineLexer {
     if (cap) {
       const type = 'html_tag';
       const html = cap[0];
-      let tagType;
-      let tagName;
-      const tcap = /^<(\/?)([a-zA-Z][\w:-]*)/.exec(html);
-      if (tcap) {
-        tagType = (tcap[1]) ? 'close' : 'open';
-        tagName = tcap[2].toLowerCase();
-      }
-      const children = null;
-      if (!this.inLink && tagType === 'open' && tagName === 'a') {
+      if (!this.inLink && /^<a /i.test(cap[0])) {
         this.inLink = true;
-      } else if (this.inLink && tagType === 'close' && tagName === 'a') {
+      } else if (this.inLink && /^<\/a>/i.test(cap[0])) {
         this.inLink = false;
       }
       if (!this.inRawBlock && /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
@@ -221,7 +209,7 @@ class InlineLexer {
       } else if (this.inRawBlock && /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
         this.inRawBlock = false;
       }
-      return { type, tagType, tagName, html, children };
+      return { type, html };
     }
   }
 
@@ -356,123 +344,6 @@ class InlineLexer {
 
   decodeEntities(html) {
     return decodeEntities(html);
-  }
-
-  mergeHtmlTags() {
-    const stack = [];
-    let index = 0;
-    for (;;) {
-      const token = this.tokens[index];
-      let newDepth = -1;
-      if (token) {
-        if (token.type == 'html_tag') {
-          const { tagType, tagName } = token;
-          if (tagType === 'open') {
-            // see if the tag closes an element that permits end-tag to be
-            // omitted
-            for (let i = stack.length - 1; i >= 0; i--) {
-              const openTag = stack[i];
-              if (isTerminatingElement(tagName, openTag.tagName)) {
-                newDepth = i;
-                break;
-              } else if(isExpectedContent(tagName, openTag.tagName)) {
-                break;
-              }
-            }
-            // check if tag is void (no closing tag)
-            if (isVoidElement(tagName)) {
-              token.tagType = 'void';
-            } else if (newDepth === -1) {
-              stack.push(token);
-            }
-            if (newDepth === -1) {
-              index++;
-            }
-          } else if (tagType === 'close') {
-            // see if the end tag closes an element in the stack
-            for (let i = stack.length - 1; i >= 0; i--) {
-              const openTag = stack[i];
-              if (tagName === openTag.tagName) {
-                newDepth = i;
-                break;
-              }
-            }
-            // toss the end tag
-            this.tokens.splice(index, 1);
-          } else {
-            // skip over other tag type
-            index++;
-          }
-        } else {
-          // skip over tokens that aren't HTML tags
-          index++;
-        }
-      } else {
-        if (stack.length > 0) {
-          // we're out of tokens--pop everything
-          newDepth = 0;
-        } else {
-          break;
-        }
-      }
-      if (newDepth !== -1) {
-        // pop elements off the stack, insert children into them, and
-        // marked them as container
-        while (stack.length > newDepth) {
-          const openTag = stack.pop();
-          const openTagIndex = this.tokens.indexOf(openTag);
-          const startIndex = openTagIndex + 1;
-          const children = this.tokens.splice(startIndex, index - startIndex);
-          this.createImplicitHtmlTags(openTag.tagName, children);
-          openTag.tagType = 'parent';
-          openTag.children = children;
-          index = openTagIndex + 1;
-        }
-      }
-    }
-  }
-
-  createImplicitHtmlTags(tagName, children) {
-    const implicitTagNames = getImplicitElements(tagName);
-    if (!implicitTagNames) {
-      return;
-    }
-    let index = 0;
-    const created = {};
-    while (index < children.length) {
-      const child = children[index];
-      if (child.type === 'html_tag') {
-        const implicitTagName = implicitTagNames[child.tagName];
-        if (implicitTagName) {
-          // remove the child and place it in the implicit element instead
-          // (e.g. tr goes into tbody)
-          children.splice(index, 1);
-          let container = created[implicitTagName];
-          if (!container) {
-            container = {
-              type: 'html_tag',
-              tagType: 'parent',
-              tagName: implicitTagName,
-              html: `<${implicitTagName}>`,
-              children: [],
-            };
-            children.splice(index, 0, container);
-            created[implicitTagName] = container;
-            index++;
-          }
-          container.children.push(child);
-        } else {
-          index++;
-
-          // remove the implicitly created one if there's an explicit one
-          if (created[child.tagName]) {
-            created[child.tagName] = undefined;
-          }
-        }
-      } else {
-        index++;
-      }
-    }
   }
 }
 

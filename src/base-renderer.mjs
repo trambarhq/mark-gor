@@ -63,6 +63,7 @@ class BaseRenderer {
       case 'code': return this.renderCode(token);
       case 'blockquote': return this.renderBlockquote(token);
       case 'html_tag': return this.renderHtmlTag(token);
+      case 'html_element': return this.renderHtmlElement(token);
       case 'heading': return this.renderHeading(token);
       case 'hr': return this.renderHorizontalRule(token);
       case 'list': return this.renderList(token);
@@ -96,6 +97,13 @@ class BaseRenderer {
   }
 
   renderHtmlTag(token) {
+    // raw HTML requires special handling
+  }
+
+  renderHtmlElement(token) {
+    const { tagName, attributes } = token;
+    const children = this.renderChildren(token);
+    return this.createElement(tagName, attributes, children);
   }
 
   renderHeading(token) {
