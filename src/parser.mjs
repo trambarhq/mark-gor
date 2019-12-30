@@ -222,7 +222,7 @@ class Parser {
         const name = m[1]
         const value = m[2] || m[3] || m[4];
         if (value !== undefined) {
-          attributes[name] = this.decodeHTMLEntities(value);
+          attributes[name] = this.decodeEntities(value);
         } else {
           attributes[name] = true;
         }

@@ -68,6 +68,12 @@ describe('Parser', function() {
     const html = parse(markdown, options)
     expect(html).to.equal('<table><caption>Caption</caption><colgroup><col></colgroup><tbody><tr><td>Hello</td><td>World</td></tr></tbody></table>');
   })
+  it ('should add <col> tag to same implicit <col>', function() {
+    const options = { normalizeTags: true };
+    const markdown = `<table><caption>Caption<col><col span="2"><tr><td>Hello</td><td>World</td></tr></table>`;
+    const html = parse(markdown, options)
+    expect(html).to.equal('<table><caption>Caption</caption><colgroup><col><col span="2"></colgroup><tbody><tr><td>Hello</td><td>World</td></tr></tbody></table>');
+  })
   it ('should not close <li> when it belongs to a new list', function() {
     const options = { normalizeTags: true };
     const markdown = `<ul><li>Hello<li>World<li><ul><li>!</ul>`;
