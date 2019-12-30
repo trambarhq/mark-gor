@@ -2244,7 +2244,16 @@ function decodeEntities(html) {
       } else {
         code = parseInt(entity.substr(1));
       }
-      return String.fromCharCode(code);
+      if (code >= 0 && code <= 0xffff) {
+        return String.fromCharCode(code);
+      } else if (code >= 0x10000 && code <= 0x10ffff){
+        const x = code - 0x10000;
+        const h = ((x >> 10) & 0x03ff) + 0xd800;
+        const l = (x & 0x03ff) + 0xdc00;
+        return String.fromCharCode(h) + String.fromCharCode(l);
+      } else {
+        return s;
+      }
     } else {
       return htmlEntityTable[entity] || s;
     }

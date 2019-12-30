@@ -65,14 +65,14 @@ function compareHTML(ours, theirs, showDiff) {
     return true;
   }
   if (showDiff) {
-    console.log(`OURS:\n${ours}\n`);
-    console.log(`THEIRS:\n${theirs}\n`);
+    console.log(`OURS:\n${oursAfter}\n`);
+    console.log(`THEIRS:\n${theirsAfter}\n`);
   }
   return false;
 }
 
 function removeSpaceBetween(html) {
-  return html.replace(/>\s+</g, '><').trim();
+  return html.replace(/>[ \n\r\t]+</g, '><').trim();
 }
 
 function processThruDOM(html) {
