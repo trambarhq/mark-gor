@@ -32,16 +32,28 @@ describe('Parser', function() {
     const html = parse(markdown, options)
     expect(html).to.equal('<p>Hello<p>World');
   })
-  it ('should close p with missing end tags', function() {
+  it ('should close <p> with missing end tags', function() {
     const options = { normalizeTags: true };
     const markdown = `<p>Hello<p>World`;
     const html = parse(markdown, options)
     expect(html).to.equal('<p>Hello</p><p>World</p>');
   })
-  it ('should close li with missing end tags', function() {
+  it ('should close <li> with missing end tags', function() {
     const options = { normalizeTags: true };
     const markdown = `<ul><li>Hello<li>World</ul>`;
     const html = parse(markdown, options)
     expect(html).to.equal('<ul><li>Hello</li><li>World</li></ul>');
+  })
+  it ('should add <tbody> tag to <table>', function() {
+    const options = { normalizeTags: true };
+    const markdown = `<table><tr><td>Hello</td><td>World</td></tr></table>`;
+    const html = parse(markdown, options)
+    expect(html).to.equal('<table><tbody><tr><td>Hello</td><td>World</td></tr></tbody></table>');
+  })
+  it ('should close <caption> with missing end tags', function() {
+    const options = { normalizeTags: true };
+    const markdown = `<table><caption>Caption<tr><td>Hello</td><td>World</td></tr></table>`;
+    const html = parse(markdown, options)
+    expect(html).to.equal('<table><caption>Caption</caption><tbody><tr><td>Hello</td><td>World</td></tr></tbody></table>');
   })
 })

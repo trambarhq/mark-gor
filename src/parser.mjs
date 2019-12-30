@@ -175,7 +175,7 @@ class Parser {
     const created = {};
     while (index < children.length) {
       const child = children[index];
-      if (child.type === 'html_tag') {
+      if (child.type === 'html_element') {
         const implicitTagName = implicitTagNames[child.tagName];
         if (implicitTagName) {
           // remove the child and place it in the implicit element instead
