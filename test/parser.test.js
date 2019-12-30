@@ -50,10 +50,28 @@ describe('Parser', function() {
     const html = parse(markdown, options)
     expect(html).to.equal('<table><tbody><tr><td>Hello</td><td>World</td></tr></tbody></table>');
   })
+  it ('should create new <tbody> when there is an explicit one', function() {
+    const options = { normalizeTags: true };
+    const markdown = `<table><tr><td>Hello</td><td>World</td></tr><tbody><tr><td>Hello</td></tr></tbody><tr><td>Hello</td></tr></table>`;
+    const html = parse(markdown, options)
+    expect(html).to.equal('<table><tbody><tr><td>Hello</td><td>World</td></tr></tbody><tbody><tr><td>Hello</td></tr></tbody><tbody><tr><td>Hello</td></tr></tbody></table>');
+  })
   it ('should close <caption> with missing end tags', function() {
     const options = { normalizeTags: true };
     const markdown = `<table><caption>Caption<tr><td>Hello</td><td>World</td></tr></table>`;
     const html = parse(markdown, options)
     expect(html).to.equal('<table><caption>Caption</caption><tbody><tr><td>Hello</td><td>World</td></tr></tbody></table>');
+  })
+  it ('should add <colgroup> tag to <table>', function() {
+    const options = { normalizeTags: true };
+    const markdown = `<table><caption>Caption<col><tr><td>Hello</td><td>World</td></tr></table>`;
+    const html = parse(markdown, options)
+    expect(html).to.equal('<table><caption>Caption</caption><colgroup><col></colgroup><tbody><tr><td>Hello</td><td>World</td></tr></tbody></table>');
+  })
+  it ('should not close <li> when it belongs to a new list', function() {
+    const options = { normalizeTags: true };
+    const markdown = `<ul><li>Hello<li>World<li><ul><li>!</ul>`;
+    const html = parse(markdown, options)
+    expect(html).to.equal('<ul><li>Hello</li><li>World</li><li><ul><li>!</li></ul></li></ul>');
   })
 })
