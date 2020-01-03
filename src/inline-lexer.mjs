@@ -9,6 +9,8 @@ class InlineLexer {
     this.inLink = false;
     this.inMarkdownLink = false;
     this.inRawBlock = false;
+    this.inScriptBlock = false;
+    this.inMixBlock = false;
     this.links = {};
     this.remaining = '';
     this.offset = 0;
@@ -28,25 +30,29 @@ class InlineLexer {
         this.rules = inline.gfm;
       }
     }
-    if (props) {
-      merge(this, props);
-    }
+    Object.assign(this, props);
   }
 
-  tokenize(text) {
-    this.initialize(text);
-    while (this.remaining) {
-      const token = this.captureToken();
-      this.append(token);
-    }
+  tokenize(text, containerType) {
+    const inMixBlock = (containerType !== 'html_block');
+    this.initialize(text, { inMixBlock });
+    this.process();
     this.finalize();
     return this.tokens;
   }
 
-  initialize(text) {
+  initialize(text, props) {
     this.input = this.remaining = text;
     this.offset = 0;
     this.tokens = [];
+    Object.assign(this, props);
+  }
+
+  process() {
+    while (this.remaining) {
+      const token = this.captureToken();
+      this.append(token);
+    }
   }
 
   finalize() {
@@ -77,20 +83,18 @@ class InlineLexer {
       const prevToken = this.tokens[this.tokens.length - 1];
       if (prevToken && prevToken.type === 'text') {
         prevToken.text += token.text;
-        return;
-      }
-    } else if (token.type === 'br') {
-      // don't put line-break after HTML tags
-      const prevToken = this.tokens[this.tokens.length - 1];
-      if (prevToken && prevToken.type === 'html_tag') {
+        prevToken.html += token.html;
         return;
       }
     }
     if (token.markdown) {
       // process children
+      const inMarkdownLink = (token.type === 'link');
       this.pushState();
-      this.inMarkdownLink = (token.type === 'link');
-      token.children = this.tokenize(token.markdown);
+      this.initialize(token.markdown, { inMarkdownLink });
+      this.process();
+      this.finalize();
+      token.children = this.tokens;
       this.popState();
     }
     this.tokens.push(token);
@@ -122,7 +126,13 @@ class InlineLexer {
   }
 
   captureToken() {
-    const token = this.captureEscape()
+    let token;
+    if (this.inRawBlock && !this.inMixBlock) {
+      // only scan for tag and text when we're in a raw block
+      // and it doesn't contain mixed contents (i.e. HTML only)
+      token = this.captureTag() || this.captureText();
+    } else {
+      token = this.captureEscape()
         || this.captureTag()
         || this.captureLink()
         || this.captureRefLink('reflink')
@@ -135,6 +145,7 @@ class InlineLexer {
         || this.captureAutolink()
         || this.captureUrl()
         || this.captureText();
+    }
     if (!token) {
       if (this.remaining) {
         throw new Error('Infinite loop on byte: ' + this.remaining.charCodeAt(0));
@@ -147,9 +158,9 @@ class InlineLexer {
     const cap = this.capture('escape');
     if (cap) {
       const type = 'text';
-      const escaped = true;
-      const text = this.decodeEntities(cap[1]);
-      return { type, escaped, text };
+      const text = cap[1];
+      const html = escape(text);
+      return { type, text, html };
     }
   }
 
@@ -157,7 +168,7 @@ class InlineLexer {
     const cap = this.capture('autolink');
     if (cap) {
       const type = 'autolink';
-      const text = this.decodeEntities(cap[1]);
+      const text = cap[1];
       const url = text;
       const href = (cap[2] === '@') ? `mailto:${url}` : url;
       return { type, href, text };
@@ -172,7 +183,7 @@ class InlineLexer {
     if (cap) {
       const type = 'url';
       if (cap[2] === '@') {
-          const text = this.decodeEntities(cap[0]);
+          const text = cap[0];
           const url = text;
           const href = `mailto:${text}`;
           return { type, href, text };
@@ -187,7 +198,7 @@ class InlineLexer {
           this.backpedal(cap[0].substr(capZero.length));
         }
         const text = capZero;
-        const url = this.decodeEntities(text);
+        const url = text;
         const href = (cap[1] === 'www.') ? `http://${url}` : url;
         return { type, href, text };
       }
@@ -204,10 +215,12 @@ class InlineLexer {
       } else if (this.inLink && /^<\/a>/i.test(cap[0])) {
         this.inLink = false;
       }
-      if (!this.inRawBlock && /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+      if (!this.inRawBlock && /^<(pre|code|kbd|script|style)(\s|>)/i.test(cap[0])) {
         this.inRawBlock = true;
-      } else if (this.inRawBlock && /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+        this.inScriptBlock = /^<(script|style)/i.test(cap[0]);
+      } else if (this.inRawBlock && /^<\/(pre|code|kbd|script|style)(\s|>)/i.test(cap[0])) {
         this.inRawBlock = false;
+        this.inScriptBlock = false;
       }
       return { type, html };
     }
@@ -239,6 +252,8 @@ class InlineLexer {
         title = title.slice(1, -1);
       }
       href = href.trim().replace(/^<([\s\S]*)>$/, '$1');
+      href = this.unescapeSlashes(href);
+      title = this.unescapeSlashes(title);
       if (type === 'image') {
         const text = this.decodeEntities(cap[1]);
         return { type, href, title, text };
@@ -272,8 +287,9 @@ class InlineLexer {
         this.backpedal(cap[0].substr(1));
 
         const type = 'text';
-        const text = this.decodeEntities(cap[0].substr(0, 1));
-        return { type, text };
+        const html = cap[0].substr(0, 1);
+        const text = this.decodeEntities(html);
+        return { type, text, html };
       }
     }
   }
@@ -304,7 +320,7 @@ class InlineLexer {
     const cap = this.capture('code');
     if (cap) {
       const type = 'codespan';
-      const text = this.decodeEntities(cap[2].trim());
+      const text = cap[2].trim();
       return { type, text };
     }
   }
@@ -312,8 +328,16 @@ class InlineLexer {
   captureLineBreak() {
     const cap = this.capture('br');
     if (cap) {
-      const type = 'br';
-      return { type };
+      if (this.inMixBlock) {
+        const type = 'br';
+        return { type };
+      } else {
+        // don't add <BR> tag when we're in a HTML block
+        const type = 'text';
+        const text = cap[0];
+        const html = text;
+        return { type, text, html };
+      }
     }
   }
 
@@ -330,10 +354,11 @@ class InlineLexer {
   captureText() {
     const cap = this.capture('text');
     if (cap) {
-      if (!this.inRawBlock) {
+      if (!this.inScriptBlock) {
         const type = 'text';
-        const text = this.decodeEntities(cap[0]);
-        return { type, text };
+        const html = this.transformText(cap[0]);
+        const text = this.decodeEntities(html);
+        return { type, text, html };
       } else {
         const type = 'raw';
         const html = cap[0];
@@ -342,15 +367,37 @@ class InlineLexer {
     }
   }
 
-  decodeEntities(html) {
-    const { decodeEntities } = this.options;
-    if (decodeEntities) {
-      return decodeHtmlEntities(html);
-    } else {
-      // need to encode any unescaped special characters (<, >, &, ") here,
-      // since the renderer won't do it
-      return escape(html, false);
+  unescapeSlashes(text) {
+    if (text) {
+      return text.replace(this.rules._escapes, '$1');
     }
+    return text;
+  }
+
+  decodeEntities(html) {
+    return decodeHtmlEntities(html);
+  }
+
+  transformText(text) {
+    const { smartypants } = this.options;
+    if (smartypants && !this.inRawBlock) {
+      return text
+        // em-dashes
+        .replace(/---/g, '\u2014')
+        // en-dashes
+        .replace(/--/g, '\u2013')
+        // opening singles
+        .replace(/(^|[-\u2014/(\[{"\s])'/g, '$1\u2018')
+        // closing singles & apostrophes
+        .replace(/'/g, '\u2019')
+        // opening doubles
+        .replace(/(^|[-\u2014/(\[{\u2018\s])"/g, '$1\u201c')
+        // closing doubles
+        .replace(/"/g, '\u201d')
+        // ellipses
+        .replace(/\.{3}/g, '\u2026');
+    }
+    return text;
   }
 }
 

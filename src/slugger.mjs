@@ -1,6 +1,5 @@
-import Slugger from 'marked/src/Slugger';
+import { default as SluggerMarked } from 'marked/src/Slugger';
 
 export {
-    Slugger,
-    Slugger as default,
+    SluggerMarked,
 };

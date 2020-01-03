@@ -8,6 +8,10 @@ import { isVoidElement, isTerminatingElement, isExpectedContent, getImplicitElem
 class Parser {
   constructor(options, props) {
     this.options = defaults;
+    this.blockLexer = null;
+    this.inlineLexer = null;
+    this.text = '';
+    this.tokens = [];
 
     if (options) {
       this.options = merge({}, defaults, options);
@@ -50,10 +54,11 @@ class Parser {
 
   tokenizeInline(tokens) {
     for (let token of tokens) {
-      if (token.children) {
-        this.tokenizeInline(token.children);
-      } else if (token.markdown) {
-        token.children = this.inlineLexer.tokenize(token.markdown);
+      const { children, markdown, type } = token;
+      if (children) {
+        this.tokenizeInline(children);
+      } else if (markdown) {
+        token.children = this.inlineLexer.tokenize(markdown, type);
       }
     }
   }
@@ -61,32 +66,36 @@ class Parser {
   convertHtmlTags(tokens) {
     // flatten the list first, as a start tag and its corresponding end tag
     // could end up in separate html blocks
-    let containsHtmlTags = false;
     for (let i = tokens.length - 1; i >= 0; i--) {
       const token = tokens[i];
       if (token.type === 'html_block') {
         const list = token.children;
         tokens.splice(i, 1);
         while (list.length > 0) {
-          let child = list.pop();
-          if (child.type === 'html_tag') {
-            // parse the tag now
-            const { tagType, tagName, attributes } = this.parseHtmlTag(child.html);
-            if (tagType === 'start') {
-              child = {
-                type: 'html_element',
-                tagName,
-                attributes,
-                children: null
-              };
-            } else if (tagType === 'end') {
-              child = {
-                type: 'html_end_tag',
-                tagName,
-              };
-            }
-          }
+          const child = list.pop();
           tokens.splice(i, 0, child);
+        }
+      }
+    }
+    // parse the tags
+    let containsHtmlTags = false;
+    for (let i = 0; i < tokens.length; i++) {
+      const child = tokens[i];
+      if (child.type === 'html_tag') {
+        // parse the tag now
+        const { tagType, tagName, attributes } = this.parseHtmlTag(child.html);
+        if (tagType === 'start') {
+          tokens[i] = {
+            type: 'html_element',
+            tagName,
+            attributes,
+            children: null
+          };
+        } else if (tagType === 'end') {
+          tokens[i] = {
+            type: 'html_end_tag',
+            tagName,
+          };
         }
         containsHtmlTags = true;
       }

@@ -25,5 +25,5 @@ export {
   splitCells,
   rtrim,
   findClosingBracket,
-  checkSanitizeDeprecation
+  checkSanitizeDeprecation,
 };

@@ -22,30 +22,31 @@ class BlockLexer {
     } else if (this.options.gfm) {
       this.rules = block.gfm;
     }
-    if (props) {
-      merge(this, props);
-    }
+    Object.assign(this, props);
   }
 
   tokenize(text) {
+    text = text
+            .replace(/\r\n|\r/g, '\n')
+            .replace(/\t/g, '    ')
+            .replace(/^ +$/gm, '');
     this.initialize(text);
-    while (this.remaining) {
-      this.append(this.captureToken());
-    }
+    this.process();
     this.finalize();
     return this.tokens;
   }
 
-  initialize(text) {
-    if (this.topLevel) {
-      text = text
-              .replace(/\r\n|\r/g, '\n')
-              .replace(/\t/g, '    ')
-              .replace(/^ +$/gm, '');
-    }
+  initialize(text, props) {
     this.input = this.remaining = text;
     this.offset = 0;
     this.tokens = [];
+    Object.assign(this, props);
+  }
+
+  process() {
+    while (this.remaining) {
+      this.append(this.captureToken());
+    }
   }
 
   finalize() {
@@ -107,19 +108,19 @@ class BlockLexer {
 
   captureToken() {
     const token = this.captureNewline()
-        || this.captureCode()
-        || this.captureFences()
-        || this.captureHeading()
-        || this.captureTable('nptable')
-        || this.captureUnderlineHeading()
-        || this.captureHorizontalRule()
-        || this.captureBlockquote()
-        || this.captureList()
-        || this.captureHtml()
-        || this.captureDefinition()
-        || this.captureTable('table')
-        || this.captureParagraph()
-        || this.captureText();
+      || this.captureCode()
+      || this.captureFences()
+      || this.captureHeading()
+      || this.captureTable('nptable')
+      || this.captureUnderlineHeading()
+      || this.captureHorizontalRule()
+      || this.captureBlockquote()
+      || this.captureList()
+      || this.captureHtml()
+      || this.captureDefinition()
+      || this.captureTable('table')
+      || this.captureParagraph()
+      || this.captureText();
     if (!token) {
       if (this.remaining) {
         throw new Error('Infinite loop on byte: ' + this.remaining.charCodeAt(0));
@@ -143,9 +144,6 @@ class BlockLexer {
       let text = cap[0].replace(/^ {4}/gm, '');
       if (!this.options.pedantic) {
         text = text.replace(/\n+$/, '')
-      }
-      if (!this.options.decodeEntities) {
-        text = escape(text, false);
       }
       return { type, text };
     }
@@ -291,8 +289,10 @@ class BlockLexer {
       // Keep the current "topLevel" state. This is exactly
       // how markdown.pl works.
       this.pushState();
-      this.blockquote = true;
-      const children = this.tokenize(text);
+      this.initialize(text, { blockquote: true });
+      this.process();
+      this.finalize();
+      const children = this.tokens;
       this.popState();
       // put the text in a <p>
       for (let child of children) {
@@ -384,9 +384,10 @@ class BlockLexer {
     }
     const loose = false;
     this.pushState();
-    this.topLevel = false;
-    this.blockquote = false;
-    const children = this.tokenize(text);
+    this.initialize(text, { topLevel: false, blockquote: false });
+    this.process();
+    this.finalize();
+    const children = this.tokens;
     this.popState();
     return { type, checked, loose, children };
   }
@@ -404,23 +405,21 @@ class BlockLexer {
   captureHtml() {
     const cap = this.capture('html');
     if (cap) {
-      const pre = cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style';
-      const comment = !cap[1] && this.rules._comment.test(cap[0]);
-      if (comment) {
-        const type = 'html_tag';
-        const html = cap[0];
-        return { type, html };
-      } else if (!pre) {
+      let multitag = (cap[0].indexOf('<') !== cap[0].lastIndexOf('<'));
+      if (multitag && /^\s*<!\-\-/.test(cap[0])) {
+        multitag = false;
+      }
+      if (multitag) {
+        // process markdown content inside tags
         const type = 'html_block';
         const markdown = cap[0];
         const children = null;
         return { type, markdown, children };
       } else {
+        // comment or instruction tag
         const type = 'html_tag';
-        const hcap = /(<[^>]*>)([\s\S]*)<\/\w+>\s*$/.exec(cap[0]);
-        const textContent = hcap[2];
-        const html = hcap[1];
-        return { type, html, textContent };
+        const html = cap[0];
+        return { type, html };
       }
     }
   }

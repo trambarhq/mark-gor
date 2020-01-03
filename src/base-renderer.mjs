@@ -1,11 +1,11 @@
-import { merge, cleanUrl, unescape } from './helpers.mjs';
+import { merge, cleanUrl, escape, unescape } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
-import { Slugger } from './slugger.mjs';
+import { SluggerMarked } from './slugger.mjs';
 
 class BaseRenderer {
   constructor(options, props) {
     this.options = defaults;
-    this.slugger = new Slugger;
+    this.slugger = null;
 
     if (options) {
       this.options = merge({}, defaults, options);
@@ -16,7 +16,7 @@ class BaseRenderer {
   }
 
   initialize() {
-    this.slugger = new Slugger;
+    this.slugger = new SluggerMarked;
   }
 
   createElement(type, props, children) { /* abstract */ }
@@ -88,7 +88,7 @@ class BaseRenderer {
     const props = (lang) ? { className: langPrefix + lang } : null;
     const code = (highlighted) ? this.packageCode(highlighted) : text;
     const codespan = this.createElement('code', props, code);
-    return this.createElement('pre', null, [ codespan ]);
+    return this.createElement('pre', null, [ codespan ], { after: (lang) ? '\n' : '' });
   }
 
   renderBlockquote(token) {
@@ -139,15 +139,11 @@ class BaseRenderer {
       let tokens = token.children.slice();
       const first = tokens[0];
       if (first && (first.type === 'text_block' || first.type === 'paragraph')) {
-        const space = {
-          type: 'text',
-          text: (loose) ? '  ' : ' '
-        };
-        const tb = {
-          type: first.type,
-          children: tokens[0].children.slice()
-        };
-        tb.children.unshift(space);
+        const tb = { type: first.type, children: tokens[0].children.slice() };
+        if (loose) {
+          const space = { type: 'text', text: ' ', html: ' ' };
+          tb.children.unshift(space);
+        }
         tb.children.unshift(checkbox);
         tokens[0] = tb;
       } else {
@@ -174,7 +170,7 @@ class BaseRenderer {
       disabled: '',
       type: 'checkbox',
     };
-    return this.createElement('input', props);
+    return this.createElement('input', props, null, { after: ' ' });
   }
 
   renderParagraph(token) {
@@ -250,7 +246,8 @@ class BaseRenderer {
   renderUrl(token) {
     const { href, text } = token;
     const children = text;
-    const url = this.cleanUrl(href);
+    // for some reason Marked escape the URL
+    const url = this.cleanUrl(escape(href));
     if (url === null) {
       return children;
     }
@@ -281,7 +278,7 @@ class BaseRenderer {
   }
 
   renderText(token) {
-    return this.transformText(token.text);
+    return token.text;
   }
 
   renderHtmlBlock(token) {
@@ -301,29 +298,35 @@ class BaseRenderer {
   renderRaw(token) {
   }
 
-  renderPlainText(token, nameGen) {
-    const { text, html, children, tagName } = token;
-    const { marked } = this.options;
+  renderPlainText(token) {
+    const { text, html, children } = token;
     if (text) {
-      return this.transformText(text);
+      return text;
     } else if (children) {
       const content = [];
       for (let child of children) {
-        content.push(this.renderPlainText(child, nameGen));
+        content.push(this.renderPlainText(child));
       }
-      if (marked && nameGen) {
-        if (html && tagName) {
-          const startTag = html;
-          const endTag = `</${tagName}>`;
-          content.unshift(startTag);
-          content.push(endTag);
-        }
+      return content.join('');
+    } else {
+      return '';
+    }
+  }
+
+  renderMarkedHeaderText(token) {
+    const { text, html, children } = token;
+    if (text) {
+      // the Marked slugger expects text with HTML entities
+      return html || text;
+    } else if (children) {
+      const content = [];
+      for (let child of children) {
+        content.push(this.renderMarkedHeaderText(child));
       }
       return content.join('');
     } else if (html) {
-      if (marked && nameGen) {
-        return html;
-      }
+      // the Marked slugger expects to see HTML tags too
+      return html;
     } else {
       return '';
     }
@@ -332,9 +335,15 @@ class BaseRenderer {
   generateHeadingId(token) {
     const { headerIds, headerPrefix } = this.options;
     if (headerIds) {
-      const plain = this.renderPlainText(token, true)
-      const filtered = plain.replace(/[&<>"\u00a0-\u00bf\u00f7]/g, '').trim();
-      const name = this.slugger.slug(filtered);
+      let plain;
+      if (this.slugger instanceof SluggerMarked) {
+        plain = this.renderMarkedHeaderText(token)
+        plain = escape(plain);
+        plain = unescape(plain);
+      } else {
+        plain = this.renderPlainText(token);
+      }
+      name = this.slugger.slug(plain);
       return headerPrefix + name;
     }
   }
@@ -343,28 +352,6 @@ class BaseRenderer {
     const { sanitize, baseUrl } = this.options;
     const cleaned = cleanUrl(sanitize, baseUrl, url);
     return cleaned;
-  }
-
-  transformText(text) {
-    const { smartypants } = this.options;
-    if (smartypants) {
-      return text
-        // em-dashes
-        .replace(/---/g, '\u2014')
-        // en-dashes
-        .replace(/--/g, '\u2013')
-        // opening singles
-        .replace(/(^|[-\u2014/(\[{"\s])'/g, '$1\u2018')
-        // closing singles & apostrophes
-        .replace(/'/g, '\u2019')
-        // opening doubles
-        .replace(/(^|[-\u2014/(\[{\u2018\s])"/g, '$1\u201c')
-        // closing doubles
-        .replace(/"/g, '\u201d')
-        // ellipses
-        .replace(/\.{3}/g, '\u2026');
-    }
-    return text;
   }
 
   packageCode(highlighted) {

@@ -4,16 +4,17 @@ import { isVoidElement } from './html-tag-attrs.mjs';
 
 class HtmlRenderer extends BaseRenderer {
   createElement(type, props, children, options) {
-    const { decodeEntities } = this.options;
     let html = `<${type}`;
     if (props) {
       for (let [ key, value ] of Object.entries(props)) {
         if (value !== undefined) {
-          const text = (decodeEntities) ? escape(value, true) : value;
           if (key === 'className') {
               key = 'class';
           }
-          html += ` ${key}="${text}"`;
+          if (key !== 'src') {
+            value = escape(value);
+          }
+          html += ` ${key}="${value}"`;
         }
       }
     }
@@ -44,7 +45,7 @@ class HtmlRenderer extends BaseRenderer {
     }
     for (let element of elements) {
       if (typeof(element) === 'string') {
-        element = (decodeEntities) ? escape(element, true) : element;
+        element = escape(element, true);
       }
       content.push(element);
     }
@@ -60,6 +61,15 @@ class HtmlRenderer extends BaseRenderer {
   renderHtmlTag(token) {
     const { html } = token;
     return this.sanitize(html);
+  }
+
+  renderText(token) {
+    const { decodeEntities } = this.options;
+    if (decodeEntities) {
+      return token.text;
+    } else {
+      return new String(escape(token.html));
+    }
   }
 
   renderRaw(token) {
