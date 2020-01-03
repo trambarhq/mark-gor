@@ -3,7 +3,7 @@ import { BaseRenderer } from './base-renderer.mjs';
 import { isVoidElement } from './html-tag-attrs.mjs';
 
 class HtmlRenderer extends BaseRenderer {
-  createElement(type, props, children) {
+  createElement(type, props, children, options) {
     let html = `<${type}`;
     if (props) {
       for (let [ key, value ] of Object.entries(props)) {
@@ -17,10 +17,19 @@ class HtmlRenderer extends BaseRenderer {
     }
     html += '>';
     if (!isVoidElement(type)) {
+      // add linefeed before content
+      if (options && options.before) {
+        html += options.before;
+      }
+
       if (children) {
         html += this.mergeElements(children);
       }
       html += `</${type}>`;
+    }
+    // add linefeed after tag
+    if (options && options.after) {
+      html += options.after;
     }
     return new String(html);
   }

@@ -93,7 +93,7 @@ class BaseRenderer {
 
   renderBlockquote(token) {
     const children = this.renderChildren(token);
-    return this.createElement('blockquote', null, children);
+    return this.createElement('blockquote', null, children, { before: '\n', after: '\n' });
   }
 
   renderHtmlTag(token) {
@@ -111,11 +111,11 @@ class BaseRenderer {
     const id = this.generateHeadingId(token);
     const props = (id !== undefined) ? { id } : null;
     const children = this.renderChildren(token);
-    return this.createElement(type, props, children);
+    return this.createElement(type, props, children, { after: '\n' });
   }
 
   renderHorizontalRule(token) {
-    return this.createElement('hr');
+    return this.createElement('hr', null, null, { after: '\n' });
   }
 
   renderList(token) {
@@ -123,7 +123,7 @@ class BaseRenderer {
     const type = (ordered) ? 'ol' : 'ul';
     const props = (ordered && start !== 1) ? { start } : null;
     const children = this.renderChildren(token);
-    return this.createElement(type, props, children);
+    return this.createElement(type, props, children, { before: '\n', after: '\n' });
   }
 
   renderListItem(token) {
@@ -160,7 +160,7 @@ class BaseRenderer {
       }
       children = this.renderTokens(tokens);
     }
-    return this.createElement('li', null, children);
+    return this.createElement('li', null, children, { after: '\n' });
   }
 
   renderLooseItem(token) {
@@ -179,19 +179,19 @@ class BaseRenderer {
 
   renderParagraph(token) {
     const children = this.renderChildren(token);
-    return this.createElement('p', null, children);
+    return this.createElement('p', null, children, { after: '\n' });
   }
 
   renderTable(token) {
     const head = this.renderTableHead(token);
     const body = this.renderTableBody(token);
     const children = [ head, body ];
-    return this.createElement('table', null, children);
+    return this.createElement('table', null, children, { before: '\n', after: '\n' });
   }
 
   renderTableHead(token) {
     const children = this.renderTokens(token.children.slice(0, 1));
-    return this.createElement('thead', null, children);
+    return this.createElement('thead', null, children, { before: '\n', after: '\n' });
   }
 
   renderTableBody(token) {
@@ -201,7 +201,7 @@ class BaseRenderer {
 
   renderTableRow(token) {
     const children = this.renderChildren(token);
-    return this.createElement('tr', null, children);
+    return this.createElement('tr', null, children, { before: '\n', after: '\n' });
   }
 
   renderTableHeader(token) {
@@ -212,14 +212,14 @@ class BaseRenderer {
     const { align } = token;
     const props = (align) ? { align } : null;
     const children = this.renderChildren(token);
-    return this.createElement('th', props, children);
+    return this.createElement('th', props, children, { after: '\n' });
   }
 
   renderTableRowCell(token) {
     const { align } = token;
     const props = (align) ? { align } : null;
     const children = this.renderChildren(token);
-    return this.createElement('td', props, children);
+    return this.createElement('td', props, children, { after: '\n' });
   }
 
   renderStrong(token) {
