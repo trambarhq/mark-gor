@@ -2,7 +2,7 @@ import { BlockLexer } from './block-lexer.mjs';
 import { InlineLexer } from './inline-lexer.mjs';
 import { defaults } from './defaults.mjs';
 import { merge } from './helpers.mjs';
-import { decodeEntities } from './html-entities.mjs';
+import { decodeHtmlEntities } from './html-entities.mjs';
 import { isVoidElement, isTerminatingElement, isExpectedContent, getImplicitElements } from './html-tag-attrs.mjs';
 
 class Parser {
@@ -239,7 +239,7 @@ class Parser {
   }
 
   decodeEntities(html) {
-    return decodeEntities(html);
+    return decodeHtmlEntities(html);
   }
 }
 

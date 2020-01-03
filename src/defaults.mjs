@@ -5,6 +5,7 @@ const defaults = getDefaults();
 function getDefaults() {
   return {
     marked: true,
+    decodeEntities: true,
     normalizeTags: false,
     ...imports.getDefaults()
   };

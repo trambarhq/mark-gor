@@ -1,5 +1,5 @@
 import { block } from './rules.mjs';
-import { merge, splitCells } from './helpers.mjs';
+import { merge, splitCells, escape } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
 
 class BlockLexer {
@@ -143,6 +143,9 @@ class BlockLexer {
       let text = cap[0].replace(/^ {4}/gm, '');
       if (!this.options.pedantic) {
         text = text.replace(/\n+$/, '')
+      }
+      if (!this.options.decodeEntities) {
+        text = escape(text, false);
       }
       return { type, text };
     }
@@ -405,10 +408,8 @@ class BlockLexer {
       const comment = !cap[1] && this.rules._comment.test(cap[0]);
       if (comment) {
         const type = 'html_tag';
-        const tagType = undefined;
-        const tagName = undefined;
         const html = cap[0];
-        return { type, tagType, tagName, html };
+        return { type, html };
       } else if (!pre) {
         const type = 'html_block';
         const markdown = cap[0];
@@ -417,11 +418,9 @@ class BlockLexer {
       } else {
         const type = 'html_tag';
         const hcap = /(<[^>]*>)([\s\S]*)<\/\w+>\s*$/.exec(cap[0]);
-        const tagType = 'parent';
-        const tagName = cap[1];
         const textContent = hcap[2];
         const html = hcap[1];
-        return { type, tagType, tagName, html, textContent };
+        return { type, html, textContent };
       }
     }
   }

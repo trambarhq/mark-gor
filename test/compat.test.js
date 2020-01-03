@@ -1,5 +1,8 @@
 import { expect } from 'chai';
-import { parse as parseMarked } from 'marked';
+import {
+  parse as parseMarked,
+  getDefaults as getMarkedDefaults,
+} from 'marked';
 import FrontMatter from 'front-matter';
 
 import { parse } from '../src/html.mjs';
@@ -18,78 +21,57 @@ const withKnownIssue = [
 
 function test(desc, requireFunc, params) {
   describe(desc, function() {
+    const tests = [];
     const paths = requireFunc.keys();
     for (let path of paths) {
       if (params.commonmark) {
-        const module = requireFunc(path);
-        const tests = module;
-        const { options } = params;
-        for (let test of tests) {
-          const { markdown, html, example, section } = test;
-          describe(`#Example ${example} (${section})`, function() {
-            it ('should produce the expected result', function() {
-              const ours = parse(markdown, options);
-              const theirs = html;
-              if (ours !== theirs) {
-                console.log(`OURS:\n${ours}\n`);
-                console.log(`THEIRS:\n${theirs}\n`);
-                expect.fail('Not matching');
-              }
-            })
-          })
+        const items = requireFunc(path);
+        const options = { gfm: false, pedantic: false, headerIds: false };
+        for (let { markdown, html, example, section } of items) {
+          const title = `example ${example} (${section})`;
+          tests.push({ title, markdown, options, html });
         }
       } else {
-        const filename = path.substr(path.lastIndexOf('/') + 1);
-        if (filename !== singleTest && singleTest) {
-          continue;
+        const module = requireFunc(path);
+        let options = { ...getMarkedDefaults(), ...params.options, silent: true };
+        let markdown = module.default;
+        if (params.frontMatter) {
+          const fm = FrontMatter(markdown);
+          options = { ...options, ...fm.attributes };
+          markdown = fm.body;
+          if (options.sanitizer) {
+            options.sanitizer = eval(options.sanitizer);
+          }
         }
-        if (withKnownIssue.indexOf(filename) !== -1) {
-          continue;
-        }
-        describe(`#${filename}`, function() {
-          it ('should produce the same output as marked', function() {
-            const module = requireFunc(path);
-            let markdown = module.default;
-            let { options, frontMatter } = params;
-            if (frontMatter) {
-              const fm = FrontMatter(markdown);
-              options = fm.attributes;
-              markdown = fm.body;
-              if (options.sanitizer) {
-                options.sanitizer = eval(options.sanitizer);
-              }
-            }
-            const ours = parse(markdown, options);
-            const theirs = parseMarked(markdown, options);
-            const showDiff = !!singleTest;
-            if (!compareHTML(ours, theirs, showDiff)) {
-              expect.fail('Not matching');
-            }
-          })
-        })
+        const html = parseMarked(markdown, options);
+        const title = path.substr(path.lastIndexOf('/') + 1);
+        tests.push({ title, markdown, options, html });
       }
     }
-  })
-}
-
-function compareHTML(ours, theirs, showDiff) {
-  if (ours === theirs) {
-    return true;
-  }
-  const oursAfter = processThruDOM(ours);
-  const theirsAfter = processThruDOM(theirs);
-  if (oursAfter === theirsAfter) {
-    return true;
-  }
-  if (showDiff) {
-    console.log(`OURS:\n${oursAfter}\n`);
-    console.log(`THEIRS:\n${theirsAfter}\n`);
-  }
-  return false;
-}
-
-function removeSpaceBetween(html) {
-  return html.replace(/>[ \n\r\t]+</g, '><').trim();
+    for (let { title, markdown, options, html } of tests) {
+      if (singleTest && title !== singleTest) {
+        continue;
+      }
+      if (withKnownIssue.indexOf(title) !== -1) {
+        continue;
+      }
+      describe(`#${title}`, function() {
+        it ('should produce the expected output', function() {
+          const ourOptions = { ...options, decodeEntities: false };
+          let ours = parse(markdown, ourOptions);
+          let theirs = html;
+          if (ours !== theirs) {
+            if (singleTest) {
+              //console.log(`MARKDOWN:\n${markdown}\n`);
+              //console.log(`OURS:\n${ours}\n`);
+              //console.log(`THEIRS:\n${theirs}\n`);
+            }
+            expect.fail('Not matching');
+          }
+        });
+      });
+    }
+  });
 }
 
 function processThruDOM(html) {
@@ -102,6 +84,7 @@ describe('Compatibility', function() {
   test('Marked specs', require.context('./specs', true, /\.md$/), {
     frontMatter: true,
   });
+/*
   test('Marked specs (default options)', require.context('./specs', true, /\.md$/), {
     frontMatter: false,
   });
@@ -120,4 +103,5 @@ describe('Compatibility', function() {
     commonmark: true,
     options: { gfm: false, pedantic: false, headerIds: false }
   });
+*/
 })

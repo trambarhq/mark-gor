@@ -2232,7 +2232,7 @@ const htmlEntityTable = {
   zwnj:'‌',
 };
 
-function decodeEntities(html) {
+function decodeHtmlEntities(html) {
   if (html.indexOf('&') === -1) {
     return html;
   }
@@ -2262,6 +2262,6 @@ function decodeEntities(html) {
 }
 
 export {
-  decodeEntities,
+  decodeHtmlEntities,
   htmlEntityTable,
 };

@@ -4,14 +4,16 @@ import { isVoidElement } from './html-tag-attrs.mjs';
 
 class HtmlRenderer extends BaseRenderer {
   createElement(type, props, children, options) {
+    const { decodeEntities } = this.options;
     let html = `<${type}`;
     if (props) {
       for (let [ key, value ] of Object.entries(props)) {
         if (value !== undefined) {
+          const text = (decodeEntities) ? escape(value, true) : value;
           if (key === 'className') {
               key = 'class';
           }
-          html += ` ${key}="${escape(value)}"`;
+          html += ` ${key}="${text}"`;
         }
       }
     }
@@ -35,13 +37,14 @@ class HtmlRenderer extends BaseRenderer {
   }
 
   mergeElements(elements) {
+    const { decodeEntities } = this.options;
     const content = [];
     if (!(elements instanceof Array)) {
       elements = [ elements ];
     }
     for (let element of elements) {
       if (typeof(element) === 'string') {
-        element = escape(element, true);
+        element = (decodeEntities) ? escape(element, true) : element;
       }
       content.push(element);
     }

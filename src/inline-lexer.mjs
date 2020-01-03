@@ -1,7 +1,7 @@
 import { inline } from './rules.mjs';
-import { merge, escape, unescape, findClosingBracket } from './helpers.mjs';
+import { merge, escape, findClosingBracket } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
-import { decodeEntities } from './html-entities.mjs';
+import { decodeHtmlEntities } from './html-entities.mjs';
 
 class InlineLexer {
   constructor(options, props) {
@@ -148,7 +148,7 @@ class InlineLexer {
     if (cap) {
       const type = 'text';
       const escaped = true;
-      const text = cap[1];
+      const text = this.decodeEntities(cap[1]);
       return { type, escaped, text };
     }
   }
@@ -157,8 +157,8 @@ class InlineLexer {
     const cap = this.capture('autolink');
     if (cap) {
       const type = 'autolink';
-      const text = cap[1];
-      const url = escape(text);
+      const text = this.decodeEntities(cap[1]);
+      const url = text;
       const href = (cap[2] === '@') ? `mailto:${url}` : url;
       return { type, href, text };
     }
@@ -172,8 +172,8 @@ class InlineLexer {
     if (cap) {
       const type = 'url';
       if (cap[2] === '@') {
-          const text = cap[0];
-          const url = escape(text);
+          const text = this.decodeEntities(cap[0]);
+          const url = text;
           const href = `mailto:${text}`;
           return { type, href, text };
       } else {
@@ -187,7 +187,7 @@ class InlineLexer {
           this.backpedal(cap[0].substr(capZero.length));
         }
         const text = capZero;
-        const url = escape(text);
+        const url = this.decodeEntities(text);
         const href = (cap[1] === 'www.') ? `http://${url}` : url;
         return { type, href, text };
       }
@@ -240,7 +240,7 @@ class InlineLexer {
       }
       href = href.trim().replace(/^<([\s\S]*)>$/, '$1');
       if (type === 'image') {
-        const text = cap[1];
+        const text = this.decodeEntities(cap[1]);
         return { type, href, title, text };
       } else {
         const markdown = cap[1];
@@ -261,7 +261,7 @@ class InlineLexer {
       if (link) {
         const { href, title } = link;
         if (type === 'image') {
-          const text = cap[1];
+          const text = this.decodeEntities(cap[1]);
           return { type, ref, href, title, text };
         } else {
           const markdown = cap[1];
@@ -272,7 +272,7 @@ class InlineLexer {
         this.backpedal(cap[0].substr(1));
 
         const type = 'text';
-        const text = cap[0].substr(0, 1);
+        const text = this.decodeEntities(cap[0].substr(0, 1));
         return { type, text };
       }
     }
@@ -304,7 +304,7 @@ class InlineLexer {
     const cap = this.capture('code');
     if (cap) {
       const type = 'codespan';
-      const text = cap[2].trim();
+      const text = this.decodeEntities(cap[2].trim());
       return { type, text };
     }
   }
@@ -343,7 +343,14 @@ class InlineLexer {
   }
 
   decodeEntities(html) {
-    return decodeEntities(html);
+    const { decodeEntities } = this.options;
+    if (decodeEntities) {
+      return decodeHtmlEntities(html);
+    } else {
+      // need to encode any unescaped special characters (<, >, &, ") here,
+      // since the renderer won't do it
+      return escape(html, false);
+    }
   }
 }
 
