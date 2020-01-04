@@ -118,6 +118,17 @@ class HtmlRenderer extends BaseRenderer {
   packageCode(highlighted) {
     return this.boxRawHtml(highlighted);
   }
+  
+  cleanUrl(url) {
+    if (url && this.options.mangle) {
+      if (url.startsWith('mailto:')) {
+        const address = url.substr(7);
+        const mangled = this.mangle(address);
+        return this.boxRawHtml(`mailto:${mangled}`);
+      }
+    }
+    return super.cleanUrl(url);
+  }
 
   sanitize(html) {
     const { sanitize, sanitizer } = this.options;
@@ -125,6 +136,19 @@ class HtmlRenderer extends BaseRenderer {
       html = (sanitizer) ? sanitizer(html) : escape(html);
     }
     return new String(html);
+  }
+
+  mangle(text) {
+    let mangled = '';
+    for (let i = 0; i < text.length; i++) {
+      const ch = text.charCodeAt(i);
+      if (Math.random() > 0.5) {
+        mangled += `&#x${ch.toString(16)}`;
+      } else {
+        mangled += `&#${ch}`;
+      }
+    }
+    return mangled;
   }
 }
 

@@ -7,7 +7,7 @@ import FrontMatter from 'front-matter';
 
 import { parse } from '../src/html.mjs';
 
-const singleTest = 'example 600';
+const singleTest = '';
 
 const withKnownIssue = [
   'donnemartin-system-design-primer',     // can't handle omission of " around attributes
@@ -102,25 +102,27 @@ function showDiff(results) {
 
 describe('Compatibility', function() {
   test('Marked specs (default options)', require.context('./specs', true, /\.md$/), {
+    options: { mangle: false, pedantic: true }
   });
   test('Marked specs (pedantic = true)', require.context('./specs', true, /\.md$/), {
-    options: { pedantic: true }
+    options: { mangle: false, pedantic: true }
   });
   test('Marked specs (gfm = false)', require.context('./specs', true, /\.md$/), {
-    options: { gfm: false }
+    options: { mangle: false, gfm: false }
   });
   test('GitHub READMEs', require.context('./github', true, /\.md$/), {
-    options: { mangle: false,  }
+    options: { mangle: false }
   });
   test('Commonmark', require.context('./specs/commonmark', true, /\.json/), {
     commonmark: true,
+    options: { mangle: false }
   });
   test('Commonmark (pedantic = true)', require.context('./specs/commonmark', true, /\.json/), {
     commonmark: true,
-    options: { pedantic: true }
+    options: { mangle: false, pedantic: true }
   });
   test('Commonmark (gfm = false)', require.context('./specs/commonmark', true, /\.json/), {
     commonmark: true,
-    options: { gfm: false }
+    options: { mangle: false, gfm: false }
   });
 })
