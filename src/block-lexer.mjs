@@ -154,11 +154,12 @@ class BlockLexer {
   captureFences() {
     const cap = this.capture('fences');
     if (cap) {
+      const info = cap[2] ? cap[2].trim() : '';
       const type = 'code';
-      const lang = cap[2] ? cap[2].trim() : undefined;
+      const lang = info.match(/\S*/)[0] || undefined;
       const text = cap[3] || '';
       const highlighted = null;
-      return { type, lang, text, highlighted };
+      return { type, lang, info, text, highlighted };
     }
   }
 
