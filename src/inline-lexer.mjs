@@ -10,7 +10,7 @@ class InlineLexer {
     this.inMarkdownLink = false;
     this.inRawBlock = false;
     this.inScriptBlock = false;
-    this.inMixBlock = false;
+    this.inHtmlBlock = false;
     this.links = {};
     this.remaining = '';
     this.offset = 0;
@@ -34,8 +34,8 @@ class InlineLexer {
   }
 
   tokenize(text, containerType) {
-    const inMixBlock = (containerType !== 'html_block');
-    this.initialize(text, { inMixBlock });
+    const inHtmlBlock = (containerType === 'html_block');
+    this.initialize(text, { inHtmlBlock });
     this.process();
     this.finalize();
     return this.tokens;
@@ -127,9 +127,8 @@ class InlineLexer {
 
   captureToken() {
     let token;
-    if (this.inRawBlock && !this.inMixBlock) {
-      // only scan for tag and text when we're in a raw block
-      // and it doesn't contain mixed contents (i.e. HTML only)
+    if (this.inHtmlBlock || this.inRawBlock) {
+      // only scan for tag and text when we're in a HTML or raw block
       token = this.captureTag() || this.captureText();
     } else {
       token = this.captureEscape()
@@ -255,7 +254,7 @@ class InlineLexer {
       href = this.unescapeSlashes(href);
       title = this.unescapeSlashes(title);
       if (type === 'image') {
-        const text = this.decodeEntities(cap[1]);
+        const text = cap[1];
         return { type, href, title, text };
       } else {
         const markdown = cap[1];
@@ -276,7 +275,7 @@ class InlineLexer {
       if (link) {
         const { href, title } = link;
         if (type === 'image') {
-          const text = this.decodeEntities(cap[1]);
+          const text = cap[1];
           return { type, ref, href, title, text };
         } else {
           const markdown = cap[1];
@@ -288,7 +287,7 @@ class InlineLexer {
 
         const type = 'text';
         const html = cap[0].substr(0, 1);
-        const text = this.decodeEntities(html);
+        const text = html;
         return { type, text, html };
       }
     }
@@ -328,15 +327,15 @@ class InlineLexer {
   captureLineBreak() {
     const cap = this.capture('br');
     if (cap) {
-      if (this.inMixBlock) {
-        const type = 'br';
-        return { type };
-      } else {
+      if (this.inHtmlBlock) {
         // don't add <BR> tag when we're in a HTML block
         const type = 'text';
         const text = cap[0];
         const html = text;
         return { type, text, html };
+      } else {
+        const type = 'br';
+        return { type };
       }
     }
   }

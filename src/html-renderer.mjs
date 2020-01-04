@@ -18,8 +18,9 @@ class HtmlRenderer extends BaseRenderer {
         }
       }
     }
-    html += '>';
-    if (!isVoidElement(type)) {
+    const isVoid = isVoidElement(type);
+    html += (isVoid && this.options.xhtml) ? '/>': '>';
+    if (!isVoid) {
       // add linefeed before content
       if (options && options.before) {
         html += options.before;

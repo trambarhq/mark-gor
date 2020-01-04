@@ -37,7 +37,7 @@ class BlockLexer {
   }
 
   initialize(text, props) {
-    this.input = this.remaining = text;
+    this.input = this.remaining = text.replace(/^ +$/gm, '');
     this.offset = 0;
     this.tokens = [];
     Object.assign(this, props);
@@ -74,6 +74,9 @@ class BlockLexer {
   }
 
   append(token) {
+    if (!token) {
+      return;
+    }
     if (token.type === 'text_block') {
       const prevToken = this.tokens[this.tokens.length - 1];
       // merge adjacent text tokens
@@ -83,9 +86,6 @@ class BlockLexer {
           return;
         }
       }
-    }
-    if (token.type === 'ignore') {
-      return;
     }
     this.tokens.push(token);
   }
@@ -112,13 +112,13 @@ class BlockLexer {
       || this.captureFences()
       || this.captureHeading()
       || this.captureTable('nptable')
-      || this.captureUnderlineHeading()
       || this.captureHorizontalRule()
       || this.captureBlockquote()
       || this.captureList()
       || this.captureHtml()
       || this.captureDefinition()
       || this.captureTable('table')
+      || this.captureUnderlineHeading()
       || this.captureParagraph()
       || this.captureText();
     if (!token) {
@@ -132,8 +132,10 @@ class BlockLexer {
   captureNewline() {
     const cap = this.capture('newline');
     if (cap) {
-      const type = (cap[0].length > 1) ? 'space' : 'ignore';
-      return { type };
+      if (cap[0].length > 1) {
+        const type = 'space';
+        return { type };
+      }
     }
   }
 

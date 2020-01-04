@@ -10,11 +10,7 @@ import { parse } from '../src/html.mjs';
 const singleTest = '';
 
 const withKnownIssue = [
-  'aldanial-cloc.md',                     // missing feature in Marked
-  'brettwooldridge-hikaricp.md',          // missing feature in Marked
   'donnemartin-system-design-primer.md',  // can't handle omission of " around attributes
-  'freecodecamp.md',                      // missing feature in Marked
-  'mission-peace-interview.md',           // missing feature in Marked
   'nlrx-wjc-learn-vue-source-code.md',    // can't handle omission of " around attributes
   'vuejs-vue.md',                         // can't handle omission of " around attributes
 ];
@@ -33,17 +29,19 @@ function test(desc, requireFunc, params) {
     for (let path of paths) {
       if (params.commonmark) {
         const items = requireFunc(path);
-        const options = { gfm: false, pedantic: false, headerIds: false };
-        for (let { markdown, html, example, section } of items) {
-          const title = `example ${example} (${section})`;
-          if (singleTest && title !== singleTest) {
+        const options = { ...getMarkedDefaults(), ...params.options, silent: true };
+        for (let item of items) {
+          const { markdown, example, section } = item;
+          const title = `example ${(example + '').padStart(3, '0')} (${section})`;
+          if (singleTest && !title.startsWith(singleTest)) {
             continue;
           }
+          const html = parseMarked(markdown);
           tests.push({ title, markdown, options, html });
         }
       } else {
         const title = path.substr(path.lastIndexOf('/') + 1);
-        if (singleTest && title !== singleTest) {
+        if (singleTest && !title.startsWith(singleTest)) {
           continue;
         }
         const module = requireFunc(path);
@@ -71,7 +69,7 @@ function test(desc, requireFunc, params) {
           let ours = parse(markdown, ourOptions);
           let theirs = html;
           if (ours !== theirs) {
-            if (processThruDOM(ours) === processThruDOM(theirs)) {
+            if (true && processThruDOM(ours) === processThruDOM(theirs)) {
               mismatchList.push(title);
             } else {
               if (singleTest) {
@@ -115,6 +113,5 @@ describe('Compatibility', function() {
   });
   test('Commonmark', require.context('./specs/commonmark', true, /\.json/), {
     commonmark: true,
-    options: { gfm: false, pedantic: false, headerIds: false }
   });
 })
