@@ -7,20 +7,27 @@ import FrontMatter from 'front-matter';
 
 import { parse } from '../src/html.mjs';
 
-const singleTest = '';
+const singleTest = 'example 600';
 
 const withKnownIssue = [
-  'donnemartin-system-design-primer.md',  // can't handle omission of " around attributes
-  'nlrx-wjc-learn-vue-source-code.md',    // can't handle omission of " around attributes
-  'vuejs-vue.md',                         // can't handle omission of " around attributes
+  'donnemartin-system-design-primer',     // can't handle omission of " around attributes
+  'nlrx-wjc-learn-vue-source-code',       // can't handle omission of " around attributes
+  'vuejs-vue',                            // can't handle omission of " around attributes
+  'example 128 (HTML blocks)',            // markdown results in broken HTML
 ];
 
 function test(desc, requireFunc, params) {
   const mismatchList = [];
   after(function() {
     if (mismatchList.length > 0) {
-      console.log(`${mismatchList.length} whitespace or entity mismatches:`);
-      console.log(mismatchList);
+      console.warn(`During "${desc}", ${mismatchList.length} whitespace or entity mismatches:`);
+      for (let { title, ours, theirs, markdown } of mismatchList) {
+        console.warn(title);
+        if (singleTest) {
+          showDiff({ markdown, ours, theirs });
+        }
+      }
+      console.warn('\n');
     }
   })
   describe(desc, function() {
@@ -36,24 +43,20 @@ function test(desc, requireFunc, params) {
           if (singleTest && !title.startsWith(singleTest)) {
             continue;
           }
-          const html = parseMarked(markdown);
+          const html = parseMarked(markdown, options);
           tests.push({ title, markdown, options, html });
         }
       } else {
-        const title = path.substr(path.lastIndexOf('/') + 1);
+        const title = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
         if (singleTest && !title.startsWith(singleTest)) {
           continue;
         }
         const module = requireFunc(path);
-        let options = { ...getMarkedDefaults(), ...params.options, silent: true };
-        let markdown = module.default;
-        if (params.frontMatter) {
-          const fm = FrontMatter(markdown);
-          options = { ...options, ...fm.attributes };
-          markdown = fm.body;
-          if (options.sanitizer) {
-            options.sanitizer = eval(options.sanitizer);
-          }
+        const fm = FrontMatter(module.default);
+        const options = { ...getMarkedDefaults(), ...params.options, ...fm.attributes, silent: true };
+        const markdown = fm.body;
+        if (options.sanitizer) {
+          options.sanitizer = eval(options.sanitizer);
         }
         const html = parseMarked(markdown, options);
         tests.push({ title, markdown, options, html });
@@ -69,13 +72,11 @@ function test(desc, requireFunc, params) {
           let ours = parse(markdown, ourOptions);
           let theirs = html;
           if (ours !== theirs) {
-            if (true && processThruDOM(ours) === processThruDOM(theirs)) {
-              mismatchList.push(title);
+            if (processThruDOM(ours) === processThruDOM(theirs)) {
+              mismatchList.push({ title, ours, theirs, markdown });
             } else {
               if (singleTest) {
-                console.log(`MARKDOWN:\n${markdown}\n`);
-                console.log(`OURS:\n${ours}\n`);
-                console.log(`THEIRS:\n${theirs}\n`);
+                showDiff({ markdown, ours, theirs });
               }
               expect.fail('Not matching');
             }
@@ -92,26 +93,34 @@ function processThruDOM(html) {
   return div.innerHTML;
 }
 
+function showDiff(results) {
+  const { markdown, ours, theirs } = results;
+  console.log(`MARKDOWN:\n${markdown}\n`);
+  console.log(`OURS:\n${ours}\n`);
+  console.log(`THEIRS:\n${theirs}\n`);
+}
+
 describe('Compatibility', function() {
-  test('Marked specs', require.context('./specs', true, /\.md$/), {
-    frontMatter: true,
-  });
   test('Marked specs (default options)', require.context('./specs', true, /\.md$/), {
-    frontMatter: false,
   });
-  test('Marked specs (pedantic)', require.context('./specs', true, /\.md$/), {
-    frontMatter: false,
+  test('Marked specs (pedantic = true)', require.context('./specs', true, /\.md$/), {
     options: { pedantic: true }
   });
   test('Marked specs (gfm = false)', require.context('./specs', true, /\.md$/), {
-    frontMatter: false,
     options: { gfm: false }
   });
   test('GitHub READMEs', require.context('./github', true, /\.md$/), {
-    frontMatter: false,
     options: { mangle: false,  }
   });
   test('Commonmark', require.context('./specs/commonmark', true, /\.json/), {
     commonmark: true,
+  });
+  test('Commonmark (pedantic = true)', require.context('./specs/commonmark', true, /\.json/), {
+    commonmark: true,
+    options: { pedantic: true }
+  });
+  test('Commonmark (gfm = false)', require.context('./specs/commonmark', true, /\.json/), {
+    commonmark: true,
+    options: { gfm: false }
   });
 })

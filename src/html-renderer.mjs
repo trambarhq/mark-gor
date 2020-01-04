@@ -7,12 +7,18 @@ class HtmlRenderer extends BaseRenderer {
     let html = `<${type}`;
     if (props) {
       for (let [ key, value ] of Object.entries(props)) {
-        if (value !== undefined) {
+        if (value != undefined) {
           if (key === 'className') {
               key = 'class';
           }
-          if (key !== 'src') {
-            value = escape(value);
+          if (typeof(value) === 'string') {
+            if (key === 'src') {
+              // do nothing
+            } else if (key === 'href') {
+              value = escape(value);
+            } else {
+              value = escape(value, true);
+            }
           }
           html += ` ${key}="${value}"`;
         }
@@ -39,7 +45,6 @@ class HtmlRenderer extends BaseRenderer {
   }
 
   mergeElements(elements) {
-    const { decodeEntities } = this.options;
     const content = [];
     if (!(elements instanceof Array)) {
       elements = [ elements ];
@@ -65,12 +70,37 @@ class HtmlRenderer extends BaseRenderer {
   }
 
   renderText(token) {
-    const { decodeEntities } = this.options;
-    if (decodeEntities) {
-      return token.text;
-    } else {
-      return new String(escape(token.html));
+    if (!this.options.decodeEntities) {
+      return this.boxRawHtml(escape(token.html));
     }
+    return super.renderText(token);
+  }
+
+  renderLink(token) {
+    if (!this.options.decodeEntities) {
+      const { href, titleHtml } = token;
+      const children = this.renderChildren(token);
+      const url = this.cleanUrl(href);
+      if (url === null) {
+        return children;
+      }
+      const title = this.boxRawHtml(escape(titleHtml));
+      return this.createElement('a', { href: url, title }, children);
+    }
+    return super.renderLink(token);
+  }
+
+  renderImage(token) {
+    if (!this.options.decodeEntities) {
+      const { href, titleHtml, text } = token;
+      const url = this.cleanUrl(href);
+      if (url === null) {
+        return text;
+      }
+      const title = this.boxRawHtml(escape(titleHtml));
+      return this.createElement('img', { src: url, alt: text, title });
+    }
+    return super.renderImage(token);
   }
 
   renderRaw(token) {
@@ -78,8 +108,15 @@ class HtmlRenderer extends BaseRenderer {
     return this.sanitize(html);
   }
 
+  boxRawHtml(html) {
+    if (html) {
+      return new String(html);
+    }
+    return html;
+  }
+
   packageCode(highlighted) {
-    return new String(highlighted);
+    return this.boxRawHtml(highlighted);
   }
 
   sanitize(html) {

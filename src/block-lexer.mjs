@@ -1,6 +1,7 @@
 import { block } from './rules.mjs';
 import { merge, splitCells, escape } from './helpers.mjs';
 import { defaults } from './defaults.mjs';
+import { decodeHtmlEntities } from './html-entities.mjs';
 
 class BlockLexer {
   constructor(options, props) {
@@ -121,7 +122,7 @@ class BlockLexer {
       || this.captureUnderlineHeading()
       || this.captureParagraph()
       || this.captureText();
-    if (!token) {
+    if (token === undefined) {
       if (this.remaining) {
         throw new Error('Infinite loop on byte: ' + this.remaining.charCodeAt(0));
       }
@@ -142,6 +143,12 @@ class BlockLexer {
   captureCode() {
     const cap = this.capture('code');
     if (cap) {
+      const lastToken = this.tokens[this.tokens.length - 1];
+      // An indented code block cannot interrupt a paragraph.
+      if (lastToken && lastToken.type === 'paragraph') {
+        lastToken.markdown += '\n' + cap[0].trimRight();
+        return null;
+      }
       const type = 'code';
       let text = cap[0].replace(/^ {4}/gm, '');
       if (!this.options.pedantic) {
@@ -436,12 +443,13 @@ class BlockLexer {
       const type = 'def';
       const name = cap[1].toLowerCase().replace(/\s+/g, ' ');
       const href = cap[2];
-      let title;
+      let titleHtml;
       if (cap[3]) {
-        title = cap[3].substring(1, cap[3].length - 1);
+        titleHtml = cap[3].substring(1, cap[3].length - 1);
       };
-      this.setRefLink(name, { href, title });
-      return { type, name, href, title };
+      const title = this.decodeEntities(titleHtml);
+      this.setRefLink(name, { href, title, titleHtml });
+      return { type, name, href, title, titleHtml };
     }
   }
 
@@ -473,6 +481,10 @@ class BlockLexer {
       const children = null;
       return { type, markdown, children };
     }
+  }
+
+  decodeEntities(html) {
+    return decodeHtmlEntities(html);
   }
 
   setRefLink(name, link) {

@@ -231,13 +231,13 @@ class InlineLexer {
     if (cap) {
       const type = (cap[0].charAt(0) === '!') ? 'image' : 'link';
       let href = cap[2];
-      let title = cap[3];
+      let titleHtml = cap[3];
       const lastParenIndex = findClosingBracket(href, '()');
       if (lastParenIndex > -1) {
         const start = (type === 'image') ? 5 : 4;
         const linkLen = start + cap[1].length + lastParenIndex;
         href = href.substring(0, lastParenIndex);
-        title = undefined;
+        titleHtml = undefined;
         const capZero = cap[0].substring(0, linkLen).trim();
         this.backpedal(cap[0].substr(capZero.length));
       }
@@ -246,21 +246,22 @@ class InlineLexer {
 
         if (link) {
           href = link[1];
-          title = link[3];
+          titleHtml = link[3];
         }
-      } else if (title) {
-        title = title.slice(1, -1);
+      } else if (titleHtml) {
+        titleHtml = titleHtml.slice(1, -1);
       }
       href = href.trim().replace(/^<([\s\S]*)>$/, '$1');
       href = this.unescapeSlashes(href);
-      title = this.unescapeSlashes(title);
+      titleHtml = this.unescapeSlashes(titleHtml);
+      const title = this.decodeEntities(titleHtml);
       if (type === 'image') {
         const text = cap[1];
-        return { type, href, title, text };
+        return { type, href, title, titleHtml, text };
       } else {
         const markdown = cap[1];
         const children = null;
-        return { type, href, title, markdown, children };
+        return { type, href, title, titleHtml, markdown, children };
       }
     }
   };
@@ -274,14 +275,14 @@ class InlineLexer {
                   .toLowerCase();
       const link = this.findRefLink(ref);
       if (link) {
-        const { href, title } = link;
+        const { href, title, titleHtml } = link;
         if (type === 'image') {
           const text = cap[1];
-          return { type, ref, href, title, text };
+          return { type, ref, href, title, titleHtml, text };
         } else {
           const markdown = cap[1];
           const children = null;
-          return { type, ref, href, title, markdown, children };
+          return { type, ref, href, title, titleHtml, markdown, children };
         }
       } else {
         this.backpedal(cap[0].substr(1));

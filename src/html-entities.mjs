@@ -2233,6 +2233,9 @@ const htmlEntityTable = {
 };
 
 function decodeHtmlEntities(html) {
+  if (!html) {
+    return html;
+  }
   if (html.indexOf('&') === -1) {
     return html;
   }
