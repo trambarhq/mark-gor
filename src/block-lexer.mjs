@@ -428,7 +428,7 @@ class BlockLexer {
   }
 
   captureDefinition() {
-    if (this.blockquote || !this.topLevel) {
+    if (!this.topLevel) {
       return;
     }
     const cap = this.capture('def');
