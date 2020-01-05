@@ -13,7 +13,6 @@ class InlineLexer {
     this.inHtmlBlock = false;
     this.links = {};
     this.remaining = '';
-    this.offset = 0;
     this.options = mergeDefaults(options);
     this.rules = inline.normal;
     this.tokens = [];
@@ -42,7 +41,6 @@ class InlineLexer {
 
   initialize(text, props) {
     this.input = this.remaining = text;
-    this.offset = 0;
     this.tokens = [];
     Object.assign(this, props);
   }
@@ -61,7 +59,6 @@ class InlineLexer {
     this.states.push({
       input: this.input,
       remaining: this.remaining,
-      offset: this.offset,
       tokens: this.tokens,
       inMarkdownLink: this.inMarkdownLink,
     });
@@ -71,7 +68,6 @@ class InlineLexer {
     const state = this.states.pop();
     this.input = state.input;
     this.remaining = state.remaining;
-    this.offset = state.offset;
     this.tokens = state.tokens;
     this.inMarkdownLink = state.inMarkdownLink;
   }
@@ -105,14 +101,12 @@ class InlineLexer {
     if (cap) {
       const len = cap[0].length;
       this.remaining = this.remaining.substr(len);
-      this.offset += len;
       return cap;
     }
   }
 
   backpedal(text) {
     this.remaining = text + this.remaining;
-    this.offset -= text.length;
   }
 
   findRefLink(name) {

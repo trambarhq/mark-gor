@@ -10,7 +10,6 @@ class BlockLexer {
     this.blockquote = false;
     this.links = {};
     this.input = this.remaining = '';
-    this.offset = 0;
     this.options = mergeDefaults(options);
     this.rules = block.normal;
     this.tokens = [];
@@ -20,7 +19,7 @@ class BlockLexer {
     } else if (this.options.gfm) {
       this.rules = block.gfm;
     }
-    
+
     Object.assign(this, props);
   }
 
@@ -37,7 +36,6 @@ class BlockLexer {
 
   initialize(text, props) {
     this.input = this.remaining = text.replace(/^ +$/gm, '');
-    this.offset = 0;
     this.tokens = [];
     Object.assign(this, props);
   }
@@ -55,7 +53,6 @@ class BlockLexer {
     this.states.push({
       input: this.input,
       remaining: this.remaining,
-      offset: this.offset,
       tokens: this.tokens,
       topLevel: this.topLevel,
       blockquote: this.blockquote,
@@ -66,7 +63,6 @@ class BlockLexer {
     const state = this.states.pop();
     this.input = state.input;
     this.remaining = state.remaining;
-    this.offset = state.offset;
     this.tokens = state.tokens;
     this.topLevel = state.topLevel;
     this.blockquote = state.blockquote;
@@ -95,14 +91,12 @@ class BlockLexer {
     if (cap) {
       const len = cap[0].length;
       this.remaining = this.remaining.substr(len);
-      this.offset += len;
       return cap;
     }
   }
 
   backpedal(text) {
     this.remaining = text + this.remaining;
-    this.offset -= text.length;
   }
 
   captureToken() {
