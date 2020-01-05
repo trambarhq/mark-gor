@@ -1,31 +1,27 @@
 import { BlockLexer } from './block-lexer.mjs';
 import { InlineLexer } from './inline-lexer.mjs';
-import { defaults } from './defaults.mjs';
-import { merge } from './helpers.mjs';
+import { mergeDefaults } from './defaults.mjs';
 import { decodeHtmlEntities } from './html-entities.mjs';
 import { isVoidElement, isTerminatingElement, isExpectedContent, getImplicitElements } from './html-tag-attrs.mjs';
 
 class Parser {
   constructor(options, props) {
-    this.options = defaults;
+    this.options = mergeDefaults(options);
     this.blockLexer = null;
+    this.blockLexerClass = BlockLexer;
     this.inlineLexer = null;
+    this.inlineLexerClass = InlineLexer;
     this.text = '';
     this.tokens = [];
 
-    if (options) {
-      this.options = merge({}, defaults, options);
-    }
-    if (props) {
-      merge(this, props);
-    }
+    Object.assign(this, props);
   }
 
   initialize(text) {
     this.text = text;
     this.tokens = [];
-    this.blockLexer = new BlockLexer(this.options);
-    this.inlineLexer = new InlineLexer(this.options, {
+    this.blockLexer = new this.blockLexerClass(this.options);
+    this.inlineLexer = new this.inlineLexerClass(this.options, {
       links: this.blockLexer.links
     });
   }

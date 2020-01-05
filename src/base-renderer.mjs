@@ -1,22 +1,21 @@
-import { merge, cleanUrl, escape, unescape } from './helpers.mjs';
-import { defaults } from './defaults.mjs';
+import { cleanUrl, escape, unescape } from './helpers.mjs';
+import { mergeDefaults } from './defaults.mjs';
 import { SluggerMarked } from './slugger.mjs';
 
 class BaseRenderer {
   constructor(options, props) {
-    this.options = defaults;
+    this.options = mergeDefaults(options);
     this.slugger = null;
+    if (typeof(this.options.headerIds) === 'string') {
+    } else {
+      this.sluggerClass = SluggerMarked;
+    }
 
-    if (options) {
-      this.options = merge({}, defaults, options);
-    }
-    if (props) {
-      merge(this, props);
-    }
+    Object.assign(this, props);
   }
 
   initialize() {
-    this.slugger = new SluggerMarked;
+    this.slugger = new this.sluggerClass(this.options.headerIds);
   }
 
   createElement(type, props, children) { /* abstract */ }

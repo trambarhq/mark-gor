@@ -10,14 +10,17 @@ function getDefaults() {
   };
 }
 
+function mergeDefaults(options) {
+  return Object.assign({}, defaults, options);
+}
+
 function changeDefaults(options) {
-  for (let [ name, value ] of Object.entries(options)) {
-    defaults[name] = value;
-  }
+  Object.assign(defaults, options);
 }
 
 export {
     defaults,
     getDefaults,
-    changeDefaults
+    mergeDefaults,
+    changeDefaults,
 };

@@ -1,6 +1,6 @@
 import { inline } from './rules.mjs';
-import { merge, escape, findClosingBracket } from './helpers.mjs';
-import { defaults } from './defaults.mjs';
+import { escape, findClosingBracket } from './helpers.mjs';
+import { mergeDefaults } from './defaults.mjs';
 import { decodeHtmlEntities } from './html-entities.mjs';
 
 class InlineLexer {
@@ -14,13 +14,10 @@ class InlineLexer {
     this.links = {};
     this.remaining = '';
     this.offset = 0;
-    this.options = defaults;
+    this.options = mergeDefaults(options);
     this.rules = inline.normal;
     this.tokens = [];
 
-    if (options) {
-      this.options = merge({}, defaults, options);
-    }
     if (this.options.pedantic) {
       this.rules = inline.pedantic;
     } else if (this.options.gfm) {
@@ -30,6 +27,7 @@ class InlineLexer {
         this.rules = inline.gfm;
       }
     }
+
     Object.assign(this, props);
   }
 

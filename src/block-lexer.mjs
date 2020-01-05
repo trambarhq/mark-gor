@@ -1,6 +1,6 @@
 import { block } from './rules.mjs';
-import { merge, splitCells, escape } from './helpers.mjs';
-import { defaults } from './defaults.mjs';
+import { splitCells, escape } from './helpers.mjs';
+import { mergeDefaults } from './defaults.mjs';
 import { decodeHtmlEntities } from './html-entities.mjs';
 
 class BlockLexer {
@@ -11,18 +11,16 @@ class BlockLexer {
     this.links = {};
     this.input = this.remaining = '';
     this.offset = 0;
-    this.options = defaults;
+    this.options = mergeDefaults(options);
     this.rules = block.normal;
     this.tokens = [];
 
-    if (options) {
-      this.options = merge({}, defaults, options);
-    }
     if (this.options.pedantic) {
       this.rules = block.pedantic;
     } else if (this.options.gfm) {
       this.rules = block.gfm;
     }
+    
     Object.assign(this, props);
   }
 
