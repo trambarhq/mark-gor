@@ -248,17 +248,7 @@ class Parser {
   }
 }
 
-function parseJSON(text, options) {
-  const parser = new Parser(options);
-  const renderer = new JsonRenderer(options);
-  const tokens = parser.parse(text);
-  const json = renderer.render(tokens);
-  return json;
-}
-
 export {
-  parseJSON,
-  parseJSON as parseJson,
   Parser,
   Parser as default,
 };

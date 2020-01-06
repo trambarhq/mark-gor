@@ -1,7 +1,8 @@
-import { Parser, parseJSON } from './parser.mjs';
+import { Parser } from './parser.mjs';
 import { BlockLexer } from './block-lexer.mjs';
 import { InlineLexer } from './inline-lexer.mjs';
 import { HtmlRenderer } from './html-renderer.mjs';
+import { JsonRenderer } from './json-renderer.mjs';
 
 function parse(text, options) {
     const parser = new Parser(options);
@@ -20,11 +21,12 @@ function parse(text, options) {
 
 export {
     parse,
-    parseJSON,
     Parser,
     BlockLexer,
     InlineLexer,
     HtmlRenderer,
     HtmlRenderer as Renderer,
+    JsonRenderer,
+    JsonRenderer as JSONRenderer,
 };
 export * from './defaults.mjs';
