@@ -136,8 +136,18 @@ class Parser {
               break;
             }
           }
-          // toss the end tag
-          tokens.splice(index, 1);
+          if (newDepth !== -1) {
+            // toss the end tag
+            tokens.splice(index, 1);
+          } else {
+            // insert empty element to match browser behavior
+            tokens[index] = {
+              type: 'html_element',
+              tagName: token.tagName,
+              attributes: {},
+              children: []
+            };
+          }
         } else {
           // skip over tokens that aren't start or end tags
           index++;
