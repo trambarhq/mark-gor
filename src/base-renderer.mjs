@@ -318,7 +318,7 @@ class BaseRenderer {
     const { text, html, children } = token;
     if (text) {
       // the Marked slugger expects text with HTML entities
-      return html || text;
+      return html ? escape(html) : text;
     } else if (children) {
       const content = [];
       for (let child of children) {
@@ -339,7 +339,6 @@ class BaseRenderer {
       let plain;
       if (this.slugger instanceof SluggerMarked) {
         plain = this.renderMarkedHeaderText(token)
-        plain = escape(plain);
         plain = unescape(plain);
       } else {
         plain = this.renderPlainText(token);
