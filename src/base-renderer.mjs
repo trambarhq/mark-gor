@@ -191,7 +191,9 @@ class BaseRenderer {
 
   renderTableBody(token) {
     const children = this.renderTokens(token.children.slice(1));
-    return this.createElement('tbody', null, children);
+    if (children.length > 0) {
+      return this.createElement('tbody', null, children);
+    }
   }
 
   renderTableRow(token) {

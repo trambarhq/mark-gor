@@ -233,9 +233,11 @@ class BlockLexer {
 
   lexTableRows(rule, text, header) {
     const rows = [];
-    const items = text.replace(/\n$/, '').split('\n');
-    for (let item of items) {
-      rows.push(this.lexTableRow(rule, item, header));
+    if (text) {
+      const items = text.replace(/\n$/, '').split('\n');
+      for (let item of items) {
+        rows.push(this.lexTableRow(rule, item, header));
+      }
     }
     return rows;
   }
