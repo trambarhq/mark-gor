@@ -314,6 +314,7 @@ class BlockLexer {
       const type = 'list';
       const bull = cap[2];
       const ordered = bull.length > 1;
+      const variant = (ordered) ? undefined : bull; 
       const start = (ordered) ? parseInt(bull) : undefined;
 
       // Get each top-level item.
@@ -374,7 +375,7 @@ class BlockLexer {
           }
         }
       }
-      return { type, ordered, start, children };
+      return { type, variant, ordered, start, children };
     }
   }
 

@@ -7,7 +7,7 @@ import FrontMatter from 'front-matter';
 
 import { parse } from '../src/html.mjs';
 
-const singleTest = 'diygod-rsshub';
+const singleTest = '';
 
 const withKnownIssue = [
   'donnemartin-system-design-primer',     // can't handle omission of " around attributes
