@@ -73,6 +73,9 @@ class InlineLexer {
   }
 
   append(token) {
+    if (!token) {
+      return;
+    }
     if (token.type === 'text') {
       // merge adjacent text tokens
       const prevToken = this.tokens[this.tokens.length - 1];
@@ -122,7 +125,7 @@ class InlineLexer {
     let token;
     if (this.inHtmlBlock || this.inRawBlock) {
       // only scan for tag and text when we're in a HTML or raw block
-      token = this.captureTag() || this.captureText();
+      token = this.captureTag() || this.captureBrokenTag() || this.captureText();
     } else {
       token = this.captureEscape()
         || this.captureTag()
@@ -136,6 +139,7 @@ class InlineLexer {
         || this.captureDeleted()
         || this.captureAutolink()
         || this.captureUrl()
+        || this.captureBrokenTag()
         || this.captureText();
     }
     if (!token) {
@@ -391,6 +395,37 @@ class InlineLexer {
         .replace(/\.{3}/g, '\u2026');
     }
     return text;
+  }
+
+  captureBrokenTag() {
+    const cap = /^<(img|a)\s+(.*?)(\/?)>/i.exec(this.remaining);
+    if (cap) {
+      const tagName = cap[1];
+      const attrs = cap[2];
+      const attrsFixed = attrs
+        // fix missing space between attributes
+        .replace(/\b(\w+)\s*=\s*"([^"]*)"(?=\S)/gi, `$1="$2" `)
+        .replace(/\b(\w+)\s*=\s*'([^"]*)'(?=\S)/gi, `$1='$2' `)
+        // fix missing closing quote
+        .replace(/\b(\w+)\s*=\s*"([^"]*)$/i, `$1="$2"`)
+        .replace(/\b(\w+)\s*=\s*'([^']*)$/i, `$1='$2'`)
+        // fix missing opening quote
+        .replace(/\b(\w+)\s*=\s*([^'"]+)"/i, `$1="$2"`)
+        .replace(/\b(\w+)\s*=\s*([^'"]+)'/i, `$1='$2'`)
+        // fix missing quotes
+        .replace(/\b(\w+)\s*=\s*([^'"]+)$/i, `$1="$2"`)
+      const tagFixed = `<${tagName} ${attrsFixed}>`;
+      if (tagFixed !== cap[0]) {
+        const rollback = this.remaining;
+        this.remaining = tagFixed + this.remaining.substr(cap[0].length);
+        const token = this.captureTag();
+        if (token) {
+          return token;
+        } else {
+          this.remaining = rollback;
+        }
+      }
+    }
   }
 }
 
