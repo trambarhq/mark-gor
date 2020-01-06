@@ -10,9 +10,7 @@ import { parse } from '../src/html.mjs';
 const singleTest = '';
 
 const withKnownIssue = [
-  'donnemartin-system-design-primer',     // can't handle omission of " around attributes
-  'nlrx-wjc-learn-vue-source-code',       // can't handle omission of " around attributes
-  'vuejs-vue',                            // can't handle omission of " around attributes
+  'nlrx-wjc-learn-vue-source-code',       // omission of leading " leads to incorrect URL
   'example 128 (HTML blocks)',            // markdown results in broken HTML
 ];
 
@@ -101,7 +99,7 @@ function showDiff(results) {
 }
 
 describe('Compatibility', function() {
-  test('Marked specs (default options)', require.context('./specs', true, /\.md$/), {
+  test('Marked specs', require.context('./specs', true, /\.md$/), {
     options: { mangle: false, pedantic: true }
   });
   test('Marked specs (pedantic = true)', require.context('./specs', true, /\.md$/), {
@@ -109,9 +107,6 @@ describe('Compatibility', function() {
   });
   test('Marked specs (gfm = false)', require.context('./specs', true, /\.md$/), {
     options: { mangle: false, gfm: false }
-  });
-  test('GitHub READMEs', require.context('./github', true, /\.md$/), {
-    options: { mangle: false }
   });
   test('Commonmark', require.context('./specs/commonmark', true, /\.json/), {
     commonmark: true,
@@ -124,5 +119,8 @@ describe('Compatibility', function() {
   test('Commonmark (gfm = false)', require.context('./specs/commonmark', true, /\.json/), {
     commonmark: true,
     options: { mangle: false, gfm: false }
+  });
+  test('GitHub READMEs', require.context('./github', true, /\.md$/), {
+    options: { mangle: false }
   });
 })
