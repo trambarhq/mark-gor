@@ -128,6 +128,28 @@ const implicitElements = {
   table: tableImplicitElements
 };
 
+const vivificationCheck = any([ 'p' ]);
+
+const textStyleCheck = any([
+  'a',
+  'b',
+  'code',
+  'em',
+  'i',
+  'small',
+  'strong',
+  'u',
+]);
+
+const styleClearanceCheck = any([
+  'table',
+  'tbody',
+  'tfoot',
+  'thead',
+  'td',
+  'tr',
+]);
+
 function isVoidElement(tagName) {
   return voidTags.indexOf(tagName) !== -1;
 }
@@ -148,6 +170,18 @@ function isExpectedContent(tagName, parentTagName) {
   return false;
 }
 
+function isVivificatingElement(tagName) {
+  return vivificationCheck(tagName);
+}
+
+function isStylingElement(tagName) {
+  return textStyleCheck(tagName);
+}
+
+function isClearingElement(tagName) {
+  return styleClearanceCheck(tagName);
+}
+
 function getImplicitElements(parentTagName) {
   return implicitElements[parentTagName];
 }
@@ -155,6 +189,9 @@ function getImplicitElements(parentTagName) {
 export {
   isVoidElement,
   isTerminatingElement,
+  isVivificatingElement,
+  isStylingElement,
   isExpectedContent,
+  isClearingElement,
   getImplicitElements,
 };

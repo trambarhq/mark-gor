@@ -119,8 +119,83 @@ describe('Normalization', function() {
     test('stray </p>', `
 <div></p></div>
     `)
+    test('stray </em>', `
+<div></em></div>
+    `)
+    test('stray </del>', `
+<div></del></div>
+    `)
+    test('stray </div>', `
+<p></div></p>
+    `)
+    test('stray </span>', `
+<div></span></div>
+    `)
     test('<div> in <p>', `
 <p><div>Hello</div></p>
+    `)
+    test('<small><b> terminated by <p>', `
+<p><small><b>Hello<p>
+    `)
+    test('<small><b> terminated by <p> with text', `
+<p><u><em>Hello<p>world
+    `)
+    test('<small><b> terminated by <p> with <span> tossed in', `
+<p><small><b><span>Hello<p>world
+    `)
+    test('<strong> and <i> terminated by <p>', `
+<p><i><strong>Hello<p>world
+    `)
+    test('<strong> and <i> terminated by </p>', `
+<p><i><strong>Hello</p><p>world
+    `)
+    test('<a> terminated by <p>', `
+<p><a href="url">Hello<p>world
+    `)
+    test('<cite> and <code> terminated by <p>', `
+<p><cite><code>Hello<p>world
+    `)
+    test('<pre> terminated by <p>', `
+<p><pre>Hello<p>world
+    `)
+    test('<var> and <time> terminated by <p>', `
+<p><var><time>Hello<p>world
+    `)
+    test('<sub> and <sup> terminated by <p>', `
+<p><sub><sup>Hello<p>world
+    `)
+    test('<del> and <ins> terminated by <p>', `
+<p><del><ins>Hello<p>world
+    `)
+    test('<span> terminated by <p>', `
+<p><span>Hello<p>world
+    `)
+    test('<span> terminated by <p>', `
+<p><aside>Hello<p>world
+    `)
+    test('<u> <em> <section> terminated by <p>', `
+<p><u><em><section>Hello<p>world
+    `)
+    test('<u> <em> <address> terminated by <p>', `
+<p><u><em><address>Hello<p>world
+    `)
+    test('<u> <em> <h1> terminated by <p>', `
+<p><u><em><h1>Hello<p>world
+    `)
+    test('<u> <em> terminated by <table>', `
+<p><u><em><table><tr><td>Hello<td>world</tr></table>
+    `)
+    test('<u> <em> terminated by <ul>', `
+<p><u><em><ul><li>Hello<li>world
+    `);
+    test('<u> <em> terminated by <ul> with no <li>', `
+<p><u><em><ul>Hello
+    `);
+    test('misplaced </em>', `
+<p><u><em>Hello</u></em>
+    `);
+    test('<u> terminated by <td>', `
+<table><tr><td><u>Hello<td>world</tr></table>
     `)
   })
 })

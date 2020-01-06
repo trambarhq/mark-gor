@@ -2,7 +2,15 @@ import { BlockLexer } from './block-lexer.mjs';
 import { InlineLexer } from './inline-lexer.mjs';
 import { mergeDefaults } from './defaults.mjs';
 import { decodeHtmlEntities } from './html-entities.mjs';
-import { isVoidElement, isTerminatingElement, isExpectedContent, getImplicitElements } from './html-tag-attrs.mjs';
+import {
+  isVoidElement,
+  isTerminatingElement,
+  isVivificatingElement,
+  isStylingElement,
+  isClearingElement,
+  isExpectedContent,
+  getImplicitElements,
+} from './html-tag-attrs.mjs';
 
 class Parser {
   constructor(options, props) {
@@ -136,7 +144,7 @@ class Parser {
               break;
             }
           }
-          if (newDepth !== -1) {
+          if (newDepth !== -1 || !isVivificatingElement(token.tagName)) {
             // toss the end tag
             tokens.splice(index, 1);
           } else {
@@ -161,15 +169,49 @@ class Parser {
         }
       }
       if (newDepth !== -1) {
-        // pop elements off the stack and insert children into them
+        // pop elements off the stack and insert children into them,
+        // keeping an eye out for text styling tags
+        const styleTags = [];
         while (stack.length > newDepth) {
           const openTag = stack.pop();
+          if (stack.length !== newDepth) {
+            // not the element explicitly targeted for closing
+            // might need to restore it later
+            if (isStylingElement(openTag.tagName)) {
+              styleTags.push({ ...openTag });
+            }
+          }
           const openTagIndex = tokens.indexOf(openTag);
           const startIndex = openTagIndex + 1;
           const children = tokens.splice(startIndex, index - startIndex);
           this.createImplicitHtmlTags(openTag.tagName, children);
           openTag.children = children;
           index = openTagIndex + 1;
+        }
+
+        if (styleTags.length > 0) {
+          // insert the styling tags where text content start again
+          let insertionIndex = -1;
+          for (let i = index; i < tokens.length; i++) {
+            const ahead = tokens[i];
+            if (ahead.type === 'html_element') {
+              // that is, unless we encounter a clearing table
+              // <table> is the only one, I think
+              if (isClearingElement(ahead.tagName)) {
+                break;
+              }
+            } else if (ahead.type === 'table') {
+              break;
+            } else if (ahead.type !== 'html_end_tag') {
+              insertionIndex = i;
+              break;
+            }
+          }
+          if (insertionIndex !== -1) {
+            for (let styleTag of styleTags) {
+              this.tokens.splice(insertionIndex, 0, styleTag);
+            }
+          }
         }
       }
     }
