@@ -1,5 +1,6 @@
 import { default as React } from 'react';
 import { BaseRenderer } from './base-renderer.mjs';
+import { convertAttributes } from './attribute-helpers.mjs';
 
 class ReactRenderer extends BaseRenderer {
   constructor(options, props) {
@@ -12,6 +13,10 @@ class ReactRenderer extends BaseRenderer {
   createElement(type, props, children) {
     const key = this.nextKey++;
     return React.createElement(type, { key, ...props }, children);
+  }
+
+  convertAttributes(tagName, attrs) {
+    return convertAttributes(tagName, attrs);
   }
 
   render(tokens) {
@@ -28,8 +33,17 @@ class ReactRenderer extends BaseRenderer {
     return elements;
   }
 
+  renderHtmlElement(token) {
+    const { tagName, attributes } = token;
+    if (this.shouldOmit(tagName, attributes)) {
+      return;
+    }
+    const children = this.renderChildren(token);
+    const props = this.convertAttributes(tagName, attributes);
+    return this.createElement(tagName, props, children);
+  }
+
   renderHtmlTag(token) {
-    console.log(token);
   }
 
   renderRaw(token) {

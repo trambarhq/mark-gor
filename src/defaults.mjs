@@ -9,6 +9,7 @@ function getDefaults() {
     normalizeTags: true,
     omitLinefeed: true,
     omitComment: true,
+    omitTags: [ 'script', 'style', 'link', 'meta' ],
     ...imports.getDefaults()
   };
 }

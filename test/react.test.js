@@ -86,7 +86,7 @@ function compareThruDOM(ours, theirs) {
   const theirDiv = document.createElement('DIV');
   ourDiv.innerHTML = ours;
   theirDiv.innerHTML = theirs;
-  return ourDiv.isEqualNode(ourDiv, theirDiv);
+  return ourDiv.isEqualNode(theirDiv);
 }
 
 function showDiff(results) {
@@ -98,13 +98,13 @@ function showDiff(results) {
 
 describe('React', function() {
   test('Marked specs', require.context('./specs', true, /\.md$/), {
-    options: { mangle: false, xhtml: true, omitLinefeed: true }
+    options: { mangle: false, xhtml: true }
   });
   test('Commonmark', require.context('./specs/commonmark', true, /\.json/), {
     commonmark: true,
-    options: { mangle: false, xhtml: true, omitLinefeed: true }
+    options: { mangle: false, xhtml: true }
   });
   test('GitHub READMEs', require.context('./github', true, /\.md$/), {
-    options: { mangle: false, xhtml: true, omitLinefeed: true }
+    options: { mangle: false, xhtml: true }
   });
 })

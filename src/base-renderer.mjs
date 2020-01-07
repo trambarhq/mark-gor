@@ -101,6 +101,9 @@ class BaseRenderer {
 
   renderHtmlElement(token) {
     const { tagName, attributes } = token;
+    if (this.shouldOmit(tagName, attributes)) {
+      return;
+    }
     const children = this.renderChildren(token);
     return this.createElement(tagName, attributes, children);
   }
@@ -353,6 +356,17 @@ class BaseRenderer {
     const { sanitize, baseUrl } = this.options;
     const cleaned = cleanUrl(sanitize, baseUrl, url);
     return cleaned;
+  }
+
+  shouldOmit(tagName, attributes) {
+    const omit = this.options.omitTags;
+    if (omit instanceof Array) {
+      if (omit.indexOf(tagName) !== -1) {
+        return true;
+      }
+    } else if (omit instanceof Function) {
+      return omit(tagName, attributes);
+    }
   }
 
   packageCode(highlighted) {

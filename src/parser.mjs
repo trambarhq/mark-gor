@@ -273,24 +273,20 @@ class Parser {
     if (scap) {
       const attribute = /^\s*([a-zA-Z:_][\w.:-]*)(?:\s*=\s*"([^"]*)"|\s*=\s*'([^']*)'|\s*=\s*([^\s"'=<>`]+))?/g;
       const tagType = 'start';
-      const tagName = scap[1];
+      const tagName = scap[1].toLowerCase();
       const attributes = {};
       let m;
       while (m = attribute.exec(scap[2])) {
         const name = m[1]
-        const value = m[2] || m[3] || m[4];
-        if (value !== undefined) {
-          attributes[name] = this.decodeEntities(value);
-        } else {
-          attributes[name] = true;
-        }
+        const value = m[2] || m[3] || m[4] || '';
+        attributes[name] = this.decodeEntities(value);
       }
       return { tagType, tagName, attributes };
     }
     let ecap = endTag.exec(html);
     if (ecap) {
       const tagType = 'end';
-      const tagName = ecap[1];
+      const tagName = ecap[1].toLowerCase();
       return { tagType, tagName };
     }
     return {};

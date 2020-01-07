@@ -97,7 +97,7 @@ function compareThruDOM(ours, theirs) {
   const theirDiv = document.createElement('DIV');
   ourDiv.innerHTML = ours;
   theirDiv.innerHTML = theirs;
-  return ourDiv.isEqualNode(ourDiv, theirDiv);
+  return ourDiv.isEqualNode(theirDiv);
 }
 
 function showDiff(results) {
