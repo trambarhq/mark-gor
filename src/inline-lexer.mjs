@@ -226,38 +226,39 @@ class InlineLexer {
     const cap = this.capture('link');
     if (cap) {
       const type = (cap[0].charAt(0) === '!') ? 'image' : 'link';
-      let href = cap[2];
+      let hrefHtml = cap[2];
       let titleHtml = cap[3];
-      const lastParenIndex = findClosingBracket(href, '()');
+      const lastParenIndex = findClosingBracket(hrefHtml, '()');
       if (lastParenIndex > -1) {
         const start = (type === 'image') ? 5 : 4;
         const linkLen = start + cap[1].length + lastParenIndex;
-        href = href.substring(0, lastParenIndex);
+        hrefHtml = hrefHtml.substring(0, lastParenIndex);
         titleHtml = undefined;
         const capZero = cap[0].substring(0, linkLen).trim();
         this.backpedal(cap[0].substr(capZero.length));
       }
       if (this.options.pedantic) {
-        const link = /^([^'"]*[^\s])\s+(['"])(.*)\2/.exec(href);
+        const link = /^([^'"]*[^\s])\s+(['"])(.*)\2/.exec(hrefHtml);
 
         if (link) {
-          href = link[1];
+          hrefHtml = link[1];
           titleHtml = link[3];
         }
       } else if (titleHtml) {
         titleHtml = titleHtml.slice(1, -1);
       }
-      href = href.trim().replace(/^<([\s\S]*)>$/, '$1');
-      href = this.unescapeSlashes(href);
+      hrefHtml = hrefHtml.trim().replace(/^<([\s\S]*)>$/, '$1');
+      hrefHtml = this.unescapeSlashes(hrefHtml);
       titleHtml = this.unescapeSlashes(titleHtml);
       const title = this.decodeEntities(titleHtml);
+      const href = this.decodeEntities(hrefHtml);
       if (type === 'image') {
         const text = cap[1];
-        return { type, href, title, titleHtml, text };
+        return { type, href, hrefHtml, title, titleHtml, text };
       } else {
         const markdown = cap[1];
         const children = null;
-        return { type, href, title, titleHtml, markdown, children };
+        return { type, href, hrefHtml, title, titleHtml, markdown, children };
       }
     }
   };
@@ -271,14 +272,14 @@ class InlineLexer {
                   .toLowerCase();
       const link = this.findRefLink(ref);
       if (link) {
-        const { href, title, titleHtml } = link;
+        const { href, hrefHtml, title, titleHtml } = link;
         if (type === 'image') {
           const text = cap[1];
-          return { type, ref, href, title, titleHtml, text };
+          return { type, ref, href, hrefHtml, title, titleHtml, text };
         } else {
           const markdown = cap[1];
           const children = null;
-          return { type, ref, href, title, titleHtml, markdown, children };
+          return { type, ref, href, hrefHtml, title, titleHtml, markdown, children };
         }
       } else {
         this.backpedal(cap[0].substr(1));

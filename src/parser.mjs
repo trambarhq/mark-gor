@@ -267,6 +267,7 @@ class Parser {
   }
 
   parseHtmlTag(html) {
+    html = html.trim();
     const startTag = /^<([a-zA-Z][\w.:-]*)([^>]*)>/;
     const endTag = /^<\/([a-zA-Z][\w.:-]*)[^>]*>/;
     let scap = startTag.exec(html);

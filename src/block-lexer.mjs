@@ -314,7 +314,7 @@ class BlockLexer {
       const type = 'list';
       const bull = cap[2];
       const ordered = bull.length > 1;
-      const variant = (ordered) ? undefined : bull; 
+      const variant = (ordered) ? undefined : bull;
       const start = (ordered) ? parseInt(bull) : undefined;
 
       // Get each top-level item.
@@ -437,14 +437,15 @@ class BlockLexer {
     if (cap) {
       const type = 'def';
       const name = cap[1].toLowerCase().replace(/\s+/g, ' ');
-      const href = cap[2];
+      const hrefHtml = cap[2];
       let titleHtml;
       if (cap[3]) {
         titleHtml = cap[3].substring(1, cap[3].length - 1);
       };
       const title = this.decodeEntities(titleHtml);
-      this.setRefLink(name, { href, title, titleHtml });
-      return { type, name, href, title, titleHtml };
+      const href = this.decodeEntities(hrefHtml);
+      this.setRefLink(name, { href, hrefHtml, title, titleHtml });
+      return { type, name, href, hrefHtml, title, titleHtml };
     }
   }
 

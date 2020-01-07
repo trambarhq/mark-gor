@@ -1,6 +1,7 @@
 import { escape } from './helpers.mjs';
 import { BaseRenderer } from './base-renderer.mjs';
 import { isVoidElement } from './html-tag-attrs.mjs';
+import { decodeHtmlEntities } from './html-entities.mjs';
 
 class HtmlRenderer extends BaseRenderer {
   createElement(type, props, children, options) {
@@ -13,13 +14,7 @@ class HtmlRenderer extends BaseRenderer {
           key = 'checked';
         }
         if (typeof(value) === 'string') {
-          if (key === 'src') {
-            // do nothing
-          } else if (key === 'href') {
-            value = escape(value);
-          } else {
-            value = escape(value, true);
-          }
+          value = escape(value, true);
         } else if (typeof(value) === 'boolean') {
           value = (value) ? '' : undefined;
         }
@@ -75,12 +70,12 @@ class HtmlRenderer extends BaseRenderer {
   renderHtmlTag(token) {
     const { html } = token;
     if (this.options.omitDeclarations) {
-      if (/^<!/.test(html)) {
+      if (/^\s*<!/.test(html)) {
         return;
       }
     }
     if (this.options.omitEmbeddedCode) {
-      if (/^<?/.test(html)) {
+      if (/^\s*<\?/.test(html)) {
         return;
       }
     }
@@ -94,29 +89,45 @@ class HtmlRenderer extends BaseRenderer {
     return super.renderText(token);
   }
 
+  renderUrl(token) {
+    if (!this.options.decodeEntities) {
+      const { href: hrefUnescaped, text } = token;
+      const children = text;
+      const hrefHtml = this.cleanUrl(hrefUnescaped, false, false);
+      if (hrefHtml === null) {
+        return children;
+      }
+      const href = this.boxRawHtml(escape(hrefHtml));
+      return this.createElement('a', { href }, children);
+    }
+    return super.renderUrl(token);
+  }
+
   renderLink(token) {
     if (!this.options.decodeEntities) {
-      const { href, titleHtml } = token;
+      const { hrefHtml: hrefEscaped, titleHtml } = token;
       const children = this.renderChildren(token);
-      const url = this.cleanUrl(href);
-      if (url === null) {
+      const hrefHtml = this.cleanUrl(hrefEscaped, true, false);
+      if (hrefHtml === null) {
         return children;
       }
       const title = this.boxRawHtml(escape(titleHtml));
-      return this.createElement('a', { href: url, title }, children);
+      const href = this.boxRawHtml(escape(hrefHtml));
+      return this.createElement('a', { href, title }, children);
     }
     return super.renderLink(token);
   }
 
   renderImage(token) {
     if (!this.options.decodeEntities) {
-      const { href, titleHtml, text } = token;
-      const url = this.cleanUrl(href);
-      if (url === null) {
+      const { hrefHtml: hrefEscaped, titleHtml, text } = token;
+      const srcHtml = this.cleanUrl(hrefEscaped, true, false);
+      if (srcHtml === null) {
         return text;
       }
       const title = this.boxRawHtml(escape(titleHtml));
-      return this.createElement('img', { src: url, alt: text, title });
+      const src = this.boxRawHtml(srcHtml);
+      return this.createElement('img', { src, alt: text, title });
     }
     return super.renderImage(token);
   }
@@ -137,7 +148,7 @@ class HtmlRenderer extends BaseRenderer {
     return this.boxRawHtml(highlighted);
   }
 
-  cleanUrl(url) {
+  cleanUrl(url, escaped, unescapeAfter) {
     if (url && this.options.mangle) {
       if (url.startsWith('mailto:')) {
         const address = url.substr(7);
@@ -145,7 +156,7 @@ class HtmlRenderer extends BaseRenderer {
         return this.boxRawHtml(`mailto:${mangled}`);
       }
     }
-    return super.cleanUrl(url);
+    return super.cleanUrl(url, escaped, unescapeAfter);
   }
 
   sanitize(html) {

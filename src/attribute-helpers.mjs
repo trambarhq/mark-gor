@@ -45,6 +45,7 @@ const booleanAttributes = [
   'disabled',
   'hidden',
   'multiple',
+  'open',
   'readOnly',
   'muted',
   'noValidate',
@@ -66,7 +67,6 @@ const numericAttributes = [
   'border',
   'colSpan',
   'cols',
-  'height',
   'maxLength',
   'minLength',
   'rowSpan',
@@ -74,7 +74,6 @@ const numericAttributes = [
   'size',
   'start',
   'tabIndex',
-  'width',
 ];
 
 const numericControlAttributes = [
@@ -85,12 +84,22 @@ const numericControlAttributes = [
   'optimum',
 ];
 
+const numericImageAttributes = [
+  'width',
+  'height',
+];
+
 function isNumericProp(tagName, attrName) {
   if (numericAttributes.indexOf(attrName) !== -1) {
     return true;
   }
   if (tagName === 'progress' || tagName === 'meter') {
     if (numericControlAttributes.indexOf(attrName) !== -1) {
+      return true;
+    }
+  }
+  if (tagName === 'img' || tagName === 'video' || tagName === 'svg') {
+    if (numericImageAttributes.indexOf(attrName) !== -1) {
       return true;
     }
   }

@@ -1,6 +1,7 @@
 import { cleanUrl, escape, unescape } from './helpers.mjs';
 import { mergeDefaults } from './defaults.mjs';
 import { SluggerMarked } from './slugger.mjs';
+import { decodeHtmlEntities } from './html-entities.mjs';
 
 class BaseRenderer {
   constructor(options, props) {
@@ -249,14 +250,13 @@ class BaseRenderer {
   }
 
   renderUrl(token) {
-    const { href, text } = token;
+    const { href: hrefUnescaped, text } = token;
     const children = text;
-    // for some reason Marked escape the URL
-    const url = this.cleanUrl(escape(href));
-    if (url === null) {
+    const href = this.cleanUrl(hrefUnescaped, false, true);
+    if (href === null) {
       return children;
     }
-    return this.createElement('a', { href: url }, children);
+    return this.createElement('a', { href }, children);
   }
 
   renderAutolink(token) {
@@ -264,22 +264,22 @@ class BaseRenderer {
   }
 
   renderLink(token) {
-    const { href, title } = token;
+    const { hrefHtml, title } = token;
     const children = this.renderChildren(token);
-    const url = this.cleanUrl(href);
-    if (url === null) {
+    const href = this.cleanUrl(hrefHtml, true, true);
+    if (href === null) {
       return children;
     }
-    return this.createElement('a', { href: url, title }, children);
+    return this.createElement('a', { href, title }, children);
   }
 
   renderImage(token) {
-    const { href, title, text } = token;
-    const url = this.cleanUrl(href);
-    if (url === null) {
+    const { hrefHtml, title, text } = token;
+    const src = this.cleanUrl(hrefHtml, true, true);
+    if (src === null) {
       return text;
     }
-    return this.createElement('img', { src: url, alt: text, title });
+    return this.createElement('img', { src, alt: text, title });
   }
 
   renderText(token) {
@@ -352,9 +352,16 @@ class BaseRenderer {
     }
   }
 
-  cleanUrl(url) {
+  cleanUrl(url, escaped, unescapeAfter) {
     const { sanitize, baseUrl } = this.options;
-    const cleaned = cleanUrl(sanitize, baseUrl, url);
+    if (!escaped) {
+      // cleanUrl() expect the URL to be escaped
+      url = escape(url);
+    }
+    let cleaned = cleanUrl(sanitize, baseUrl, url);
+    if (unescapeAfter) {
+      cleaned = decodeHtmlEntities(cleaned);
+    }
     return cleaned;
   }
 

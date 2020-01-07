@@ -2239,7 +2239,7 @@ function decodeHtmlEntities(html) {
   if (html.indexOf('&') === -1) {
     return html;
   }
-  const text = html.replace(/&(#?[\w\d]+);?/g, (s, entity) => {
+  const text = html.replace(/&(#?[\w\d]+);/g, (s, entity) => {
     if (entity.charAt(0) === "#") {
       let code;
       if (entity.charAt(1) === 'x') {
