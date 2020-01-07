@@ -43,6 +43,12 @@ describe('Normalization', function() {
     const html = parse(markdown, options)
     expect(html).to.equal('<p>Hello</p><p>World</p>');
   })
+  it ('should close <h1> with missing end tags', function() {
+    const options = { normalizeTags: true };
+    const markdown = `<h1>Hello<h2>World`;
+    const html = parse(markdown, options)
+    expect(html).to.equal('<h1>Hello</h1><h2>World</h2>');
+  })
   it ('should close <li> with missing end tags', function() {
     const options = { normalizeTags: true };
     const markdown = `<ul><li>Hello<li>World</ul>`;

@@ -61,6 +61,14 @@ const pTermination = any([
   'table',
   'ul',
 ]);
+const hTermination = any([
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+]);
 const liTermination = any([ 'li' ]);
 const trTermination = any([ 'tr' ]);
 const tdTermination = any([ 'td', 'th' ]);
@@ -83,6 +91,12 @@ const colgroupTermination = not([ 'col' ]);
 
 const terminationChecks = {
   p: pTermination,
+  h1: hTermination,
+  h2: hTermination,
+  h3: hTermination,
+  h4: hTermination,
+  h5: hTermination,
+  h6: hTermination,
   li: liTermination,
   tr: trTermination,
   td: tdTermination,

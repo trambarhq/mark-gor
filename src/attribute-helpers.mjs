@@ -77,7 +77,8 @@ function parseStyle(styleText) {
           }
           return letters;
         });
-        style[domName] = value;
+        const acceptableValue = value.replace(/\s*!important/i, '');
+        style[domName] = acceptableValue;
       }
     }
   }
