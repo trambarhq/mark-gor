@@ -230,36 +230,31 @@ class Parser {
       return;
     }
     let index = 0;
-    const created = {};
+    let implicitTag = null;
     while (index < children.length) {
       const child = children[index];
       if (child.type === 'html_element') {
-        const implicitTagName = implicitTagNames[child.tagName];
-        if (implicitTagName) {
-          // remove the child and place it in the implicit element instead
-          // (e.g. <tr> goes into <tbody>)
-          children.splice(index, 1);
-          let container = created[implicitTagName];
-          if (!container) {
-            container = {
-              type: 'html_element',
-              tagName: implicitTagName,
-              html: `<${implicitTagName}>`,
-              children: [],
-            };
-            children.splice(index, 0, container);
-            created[implicitTagName] = container;
-            index++;
-          }
-          container.children.push(child);
-        } else {
-          index++;
-
-          // remove the implicitly created container if there's an explicit one
-          if (created[child.tagName]) {
-            created[child.tagName] = undefined;
-          }
+        // see if the child would terminate the implicitly created container
+        if (implicitTag && isTerminatingElement(child.tagName, implicitTag.tagName)) {
+          implicitTag = null;
         }
+        const implicitTagName = implicitTagNames[child.tagName];
+        if (implicitTagName && (!implicitTag || implicitTag.tagName !== implicitTagName)) {
+          implicitTag = {
+            type: 'html_element',
+            tagName: implicitTagName,
+            html: `<${implicitTagName}>`,
+            children: [],
+          };
+          children.splice(index, 0, implicitTag);
+          index++;
+        }
+      }
+      if (implicitTag) {
+        // remove the child and place it in the implicit element instead
+        // (e.g. <tr> goes into <tbody>)
+        children.splice(index, 1);
+        implicitTag.children.push(child);
       } else {
         index++;
       }

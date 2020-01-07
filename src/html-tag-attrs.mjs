@@ -65,8 +65,9 @@ const liTermination = any([ 'li' ]);
 const trTermination = any([ 'tr' ]);
 const tdTermination = any([ 'td', 'th' ]);
 const thTermination = tdTermination;
-const tbodyTermination = any([ 'tbody', 'tfoot' ]);
+const tbodyTermination = any([ 'tbody', 'thead', 'tfoot' ]);
 const theadTermination = tbodyTermination;
+const tfootTermination = tbodyTermination;
 const dtTermination = any([ 'dd', 'dt' ]);
 const ddTermination = dtTermination;
 const captionTermination = any([
@@ -86,6 +87,9 @@ const terminationChecks = {
   tr: trTermination,
   td: tdTermination,
   th: thTermination,
+  tbody: tbodyTermination,
+  thead: theadTermination,
+  tfoot: tfootTermination,
   dt: dtTermination,
   dd: ddTermination,
   caption: captionTermination,
