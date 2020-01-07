@@ -135,12 +135,13 @@ class BaseRenderer {
       // inline elements if that's what follow; otherwise (if the list item
       // holds a block element), insert it into a separate block
       const checkbox = { type: 'checkbox', checked };
+      const space = { type: 'text', text: ' ', html: ' ' };
       let tokens = token.children.slice();
       const first = tokens[0];
       if (first && (first.type === 'text_block' || first.type === 'paragraph')) {
         const tb = { type: first.type, children: tokens[0].children.slice() };
-        if (loose) {
-          const space = { type: 'text', text: ' ', html: ' ' };
+        tb.children.unshift(space);
+        if (loose && !this.options.omitLinefeed) {
           tb.children.unshift(space);
         }
         tb.children.unshift(checkbox);
@@ -149,7 +150,7 @@ class BaseRenderer {
         // put p tag around checkbox if item is loose
         const tb = {
           type: (loose) ? 'paragraph' : 'text_block',
-          children: [ checkbox ]
+          children: [ checkbox, space ]
         };
         tokens.unshift(tb);
       }
@@ -165,11 +166,11 @@ class BaseRenderer {
   renderCheckbox(token) {
     const { checked } = token;
     const props = {
-      checked: (checked) ? '' : undefined,
-      disabled: '',
+      defaultChecked: (checked) ? true : undefined,
+      disabled: true,
       type: 'checkbox',
     };
-    return this.createElement('input', props, null, { after: ' ' });
+    return this.createElement('input', props, null);
   }
 
   renderParagraph(token) {

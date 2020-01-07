@@ -1,17 +1,17 @@
 import { expect } from 'chai';
-import {
-  parse as parseMarked,
-  getDefaults as getMarkedDefaults,
-} from 'marked';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { configure, mount } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import FrontMatter from 'front-matter';
 
-import { parse } from '../src/html.mjs';
+configure({ adapter: new Adapter() });
+
+import { parse as parseHtml } from '../src/html.mjs';
+import { parse as parseReact } from '../src/react.mjs';
 
 const singleTest = '';
 
 const withKnownIssue = [
-  'nlrx-wjc-learn-vue-source-code',       // omission of leading " leads to incorrect URL
-  'example 128 (HTML blocks)',            // markdown results in broken HTML
 ];
 
 function test(desc, requireFunc, params) {
@@ -34,14 +34,14 @@ function test(desc, requireFunc, params) {
     for (let path of paths) {
       if (params.commonmark) {
         const items = requireFunc(path);
-        const options = { ...getMarkedDefaults(), ...params.options, silent: true };
+        const options = { ...params.options, silent: true };
         for (let item of items) {
           const { markdown, example, section } = item;
           const title = `example ${(example + '').padStart(3, '0')} (${section})`;
           if (singleTest && !title.startsWith(singleTest)) {
             continue;
           }
-          const html = parseMarked(markdown, options);
+          const html = parseHtml(markdown, options);
           tests.push({ title, markdown, options, html });
         }
       } else {
@@ -51,40 +51,29 @@ function test(desc, requireFunc, params) {
         }
         const module = requireFunc(path);
         const fm = FrontMatter(module.default);
-        const options = { ...getMarkedDefaults(), ...params.options, ...fm.attributes, silent: true };
+        const options = { ...params.options, ...fm.attributes, silent: true };
         const markdown = fm.body;
         if (options.sanitizer) {
           options.sanitizer = eval(options.sanitizer);
         }
-        const html = parseMarked(markdown, options);
+        const html = parseHtml(markdown, options);
         tests.push({ title, markdown, options, html });
       }
     }
-    for (let test of tests) {
-      const { title, markdown, options, html } = test;
+    for (let { title, markdown, options, html } of tests) {
       if (withKnownIssue.indexOf(title) !== -1) {
         continue;
       }
       describe(`#${title}`, function() {
         it ('should produce the expected output', function() {
-          const ourOptions = {
-            ...options,
-            normalizeTags: false,
-            decodeEntities: false,
-            omitLinefeed: false,
-            omitComment: false,
-          };
-          const ours = parse(markdown, ourOptions);
-          const theirs = html;
-          if (ours !== theirs) {
-            if (compareThruDOM(ours, theirs)) {
-              mismatchList.push({ title, ours, theirs, markdown });
-            } else {
-              if (singleTest) {
-                showDiff({ markdown, ours, theirs });
-              }
-              expect.fail('Not matching');
+          const element = parseReact(markdown, options);
+          const ours = renderToStaticMarkup(element);
+          const theirs = html.replace(/&#39;/g, '&#x27;');
+          if (ours !== theirs && !compareThruDOM(ours, theirs)) {
+            if (singleTest) {
+              showDiff({ markdown, ours, theirs });
             }
+            expect.fail('Not matching');
           }
         });
       });
@@ -107,29 +96,15 @@ function showDiff(results) {
   console.log(`THEIRS:\n${theirs}\n`);
 }
 
-describe('Compatibility', function() {
+describe('React', function() {
   test('Marked specs', require.context('./specs', true, /\.md$/), {
-    options: { mangle: false }
-  });
-  test('Marked specs (pedantic = true)', require.context('./specs', true, /\.md$/), {
-    options: { mangle: false, pedantic: true }
-  });
-  test('Marked specs (gfm = false)', require.context('./specs', true, /\.md$/), {
-    options: { mangle: false, gfm: false }
+    options: { mangle: false, xhtml: true, omitLinefeed: true }
   });
   test('Commonmark', require.context('./specs/commonmark', true, /\.json/), {
     commonmark: true,
-    options: { mangle: false, fixBrokenTags: false }
-  });
-  test('Commonmark (pedantic = true)', require.context('./specs/commonmark', true, /\.json/), {
-    commonmark: true,
-    options: { mangle: false, fixBrokenTags: false, pedantic: true }
-  });
-  test('Commonmark (gfm = false)', require.context('./specs/commonmark', true, /\.json/), {
-    commonmark: true,
-    options: { mangle: false, fixBrokenTags: false, gfm: false }
+    options: { mangle: false, xhtml: true, omitLinefeed: true }
   });
   test('GitHub READMEs', require.context('./github', true, /\.md$/), {
-    options: { mangle: false }
+    options: { mangle: false, xhtml: true, omitLinefeed: true }
   });
 })

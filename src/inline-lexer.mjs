@@ -398,6 +398,9 @@ class InlineLexer {
   }
 
   captureBrokenTag() {
+    if (!this.options.fixBrokenTags) {
+      return;
+    }
     const cap = /^<(img|a)\s+(.*?)(\/?)>/i.exec(this.remaining);
     if (cap) {
       const tagName = cap[1];

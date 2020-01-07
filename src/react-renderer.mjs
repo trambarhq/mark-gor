@@ -1,4 +1,4 @@
-import { React } from 'react';
+import { default as React } from 'react';
 import { BaseRenderer } from './base-renderer.mjs';
 
 class ReactRenderer extends BaseRenderer {
@@ -14,12 +14,25 @@ class ReactRenderer extends BaseRenderer {
     return React.createElement(type, { key, ...props }, children);
   }
 
+  render(tokens) {
+    this.initialize();
+    const elements = this.renderTokens(tokens);
+    return React.createElement(React.Fragment, null, elements);
+  }
+
   renderTokens(token) {
     this.keyStack.push(this.nextKey);
     this.nextKey = 0;
     const elements = super.renderTokens(token);
     this.nextKey = this.keyStack.pop();
     return elements;
+  }
+
+  renderHtmlTag(token) {
+    console.log(token);
+  }
+
+  renderRaw(token) {
   }
 }
 

@@ -105,6 +105,13 @@ class Parser {
       }
     }
 
+    // process children
+    for (let token of tokens) {
+      if (token.children) {
+        this.convertHtmlTags(token.children);
+      }
+    }
+
     if (!containsHtmlTags) {
       return;
     }
@@ -213,12 +220,6 @@ class Parser {
             }
           }
         }
-      }
-    }
-
-    for (let token of tokens) {
-      if (token.children) {
-        this.convertHtmlTags(token.children);
       }
     }
   }

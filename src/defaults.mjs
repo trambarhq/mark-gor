@@ -5,7 +5,10 @@ const defaults = getDefaults();
 function getDefaults() {
   return {
     decodeEntities: true,
+    fixBrokenTags: true,
     normalizeTags: true,
+    omitLinefeed: true,
+    omitComment: true,
     ...imports.getDefaults()
   };
 }

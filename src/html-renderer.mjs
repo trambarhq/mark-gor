@@ -7,19 +7,23 @@ class HtmlRenderer extends BaseRenderer {
     let html = `<${type}`;
     if (props) {
       for (let [ key, value ] of Object.entries(props)) {
+        if (key === 'className') {
+          key = 'class';
+        } else if (key === 'defaultChecked') {
+          key = 'checked';
+        }
+        if (typeof(value) === 'string') {
+          if (key === 'src') {
+            // do nothing
+          } else if (key === 'href') {
+            value = escape(value);
+          } else {
+            value = escape(value, true);
+          }
+        } else if (typeof(value) === 'boolean') {
+          value = (value) ? '' : undefined;
+        }
         if (value != undefined) {
-          if (key === 'className') {
-              key = 'class';
-          }
-          if (typeof(value) === 'string') {
-            if (key === 'src') {
-              // do nothing
-            } else if (key === 'href') {
-              value = escape(value);
-            } else {
-              value = escape(value, true);
-            }
-          }
           html += ` ${key}="${value}"`;
         }
       }
@@ -29,7 +33,9 @@ class HtmlRenderer extends BaseRenderer {
     if (!isVoid) {
       // add linefeed before content
       if (options && options.before) {
-        html += options.before;
+        if (!this.options.omitLinefeed) {
+          html += options.before;
+        }
       }
 
       if (children) {
@@ -39,7 +45,9 @@ class HtmlRenderer extends BaseRenderer {
     }
     // add linefeed after tag
     if (options && options.after) {
-      html += options.after;
+      if (!this.options.omitLinefeed) {
+        html += options.after;
+      }
     }
     return new String(html);
   }
@@ -66,6 +74,11 @@ class HtmlRenderer extends BaseRenderer {
 
   renderHtmlTag(token) {
     const { html } = token;
+    if (this.options.omitComment) {
+      if (/<!--/.test(html)) {
+        return;
+      }
+    }
     return this.sanitize(html);
   }
 
@@ -118,7 +131,7 @@ class HtmlRenderer extends BaseRenderer {
   packageCode(highlighted) {
     return this.boxRawHtml(highlighted);
   }
-  
+
   cleanUrl(url) {
     if (url && this.options.mangle) {
       if (url.startsWith('mailto:')) {
