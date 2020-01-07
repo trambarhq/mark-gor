@@ -8,7 +8,8 @@ function getDefaults() {
     fixBrokenTags: true,
     normalizeTags: true,
     omitLinefeed: true,
-    omitComment: true,
+    omitDeclarations: true,
+    omitEmbeddedCode: true,
     omitTags: [ 'script', 'style', 'link', 'meta' ],
     ...imports.getDefaults()
   };

@@ -72,7 +72,8 @@ function test(desc, requireFunc, params) {
             normalizeTags: false,
             decodeEntities: false,
             omitLinefeed: false,
-            omitComment: false,
+            omitDeclarations: false,
+            omitEmbeddedCode: false,
           };
           const ours = parse(markdown, ourOptions);
           const theirs = html;

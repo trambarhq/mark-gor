@@ -179,10 +179,10 @@ class InlineLexer {
     if (cap) {
       const type = 'url';
       if (cap[2] === '@') {
-          const text = cap[0];
-          const url = text;
-          const href = `mailto:${text}`;
-          return { type, href, text };
+        const text = cap[0];
+        const url = text;
+        const href = `mailto:${text}`;
+        return { type, href, text };
       } else {
         // do extended autolink path validation
         let capZero = cap[0], prevCapZero;

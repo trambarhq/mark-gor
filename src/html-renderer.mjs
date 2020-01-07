@@ -74,8 +74,13 @@ class HtmlRenderer extends BaseRenderer {
 
   renderHtmlTag(token) {
     const { html } = token;
-    if (this.options.omitComment) {
-      if (/<!--/.test(html)) {
+    if (this.options.omitDeclarations) {
+      if (/^<!/.test(html)) {
+        return;
+      }
+    }
+    if (this.options.omitEmbeddedCode) {
+      if (/^<?/.test(html)) {
         return;
       }
     }
