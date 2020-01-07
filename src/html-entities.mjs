@@ -2240,14 +2240,16 @@ function decodeHtmlEntities(html) {
     return html;
   }
   const text = html.replace(/&(#?[\w\d]+);/g, (s, entity) => {
-    if (entity.charAt(0) === "#") {
+    const c1 = entity.charAt(0);
+    if (c1 === "#") {
+      const c2 = entity.charAt(1);
       let code;
-      if (entity.charAt(1) === 'x') {
+      if (c2 === 'x' || c2 === 'X') {
         code = parseInt(entity.substr(2), 16);
       } else {
         code = parseInt(entity.substr(1));
       }
-      if (code >= 0 && code <= 0xffff) {
+      if (code > 0 && code <= 0xffff) {
         return String.fromCharCode(code);
       } else if (code >= 0x10000 && code <= 0x10ffff){
         const x = code - 0x10000;
@@ -2255,7 +2257,7 @@ function decodeHtmlEntities(html) {
         const l = (x & 0x03ff) + 0xdc00;
         return String.fromCharCode(h) + String.fromCharCode(l);
       } else {
-        return s;
+        return isNaN(code) ? s : '\ufffd';
       }
     } else {
       return htmlEntityTable[entity] || s;

@@ -13,8 +13,6 @@ function convertAttributes(tagName, attrs) {
       value = parseStyle(value);
     } else if (isBooleanProp(tagName, name, attrs)) {
       value = true;
-    } else if (isNumericProp(tagName, name, attrs)) {
-      value = parseFloat(value);
     }
     props[name] = value;
   }
@@ -59,49 +57,6 @@ const booleanAttributes = [
 function isBooleanProp(tagName, attrName) {
   if (booleanAttributes.indexOf(attrName) !== -1) {
     return true;
-  }
-  return false;
-}
-
-const numericAttributes = [
-  'border',
-  'colSpan',
-  'cols',
-  'maxLength',
-  'minLength',
-  'rowSpan',
-  'rows',
-  'size',
-  'start',
-  'tabIndex',
-];
-
-const numericControlAttributes = [
-  'high',
-  'low',
-  'max',
-  'min',
-  'optimum',
-];
-
-const numericImageAttributes = [
-  'width',
-  'height',
-];
-
-function isNumericProp(tagName, attrName) {
-  if (numericAttributes.indexOf(attrName) !== -1) {
-    return true;
-  }
-  if (tagName === 'progress' || tagName === 'meter') {
-    if (numericControlAttributes.indexOf(attrName) !== -1) {
-      return true;
-    }
-  }
-  if (tagName === 'img' || tagName === 'video' || tagName === 'svg') {
-    if (numericImageAttributes.indexOf(attrName) !== -1) {
-      return true;
-    }
   }
   return false;
 }

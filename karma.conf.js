@@ -17,12 +17,14 @@ module.exports = function(config) {
     preprocessors: {
       'tests.bundle.js': [ 'webpack', 'sourcemap' ]
     },
+    middleware: [ 'surpassImageRequests' ],
     plugins: [
       'karma-chai',
       'karma-chrome-launcher',
       'karma-mocha',
       'karma-sourcemap-loader',
       'karma-webpack',
+      { 'middleware:surpassImageRequests': ['value', surpassImageRequests] },
     ],
     reporters: [ 'progress' ],
 
@@ -68,4 +70,12 @@ function parseTestPattern(argv) {
   } else {
     return [];
   }
+}
+
+function surpassImageRequests(req, res, next) {
+  if (/\bimage\b/.test(req.headers.accept)) {
+    res.writeHead(204, {});
+    return res.end();
+  }
+  next();
 }

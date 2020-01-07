@@ -72,9 +72,21 @@ class Parser {
     // could end up in separate html blocks
     for (let i = tokens.length - 1; i >= 0; i--) {
       const token = tokens[i];
-      if (token.type === 'html_block') {
+      if (token.type === 'html_block' || token.type === 'paragraph') {
         const list = token.children;
         tokens.splice(i, 1);
+        if (token.type === 'paragraph') {
+          // add <p> and </p>
+          tokens.splice(i, 0, {
+            type: 'html_tag',
+            html: '<p>',
+          });
+          i++;
+          tokens.splice(i, 0, {
+            type: 'html_tag',
+            html: '</p>',
+          });
+        }
         while (list.length > 0) {
           const child = list.pop();
           tokens.splice(i, 0, child);
@@ -87,7 +99,22 @@ class Parser {
       const child = tokens[i];
       if (child.type === 'html_tag') {
         // parse the tag now
-        const { tagType, tagName, attributes } = this.parseHtmlTag(child.html);
+        const { tagType, tagName, attributes, before, after } = this.parseHtmlTag(child.html);
+        if (before) {
+          tokens.splice(i, 0, {
+            type: 'text',
+            text: this.decodeEntities(before),
+            html: before,
+          });
+          i++;
+        }
+        if (after) {
+          tokens.splice(i + 1, 0, {
+            type: 'text',
+            text: this.decodeEntities(after),
+            html: after,
+          });
+        }
         if (tagType === 'start') {
           tokens[i] = {
             type: 'html_element',
@@ -262,28 +289,31 @@ class Parser {
   }
 
   parseHtmlTag(html) {
-    html = html.trim();
-    const startTag = /^<([a-zA-Z][\w.:-]*)([^>]*)>/;
-    const endTag = /^<\/([a-zA-Z][\w.:-]*)[^>]*>/;
+    const startTag = /^(\s*)<([a-zA-Z][\w.:-]*)([^>]*)>([\s\S]*)/;
+    const endTag = /^(\s*)<\/([a-zA-Z][\w.:-]*)[^>]*>([\s\S]*)/;
     let scap = startTag.exec(html);
     if (scap) {
-      const attribute = /^\s*([a-zA-Z:_][\w.:-]*)(?:\s*=\s*"([^"]*)"|\s*=\s*'([^']*)'|\s*=\s*([^\s"'=<>`]+))?/g;
+      const attribute = /\s*([a-zA-Z:_][\w.:-]*)(?:\s*=\s*"([^"]*)"|\s*=\s*'([^']*)'|\s*=\s*([^\s"'=<>`]+))?/g;
       const tagType = 'start';
-      const tagName = scap[1].toLowerCase();
+      const tagName = scap[2].toLowerCase();
+      const before = scap[1];
+      const after = scap[4];
       const attributes = {};
       let m;
-      while (m = attribute.exec(scap[2])) {
+      while (m = attribute.exec(scap[3])) {
         const name = m[1]
         const value = m[2] || m[3] || m[4] || '';
         attributes[name] = this.decodeEntities(value);
       }
-      return { tagType, tagName, attributes };
+      return { tagType, tagName, attributes, before, after };
     }
     let ecap = endTag.exec(html);
     if (ecap) {
       const tagType = 'end';
-      const tagName = ecap[1].toLowerCase();
-      return { tagType, tagName };
+      const tagName = ecap[2].toLowerCase();
+      const before = ecap[1];
+      const after = ecap[3];
+      return { tagType, tagName, before, after };
     }
     return {};
   }

@@ -14,23 +14,17 @@ const singleTest = '';
 const withKnownIssue = [
   'inline_html_advanced',             // invalid inline style
   'sanitizer_bypass',                 // not possible to bypass React security model
-  'nlrx-wjc-learn-vue-source-code'    // invalid open attribute
+  'nlrx-wjc-learn-vue-source-code',   // invalid open attribute
+  'cytopia-devilbox',                 // invalid inline style
+  'example 140 (HTML blocks)',        // can't create script tag in React
+  'example 141 (HTML blocks)',        // can't create style tag in React
+  'example 142 (HTML blocks)',        // can't create style tag in React
+  'example 145 (HTML blocks)',        // can't create style tag in React
+  'example 147 (HTML blocks)',        // can't create script tag in React
+  'example 612 (Raw HTML)',           // can't replicate completely broken HTML
 ];
 
 function test(desc, requireFunc, params) {
-  const mismatchList = [];
-  after(function() {
-    if (mismatchList.length > 0) {
-      console.warn(`During "${desc}", ${mismatchList.length} whitespace or entity mismatches:`);
-      for (let { title, ours, theirs, markdown } of mismatchList) {
-        console.warn(title);
-        if (singleTest) {
-          showDiff({ markdown, ours, theirs });
-        }
-      }
-      console.warn('\n');
-    }
-  })
   describe(desc, function() {
     const tests = [];
     const paths = requireFunc.keys();
@@ -44,7 +38,13 @@ function test(desc, requireFunc, params) {
           if (singleTest && !title.startsWith(singleTest)) {
             continue;
           }
-          const html = parseHtml(markdown, options);
+          const theirOptions = {
+            ...options,
+            normalizeTags: false,
+            decodeEntities: false,
+            omitLinefeed: true,
+          };
+          const html = parseHtml(markdown, theirOptions);
           tests.push({ title, markdown, options, html });
         }
       } else {
@@ -74,19 +74,22 @@ function test(desc, requireFunc, params) {
           const theirs = html
             // use hex entity instead of dec for single quote
             .replace(/&#39;/g, '&#x27;')
-            // remove 'px' from height and width attributes of <img>
-            .replace(/<img\s+.*?>/g, (s) => {
-              return s.replace(/\b(width|height)="(\d+)(px|%)"/g, (s, n, v) => {
-                return `${n}="${v}"`;
-              });
-            })
             // remove minor formatting differences with style definition
             .replace(/style="(.*?)"/g, (s, v) => {
               return `style="${v.replace(/\s*([:;])\s*/g, '$1').replace(/;\s*$/, '')}"`;
             });
-          if (ours !== theirs && !compareThruDOM(ours, theirs)) {
+          const ourDiv = document.createElement('DIV');
+          const theirDiv = document.createElement('DIV');
+          ourDiv.innerHTML = ours;
+          theirDiv.innerHTML = theirs;
+
+          if (!ourDiv.isEqualNode(theirDiv)) {
             if (singleTest) {
-              showDiff({ markdown, ours, theirs });
+              showDiff({
+                markdown,
+                ours: ourDiv.innerHTML,
+                theirs: theirDiv.innerHTML
+              });
             }
             expect.fail('Not matching');
           }
@@ -94,14 +97,6 @@ function test(desc, requireFunc, params) {
       });
     }
   });
-}
-
-function compareThruDOM(ours, theirs) {
-  const ourDiv = document.createElement('DIV');
-  const theirDiv = document.createElement('DIV');
-  ourDiv.innerHTML = ours;
-  theirDiv.innerHTML = theirs;
-  return ourDiv.isEqualNode(theirDiv);
 }
 
 function showDiff(results) {
@@ -113,13 +108,13 @@ function showDiff(results) {
 
 describe('React', function() {
   test('Marked specs', require.context('./specs', true, /\.md$/), {
-    options: { mangle: false, xhtml: true }
+    options: { mangle: false }
   });
   test('Commonmark', require.context('./specs/commonmark', true, /\.json/), {
     commonmark: true,
-    options: { mangle: false, xhtml: true }
+    options: { mangle: false }
   });
   test('GitHub READMEs', require.context('./github', true, /\.md$/), {
-    options: { mangle: false, xhtml: true }
+    options: { mangle: false }
   });
 })

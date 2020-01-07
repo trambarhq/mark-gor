@@ -43,10 +43,9 @@ class ReactRenderer extends BaseRenderer {
     return this.createElement(tagName, props, children);
   }
 
-  renderHtmlTag(token) {
-  }
-
   renderRaw(token) {
+    const { html } = token;
+    return html;
   }
 }
 
