@@ -178,6 +178,8 @@ const contentEvictionCheck = any([
   'tr',
 ]);
 
+const linefeedEliminationCheck = any([ 'pre' ]);
+
 export {
   voidCheck,
   terminationChecks,
@@ -186,6 +188,7 @@ export {
   textStyleCheck,
   styleClearanceCheck,
   contentEvictionCheck,
+  linefeedEliminationCheck,
 
   implicitElements,
 };

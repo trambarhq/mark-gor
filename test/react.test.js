@@ -6,8 +6,10 @@ import FrontMatter from 'front-matter';
 
 configure({ adapter: new Adapter() });
 
+import { parse as parseMarked } from 'marked';
 import { parse as parseHtml } from '../src/html.mjs';
 import { parse as parseReact } from '../src/react.mjs';
+import { contentEvictionCheck } from '../src/html-tag-attrs.mjs';
 
 const singleTest = '';
 
@@ -33,7 +35,7 @@ function test(desc, requireFunc, params) {
         const items = requireFunc(path);
         const options = { ...params.options, silent: true };
         for (let item of items) {
-          const { markdown, example, section } = item;
+          const { markdown, example, section, html: expected } = item;
           const title = `example ${(example + '').padStart(3, '0')} (${section})`;
           if (singleTest && !title.startsWith(singleTest)) {
             continue;
@@ -59,7 +61,13 @@ function test(desc, requireFunc, params) {
         if (options.sanitizer) {
           options.sanitizer = eval(options.sanitizer);
         }
-        const html = parseHtml(markdown, options);
+        const theirOptions = {
+          ...options,
+          normalizeTags: false,
+          decodeEntities: false,
+          omitLinefeed: true,
+        };
+        const html = parseHtml(markdown, theirOptions);
         tests.push({ title, markdown, options, html });
       }
     }
@@ -69,26 +77,35 @@ function test(desc, requireFunc, params) {
       }
       describe(`#${title}`, function() {
         it ('should produce the expected output', function() {
-          const element = parseReact(markdown, options);
-          const ours = renderToStaticMarkup(element);
           const theirs = html
             // use hex entity instead of dec for single quote
             .replace(/&#39;/g, '&#x27;')
-            // remove minor formatting differences with style definition
             .replace(/style="(.*?)"/g, (s, v) => {
-              return `style="${v.replace(/\s*([:;])\s*/g, '$1').replace(/;\s*$/, '')}"`;
+              // remove minor formatting differences with style definition
+              v = v.replace(/\s*([:;])\s*/g, '$1 ');
+              // remove import
+              v = v.replace(/\s*!important/g, '');
+              v = v.trim();
+              return `style="${v}"`;
             });
-          const ourDiv = document.createElement('DIV');
           const theirDiv = document.createElement('DIV');
-          ourDiv.innerHTML = ours;
           theirDiv.innerHTML = theirs;
+          // get rid of whitespaces between table tags
+          filterNonvisualWhitespace(theirDiv);
 
-          if (!ourDiv.isEqualNode(theirDiv)) {
+          const element = parseReact(markdown, options);
+          const ourDiv = document.createElement('DIV');
+          const wrapper = mount(element, { attachTo: ourDiv });
+
+          if (!ourDiv.isEqualNode(theirDiv) && ourDiv.innerHTML !== theirDiv.innerHTML) {
             if (singleTest) {
+              const ours = renderToStaticMarkup(element);
               showDiff({
                 markdown,
-                ours: ourDiv.innerHTML,
-                theirs: theirDiv.innerHTML
+                ours,
+                theirs,
+                ourDOM: ourDiv.innerHTML,
+                theirDOM: theirDiv.innerHTML,
               });
             }
             expect.fail('Not matching');
@@ -100,10 +117,31 @@ function test(desc, requireFunc, params) {
 }
 
 function showDiff(results) {
-  const { markdown, ours, theirs } = results;
+  const { markdown, ours, theirs, ourDOM, theirDOM } = results;
   console.log(`MARKDOWN:\n${markdown}\n`);
+  console.log(`MARKED:\n${parseMarked(markdown)}\n`);
   console.log(`OURS:\n${ours}\n`);
   console.log(`THEIRS:\n${theirs}\n`);
+  console.log(`OURS (DOM):\n${ourDOM}\n`);
+  console.log(`THEIRS (DOM):\n${theirDOM}\n`);
+}
+
+function filterNonvisualWhitespace(element) {
+  const filtering = contentEvictionCheck(element.tagName.toLowerCase());
+  let c = element.firstChild;
+  while (c) {
+    let n = c.nextSibling;
+    if (c.nodeType === 3) {
+      if (filtering) {
+        if (/^\s+$/.test(c.textContent)) {
+          c.remove();
+        }
+      }
+    } else if (c.nodeType === 1) {
+      filterNonvisualWhitespace(c);
+    }
+    c = n;
+  }
 }
 
 describe('React', function() {

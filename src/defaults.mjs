@@ -10,6 +10,7 @@ function getDefaults() {
     omitLinefeed: true,
     omitDeclarations: true,
     omitEmbeddedCode: true,
+    omitNonvisualWhitespace: true,
     omitTags: [ 'script', 'style', 'link', 'meta' ],
     ...imports.getDefaults()
   };

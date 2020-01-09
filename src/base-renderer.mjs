@@ -11,6 +11,7 @@ import {
   styleClearanceCheck,
   contentEvictionCheck,
   implicitElements,
+  linefeedEliminationCheck,
 } from './html-tag-attrs.mjs';
 
 class BaseRenderer {
@@ -559,6 +560,9 @@ class BaseRenderer {
           // create implicit elements
           this.createImplicitElements(openTag);
 
+          // remove white-space
+          this.removeExtraWhitespaces(openTag);
+
           // extract stray elements and place them in front of this one
           const evictions = this.evictStrayElements(openTag);
           for (let evicted of evictions) {
@@ -604,25 +608,33 @@ class BaseRenderer {
     while (index < children.length) {
       const child = children[index];
       if (child.type === 'html_element') {
+        // see if the tag would implicit create its (absent) container
+        const implicitTagName = implicitTagNames[child.tagName];
+
+        // see if current implicit tag should be closed
         if (implicitTag) {
+          let closing = false;
           // see if the child would terminate the implicitly created container
           if (this.isTerminatingElement(child.tagName, implicitTag.tagName)) {
+            closing = true;
+          }
+          if (implicitTagName && implicitTag.tagName !== implicitTagName) {
+            closing = true;
+          }
+          if (closing) {
+            this.removeExtraWhitespaces(implicitTag);
             implicitTag = null;
           }
         }
-        // see if the tag would implicit create its (absent) container
-        const implicitTagName = implicitTagNames[child.tagName];
-        if (implicitTagName) {
-          if (!implicitTag || implicitTag.tagName !== implicitTagName) {
-            implicitTag = {
-              type: 'html_element',
-              tagName: implicitTagName,
-              html: `<${implicitTagName}>`,
-              children: [],
-            };
-            children.splice(index, 0, implicitTag);
-            index++;
-          }
+        if (implicitTagName && !implicitTag) {
+          implicitTag = {
+            type: 'html_element',
+            tagName: implicitTagName,
+            html: `<${implicitTagName}>`,
+            children: [],
+          };
+          children.splice(index, 0, implicitTag);
+          index++;
         }
       }
       if (implicitTag) {
@@ -632,6 +644,37 @@ class BaseRenderer {
         implicitTag.children.push(child);
       } else {
         index++;
+      }
+    }
+    if (implicitTag) {
+      this.removeExtraWhitespaces(implicitTag);
+    }
+  }
+
+  removeExtraWhitespaces(element) {
+    const { tagName, children } = element;
+    if (this.isEvictingElement(tagName)) {
+      if (this.options.omitNonvisualWhitespace) {
+        let index = 0;
+        while (index < children.length) {
+          const child = children[index];
+          let filter = false;
+          if (child.type === 'text') {
+            filter = /^\s+$/.test(child.text);
+          }
+          if (filter) {
+            children.splice(index, 1);
+          } else {
+            index++;
+          }
+        }
+      }
+    } else if (this.isSwallowingElement(tagName)) {
+      for (let child of children) {
+        if (/^\n/.test(child.text)) {
+          child.text = child.text.substr(1);
+          child.html = child.html.substr(1);
+        }
       }
     }
   }
@@ -728,6 +771,10 @@ class BaseRenderer {
 
   isEvictingElement(tagName) {
     return contentEvictionCheck(tagName);
+  }
+
+  isSwallowingElement(tagName) {
+    return linefeedEliminationCheck(tagName);
   }
 
   getImplicitElements(parentTagName) {

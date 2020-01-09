@@ -224,5 +224,8 @@ describe('Normalization', function() {
     test('text in <ul>', `
 <ul>Hello<li>World</li></ul>
     `)
+    test('leading \n in <pre> ', `
+<pre>\n\nHello</pre>
+    `)
   })
 })
