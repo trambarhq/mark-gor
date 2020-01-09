@@ -33,12 +33,13 @@ class HtmlRenderer extends BaseRenderer {
 
   outputToken(token) {
     const f = this.outputFunctions[token.type];
-    if (!f) {
+    if (f) {
+      return f.call(this, token);
+    } else {
       if (process.env.NODE_ENV === 'development') {
         console.error(`Unknown tag type: ${token.type}`);
       }
     }
-    return f.call(this, token);
   }
 
   outputHtmlTag(token) {
@@ -58,7 +59,7 @@ class HtmlRenderer extends BaseRenderer {
   }
 
   outputHtmlElement(token) {
-    const { tagName, attributes, children } = token;
+    const { tagName, attributes } = token;
     let html = `<${tagName}`;
     if (attributes) {
       for (let [ key, value ] of Object.entries(attributes)) {
@@ -83,10 +84,8 @@ class HtmlRenderer extends BaseRenderer {
     } else {
       html += '>';
     }
-    if (!isVoid) {
-      if (children) {
-        html += this.outputTokens(children);
-      }
+    if (!isVoid && this.options.normalizeTags) {
+      html += this.outputTokens(token.children);
       html += `</${tagName}>`;
     }
     return html;

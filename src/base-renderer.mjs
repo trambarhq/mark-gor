@@ -116,10 +116,13 @@ class BaseRenderer {
 
   renderToken(token) {
     const f = this.renderFunctions[token.type];
-    if (!f) {
-      throw new Error('Unrecognized token: ' + token.type);
+    if (f) {
+      return f.call(this, token);
+    } else {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Unrecognized token: ' + token.type)
+      }
     }
-    return f.call(this, token);
   }
 
   renderInlineElement(token) {

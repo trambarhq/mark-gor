@@ -88,6 +88,7 @@ const captionTermination = any([
   'col',
 ]);
 const colgroupTermination = not([ 'col' ]);
+const aTermination = any([ 'a' ]);
 
 const terminationChecks = {
   p: pTermination,
@@ -108,6 +109,7 @@ const terminationChecks = {
   dd: ddTermination,
   caption: captionTermination,
   colgroup: colgroupTermination,
+  a: aTermination,
 };
 
 const ulContent = any([ 'li' ]);

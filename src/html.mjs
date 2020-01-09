@@ -1,4 +1,5 @@
 import { Parser } from './parser.mjs';
+import { HtmlParser } from './html-parser.mjs';
 import { BlockLexer } from './block-lexer.mjs';
 import { InlineLexer } from './inline-lexer.mjs';
 import { HtmlRenderer } from './html-renderer.mjs';
@@ -19,9 +20,21 @@ function parse(text, options) {
     return html;
 }
 
+function parseHtml(text, options) {
+    const parser = new HtmlParser(options);
+    const renderer = new HtmlRenderer(options);
+    const tokens = parser.parse(text);
+    const html = renderer.render(tokens);
+    return html;
+}
+
 export {
     parse,
+    parseHtml,
+    parseHtml as parseHTML,
     Parser,
+    HtmlParser,
+    HtmlParser as HTMLParser,
     BlockLexer,
     InlineLexer,
     HtmlRenderer,
