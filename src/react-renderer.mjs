@@ -6,46 +6,66 @@ class ReactRenderer extends BaseRenderer {
   constructor(options, props) {
     super(options, props);
 
-    this.nextKey = 0;
-    this.keyStack = [];
+    this.outputFunctions = {
+      html_tag: this.outputHtmlTag,
+      html_element: this.outputHtmlElement,
+      text: this.outputText,
+      raw: this.outputRaw,
+    };
   }
 
-  createElement(type, props, children) {
-    const key = this.nextKey++;
-    return React.createElement(type, { key, ...props }, children);
+  output() {
+    const elements = this.outputTokens(this.tokens);
+    return React.createElement(React.Fragment, null, elements);
+  }
+
+  outputTokens(tokens) {
+    const list = [];
+    if (tokens) {
+      for (let [ key, token ] of tokens.entries()) {
+        const output = this.outputToken(token, key);
+        if (output) {
+          list.push(output);
+        }
+      }
+    }
+    return (list.length > 0) ? list : undefined;
+  }
+
+  outputToken(token, key) {
+    const f = this.outputFunctions[token.type];
+    if (f) {
+      return f.call(this, token, key);
+    } else {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`Unknown tag type: ${token.type}`);
+      }
+    }
+  }
+
+  outputHtmlTag(token) {
+  }
+
+  outputHtmlElement(token, key) {
+    const { tagName, attributes, children } = token;
+    if (this.shouldOmit(tagName, attributes)) {
+      return;
+    }
+    const props = this.convertAttributes(tagName, attributes);
+    const elements = this.outputTokens(children);
+    return React.createElement(tagName, { key, ...props }, elements);
+  }
+
+  outputText(token) {
+    const { text } = token;
+    return text;
+  }
+
+  outputRaw(token) {
   }
 
   convertAttributes(tagName, attrs) {
     return convertAttributes(tagName, attrs);
-  }
-
-  render(tokens) {
-    this.initialize();
-    const elements = this.renderTokens(tokens);
-    return React.createElement(React.Fragment, null, elements);
-  }
-
-  renderTokens(token) {
-    this.keyStack.push(this.nextKey);
-    this.nextKey = 0;
-    const elements = super.renderTokens(token);
-    this.nextKey = this.keyStack.pop();
-    return elements;
-  }
-
-  renderHtmlElement(token) {
-    const { tagName, attributes } = token;
-    if (this.shouldOmit(tagName, attributes)) {
-      return;
-    }
-    const children = this.renderChildren(token);
-    const props = this.convertAttributes(tagName, attributes);
-    return this.createElement(tagName, props, children);
-  }
-
-  renderRaw(token) {
-    const { html } = token;
-    return html;
   }
 }
 

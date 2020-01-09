@@ -170,6 +170,14 @@ const styleClearanceCheck = any([
   'tr',
 ]);
 
+const contentEvictionCheck = any([
+  'table',
+  'tbody',
+  'tfoot',
+  'thead',
+  'tr',
+]);
+
 export {
   voidCheck,
   terminationChecks,
@@ -177,6 +185,7 @@ export {
   vivificationCheck,
   textStyleCheck,
   styleClearanceCheck,
+  contentEvictionCheck,
 
   implicitElements,
 };

@@ -215,5 +215,14 @@ describe('Normalization', function() {
     test('<img> in <img>', `
 <img>Hello <img>world</img></img>
     `)
+    test('text in <table>', `
+<table>Hello<tbody> !<tr> ?<td>world</td></tr></tbody></table>
+    `)
+    test('<pre> in <table>', `
+<table><pre>Hello</pre><tbody> !<tr> ?<td>world</td></tr></tbody></table>
+    `)
+    test('text in <ul>', `
+<ul>Hello<li>World</li></ul>
+    `)
   })
 })

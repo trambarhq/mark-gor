@@ -63,11 +63,6 @@ class HtmlRenderer extends BaseRenderer {
     let html = `<${tagName}`;
     if (attributes) {
       for (let [ key, value ] of Object.entries(attributes)) {
-        if (key === 'className') {
-          key = 'class';
-        } else if (key === 'defaultChecked') {
-          key = 'checked';
-        }
         if (typeof(value) === 'string') {
           value = escape(value, true);
         } else if (typeof(value) === 'boolean') {

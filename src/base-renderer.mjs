@@ -9,6 +9,7 @@ import {
   vivificationCheck,
   textStyleCheck,
   styleClearanceCheck,
+  contentEvictionCheck,
   implicitElements,
 } from './html-tag-attrs.mjs';
 
@@ -136,7 +137,7 @@ class BaseRenderer {
     const { langPrefix } = this.options;
     const className = (lang) ? langPrefix + lang : undefined;
     this.addElement('pre', null);
-    this.addElement('code', { className });
+    this.addElement('code', { class: className });
     if (highlighted) {
       this.addHighlighted(highlighted)
     } else {
@@ -253,10 +254,9 @@ class BaseRenderer {
 
   renderCheckbox(token) {
     const { checked } = token;
-    const defaultChecked = (checked) ? true : undefined;
     const disabled = true;
     const type = 'checkbox';
-    this.addElement('input', { defaultChecked, disabled, type });
+    this.addElement('input', { checked, disabled, type });
   }
 
   renderParagraph(token) {
@@ -546,7 +546,7 @@ class BaseRenderer {
           const openTag = stack.pop();
           if (stack.length !== newDepth) {
             // not the element explicitly targeted for closing
-            // might need to restore it later
+            // we might need to restore it later
             if (this.isStylingElement(openTag.tagName)) {
               styleTags.push({ ...openTag });
             }
@@ -554,8 +554,17 @@ class BaseRenderer {
           const openTagIndex = this.tokens.indexOf(openTag);
           const startIndex = openTagIndex + 1;
           openTag.children = this.tokens.splice(startIndex, index - startIndex);
-          this.createImplicitHtmlTags(openTag);
           index = openTagIndex + 1;
+
+          // create implicit elements
+          this.createImplicitElements(openTag);
+
+          // extract stray elements and place them in front of this one
+          const evictions = this.evictStrayElements(openTag);
+          for (let evicted of evictions) {
+            this.tokens.splice(index - 1, 0, evicted);
+            index++;
+          }
         }
 
         if (styleTags.length > 0) {
@@ -584,7 +593,7 @@ class BaseRenderer {
     }
   }
 
-  createImplicitHtmlTags(element) {
+  createImplicitElements(element) {
     const { tagName, children } = element;
     const implicitTagNames = this.getImplicitElements(tagName);
     if (!implicitTagNames) {
@@ -625,6 +634,30 @@ class BaseRenderer {
         index++;
       }
     }
+  }
+
+  evictStrayElements(element) {
+    const { tagName, children } = element;
+    const evictions = [];
+    if (this.isEvictingElement(tagName)) {
+      let index = 0;
+      while (index < children.length) {
+        const child = children[index];
+        let evict = false;
+        if (child.type === 'html_element') {
+          evict = !this.isExpectedContent(child.tagName, tagName);
+        } else if (child.type === 'text') {
+          evict = /\S/.test(child.text);
+        }
+        if (evict) {
+          children.splice(index, 1);
+          evictions.push(child);
+        } else {
+          index++;
+        }
+      }
+    }
+    return evictions;
   }
 
   parseHtmlTag(html) {
@@ -691,6 +724,10 @@ class BaseRenderer {
 
   isClearingElement(tagName) {
     return styleClearanceCheck(tagName);
+  }
+
+  isEvictingElement(tagName) {
+    return contentEvictionCheck(tagName);
   }
 
   getImplicitElements(parentTagName) {

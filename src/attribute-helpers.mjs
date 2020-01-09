@@ -21,6 +21,7 @@ function convertAttributes(tagName, attrs) {
 
 const camelCaseNames = {
   class: 'className',
+  checked: 'defaultChecked',
   colspan: 'colSpan',
   contenteditable: 'contentEditable',
   contextmenu: 'contextMenu',
