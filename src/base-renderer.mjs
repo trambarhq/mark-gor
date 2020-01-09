@@ -566,7 +566,7 @@ class BaseRenderer {
               if (this.isClearingElement(ahead.tagName)) {
                 break;
               }
-            } else if (ahead.type !== 'text') {
+            } else if (ahead.type === 'text') {
               insertionIndex = i;
               break;
             }

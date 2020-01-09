@@ -77,10 +77,17 @@ class HtmlRenderer extends BaseRenderer {
         }
       }
     }
-    if (this.isVoidElement(tagName) && this.options.xhtml) {
+    const isVoid = this.isVoidElement(tagName);
+    if (this.options.xhtml) {
       html += '/>';
     } else {
       html += '>';
+    }
+    if (!isVoid) {
+      if (children) {
+        html += this.outputTokens(children);
+      }
+      html += `</${tagName}>`;
     }
     return html;
   }
