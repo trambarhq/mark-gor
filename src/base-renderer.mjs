@@ -2,6 +2,15 @@ import { cleanUrl, escape, unescape } from './helpers.mjs';
 import { mergeDefaults } from './defaults.mjs';
 import { SluggerMarked } from './slugger.mjs';
 import { decodeHtmlEntities } from './html-entities.mjs';
+import {
+  voidCheck,
+  terminationChecks,
+  expectedContentChecks,
+  vivificationCheck,
+  textStyleCheck,
+  styleClearanceCheck,
+  implicitElements,
+} from './html-tag-attrs.mjs';
 
 class BaseRenderer {
   constructor(options, props) {
@@ -12,286 +21,374 @@ class BaseRenderer {
       this.sluggerClass = SluggerMarked;
     }
 
+    this.renderFunctions = {
+      text: this.renderText,
+      text_block: this.renderTextBlock,
+      space: this.renderSpace,
+      strong: this.renderStrong,
+      em: this.renderEmphasized,
+      codespan: this.renderCodeSpan,
+      del: this.renderDeleted,
+      br: this.renderLineBreak,
+      link: this.renderLink,
+      autolink: this.renderAutolink,
+      url: this.renderUrl,
+      image: this.renderImage,
+      html_block: this.renderHtmlBlock,
+      paragraph: this.renderParagraph,
+      code: this.renderCode,
+      blockquote: this.renderBlockquote,
+      html_tag: this.renderHtmlTag,
+      heading: this.renderHeading,
+      hr: this.renderHorizontalRule,
+      list: this.renderList,
+      list_item: this.renderListItem,
+      loose_item: this.renderLooseItem,
+      table: this.renderTable,
+      table_header: this.renderTableHeader,
+      table_row: this.renderTableRow,
+      table_header_cell: this.renderTableHeaderCell,
+      table_row_cell: this.renderTableRowCell,
+      def: this.renderRefDefinition,
+      raw: this.renderRaw,
+    };
     Object.assign(this, props);
   }
 
+  output() { /* abstract */ }
+
   initialize() {
+    this.tokens = [];
     this.slugger = new this.sluggerClass(this.options.headerIds);
   }
 
-  createElement(type, props, children) { /* abstract */ }
-
-  render(tokens) { /* abstract */ }
-
-  renderChildren(token) {
-    if (token.children && token.children.length > 0) {
-      return this.renderTokens(token.children);
+  finalize() {
+    const { normalizeTags } = this.options;
+    if (normalizeTags) {
+      this.normalize();
     }
+  }
+
+  addToken(token) {
+    this.tokens.push(token);
+  }
+
+  addText(text) {
+    const type = 'text';
+    this.addToken({ type, text });
+  }
+
+  addLinefeed() {
+    const { omitLinefeed } = this.options;
+    if (!omitLinefeed) {
+      this.addText('\n');
+    }
+  }
+
+  addHighlighted(highlighted) {
+  }
+
+  addElement(tagName, attributes) {
+    const type = 'html_element';
+    const children = null;
+    this.addToken({ type, tagName, attributes, children });
+  }
+
+  endElement(tagName) {
+    const type = 'html_element_end';
+    this.addToken({ type, tagName });
+  }
+
+  render(tokens) {
+    this.initialize();
+    this.renderTokens(tokens);
+    this.finalize();
+    return this.output();
   }
 
   renderTokens(tokens) {
-    const elements = [];
-    for (let token of tokens) {
-      const element = this.renderToken(token);
-      if (element instanceof Array) {
-        for (let e of element) {
-          elements.push(e);
-        }
-      } else if (element) {
-        elements.push(element);
+    if (tokens) {
+      for (let token of tokens) {
+        this.renderToken(token);
       }
     }
-    return elements;
   }
 
   renderToken(token) {
-    switch (token.type) {
-      case 'text': return this.renderText(token);
-      case 'text_block': return this.renderTextBlock(token);
-      case 'space': return this.renderSpace(token);
-      case 'strong': return this.renderStrong(token);
-      case 'em': return this.renderEmphasized(token);
-      case 'codespan': return this.renderCodeSpan(token);
-      case 'del': return this.renderDeleted(token);
-      case 'br': return this.renderLineBreak(token);
-      case 'link': return this.renderLink(token);
-      case 'autolink': return this.renderAutolink(token);
-      case 'url': return this.renderUrl(token);
-      case 'image': return this.renderImage(token);
-      case 'html_block': return this.renderHtmlBlock(token);
-      case 'paragraph': return this.renderParagraph(token);
-      case 'code': return this.renderCode(token);
-      case 'blockquote': return this.renderBlockquote(token);
-      case 'html_tag': return this.renderHtmlTag(token);
-      case 'html_element': return this.renderHtmlElement(token);
-      case 'heading': return this.renderHeading(token);
-      case 'hr': return this.renderHorizontalRule(token);
-      case 'list': return this.renderList(token);
-      case 'list_item': return this.renderListItem(token);
-      case 'loose_item': return this.renderLooseItem(token);
-      case 'table': return this.renderTable(token);
-      case 'table_header': return this.renderTableHeader(token);
-      case 'table_row': return this.renderTableRow(token);
-      case 'table_header_cell': return this.renderTableHeaderCell(token);
-      case 'table_row_cell': return this.renderTableRowCell(token);
-      case 'def': return this.renderRefDefinition(token);
-      case 'raw': return this.renderRaw(token);
-      case 'checkbox': return this.renderCheckbox(token);
-      default:
-        throw new Error('Unrecognized token: ' + token.type);
+    const f = this.renderFunctions[token.type];
+    if (!f) {
+      throw new Error('Unrecognized token: ' + token.type);
     }
+    return f.call(this, token);
+  }
+
+  renderInlineElement(token) {
+    this.addElement(token.type, null);
+    this.renderTokens(token.children);
+    this.endElement(token.type);
   }
 
   renderCode(token) {
     const { text, lang, highlighted } = token;
     const { langPrefix } = this.options;
-    const props = (lang) ? { className: langPrefix + lang } : null;
-    const code = (highlighted) ? this.packageCode(highlighted) : text;
-    const codespan = this.createElement('code', props, code);
-    return this.createElement('pre', null, [ codespan ], { after: (lang) ? '\n' : '' });
+    const className = (lang) ? langPrefix + lang : undefined;
+    this.addElement('pre', null);
+    this.addElement('code', { className });
+    if (highlighted) {
+      this.addHighlighted(highlighted)
+    } else {
+      this.addText(text);
+    }
+    this.endElement('code');
+    this.endElement('pre');
+    if (lang) {
+      this.addLinefeed();
+    }
   }
 
   renderBlockquote(token) {
-    const children = this.renderChildren(token);
-    return this.createElement('blockquote', null, children, { before: '\n', after: '\n' });
+    this.addElement('blockquote');
+    this.addLinefeed();
+    this.renderTokens(token.children);
+    this.endElement('blockquote');
+    this.addLinefeed();
   }
 
   renderHtmlTag(token) {
-    // raw HTML requires special handling
-  }
-
-  renderHtmlElement(token) {
-    const { tagName, attributes } = token;
-    if (this.shouldOmit(tagName, attributes)) {
-      return;
+    const { normalizeTags } = this.options;
+    if (normalizeTags) {
+      const { html } = token;
+      const tag = this.parseHtmlTag(html);
+      const { tagType, tagName, attributes, before, after } = tag;
+      if (before) {
+        this.addText(before);
+      }
+      if (tagType === 'start') {
+        this.addElement(tagName, attributes);
+      } else if (tagType === 'end') {
+        this.endElement(tagName);
+      }
+      if (after) {
+        this.addText(after);
+      }
+    } else {
+      this.addToken(token);
     }
-    const children = this.renderChildren(token);
-    return this.createElement(tagName, attributes, children);
   }
 
   renderHeading(token) {
-    const type = `h${token.depth}`;
+    const tagName = `h${token.depth}`;
     const id = this.generateHeadingId(token);
-    const props = (id !== undefined) ? { id } : null;
-    const children = this.renderChildren(token);
-    return this.createElement(type, props, children, { after: '\n' });
+    this.addElement(tagName, { id });
+    this.renderTokens(token.children);
+    this.endElement(tagName);
+    this.addLinefeed();
   }
 
   renderHorizontalRule(token) {
-    return this.createElement('hr', null, null, { after: '\n' });
+    this.addElement('hr');
+    this.addLinefeed();
   }
 
   renderList(token) {
-    const { ordered, start } = token;
+    const { ordered, first } = token;
     const type = (ordered) ? 'ol' : 'ul';
-    const props = (ordered && start !== 1) ? { start } : null;
-    const children = this.renderChildren(token);
-    return this.createElement(type, props, children, { before: '\n', after: '\n' });
+    const start = (first !== 1) ? first : undefined;
+    this.addElement(type, { start });
+    this.addLinefeed();
+    this.renderTokens(token.children);
+    this.endElement(type);
+    this.addLinefeed();
   }
 
   renderListItem(token) {
     const { checked, loose } = token;
-    let children;
-    if (checked === undefined) {
-      children = this.renderChildren(token);
-    } else {
-      // put checkbox in front of content, inserting it into the list of
-      // inline elements if that's what follow; otherwise (if the list item
-      // holds a block element), insert it into a separate block
-      const checkbox = { type: 'checkbox', checked };
-      const space = { type: 'text', text: ' ', html: ' ' };
-      let tokens = token.children.slice();
-      const first = tokens[0];
-      if (first && (first.type === 'text_block' || first.type === 'paragraph')) {
-        const tb = { type: first.type, children: tokens[0].children.slice() };
-        tb.children.unshift(space);
-        if (loose && !this.options.omitLinefeed) {
-          tb.children.unshift(space);
+    this.addElement('li', null);
+    if (checked !== undefined) {
+      // put checkbox in front of content, inserting it before inline elements
+      // if that's what follow; otherwise (i.e. the list item holds a block
+      // element), insert it into a separate block
+      const child = token.children[0];
+      if (child && (child.type === 'text_block' || child.type === 'paragraph')) {
+        if (child.type === 'paragraph') {
+          this.addElement('p');
         }
-        tb.children.unshift(checkbox);
-        tokens[0] = tb;
+        this.renderCheckbox(token);
+        this.addText(' ');
+        if (loose && !this.options.omitLinefeed) {
+          this.addText(' ');
+        }
+        this.renderTokens(child.children);
+        if (child.type === 'paragraph') {
+          this.endElement('p');
+          this.addLinefeed();
+        }
+        this.renderTokens(token.children.slice(1));
       } else {
         // put p tag around checkbox if item is loose
-        const tb = {
-          type: (loose) ? 'paragraph' : 'text_block',
-          children: [ checkbox, space ]
-        };
-        tokens.unshift(tb);
+        if (loose) {
+          this.addElement('p');
+        }
+        this.renderCheckbox(token);
+        this.addText(' ');
+        if (loose) {
+          this.endElement('p');
+          this.addLinefeed();
+        }
+        this.renderTokens(token.children);
       }
-      children = this.renderTokens(tokens);
+    } else {
+      this.renderTokens(token.children);
     }
-    return this.createElement('li', null, children, { after: '\n' });
+    this.endElement('li');
+    this.addLinefeed();
   }
 
   renderLooseItem(token) {
-    return this.renderListItem(token);
+    this.renderListItem(token);
   }
 
   renderCheckbox(token) {
     const { checked } = token;
-    const props = {
-      defaultChecked: (checked) ? true : undefined,
-      disabled: true,
-      type: 'checkbox',
-    };
-    return this.createElement('input', props, null);
+    const defaultChecked = (checked) ? true : undefined;
+    const disabled = true;
+    const type = 'checkbox';
+    this.addElement('input', { defaultChecked, disabled, type });
   }
 
   renderParagraph(token) {
-    const children = this.renderChildren(token);
-    return this.createElement('p', null, children, { after: '\n' });
+    this.addElement('p');
+    this.renderTokens(token.children);
+    this.endElement('p');
+    this.addLinefeed();
   }
 
   renderTable(token) {
-    const head = this.renderTableHead(token);
-    const body = this.renderTableBody(token);
-    const children = [ head, body ];
-    return this.createElement('table', null, children, { before: '\n', after: '\n' });
+    this.addElement('table');
+    this.addLinefeed();
+    this.renderTableHead(token);
+    this.renderTableBody(token);
+    this.endElement('table');
+    this.addLinefeed();
   }
 
   renderTableHead(token) {
-    const children = this.renderTokens(token.children.slice(0, 1));
-    return this.createElement('thead', null, children, { before: '\n', after: '\n' });
+    const { children } = token;
+    this.addElement('thead');
+    this.addLinefeed();
+    this.renderTokens(children.slice(0, 1));
+    this.endElement('thead');
+    this.addLinefeed();
   }
 
   renderTableBody(token) {
-    const children = this.renderTokens(token.children.slice(1));
-    if (children.length > 0) {
-      return this.createElement('tbody', null, children);
+    const { children } = token;
+    if (children.length > 1) {
+      this.addElement('tbody');
+      this.renderTokens(children.slice(1));
+      this.endElement('tbody');
     }
   }
 
   renderTableRow(token) {
-    const children = this.renderChildren(token);
-    return this.createElement('tr', null, children, { before: '\n', after: '\n' });
+    this.addElement('tr');
+    this.addLinefeed();
+    this.renderTokens(token.children);
+    this.endElement('tr');
+    this.addLinefeed();
   }
 
   renderTableHeader(token) {
-    return this.renderTableRow(token);
+    this.renderTableRow(token);
   }
 
   renderTableHeaderCell(token) {
     const { align } = token;
-    const props = (align) ? { align } : null;
-    const children = this.renderChildren(token);
-    return this.createElement('th', props, children, { after: '\n' });
+    this.addElement('th', { align });
+    this.renderTokens(token.children);
+    this.endElement('th');
+    this.addLinefeed();
   }
 
   renderTableRowCell(token) {
     const { align } = token;
-    const props = (align) ? { align } : null;
-    const children = this.renderChildren(token);
-    return this.createElement('td', props, children, { after: '\n' });
+    this.addElement('td', { align });
+    this.renderTokens(token.children);
+    this.endElement('td');
+    this.addLinefeed();
   }
 
   renderStrong(token) {
-    const children = this.renderChildren(token);
-    return this.createElement('strong', null, children);
+    this.renderInlineElement(token);
   }
 
   renderEmphasized(token) {
-    const children = this.renderChildren(token);
-    return this.createElement('em', null, children);
+    this.renderInlineElement(token);
   }
 
   renderCodeSpan(token) {
     const { text } = token;
-    const children = text;
-    return this.createElement('code', null, children);
+    this.addElement('code');
+    this.addText(text);
+    this.endElement('code');
   }
 
   renderLineBreak(token) {
-    return this.createElement('br');
+    this.addElement('br');
   }
 
   renderDeleted(token) {
-    const children = this.renderChildren(token);
-    return this.createElement('del', null, children);
+    this.renderInlineElement(token);
   }
 
   renderUrl(token) {
     const { href: hrefUnescaped, text } = token;
-    const children = text;
     const href = this.cleanUrl(hrefUnescaped, false, true);
-    if (href === null) {
-      return children;
+    if (href !== null) {
+      this.addElement('a', { href });
     }
-    return this.createElement('a', { href }, children);
+    this.addText(text);
+    if (href !== null) {
+      this.endElement('a');
+    }
   }
 
   renderAutolink(token) {
-    return this.renderUrl(token);
+    this.renderUrl(token);
   }
 
   renderLink(token) {
     const { hrefHtml, title } = token;
-    const children = this.renderChildren(token);
     const href = this.cleanUrl(hrefHtml, true, true);
-    if (href === null) {
-      return children;
+    if (href !== null) {
+      this.addElement('a', { href, title });
     }
-    return this.createElement('a', { href, title }, children);
+    this.renderTokens(token.children);
+    if (href !== null) {
+      this.endElement('a');
+    }
   }
 
   renderImage(token) {
-    const { hrefHtml, title, text } = token;
+    const { hrefHtml, title, text: alt } = token;
     const src = this.cleanUrl(hrefHtml, true, true);
-    if (src === null) {
-      return text;
+    if (src !== null) {
+      this.addElement('img', { src, alt, title });
+    } else {
+      this.addText(alt);
     }
-    return this.createElement('img', { src, alt: text, title });
   }
 
   renderText(token) {
-    return token.text;
+    this.addToken(token);
   }
 
   renderHtmlBlock(token) {
-    return this.renderChildren(token);
+    this.renderTokens(token.children);
   }
 
   renderTextBlock(token) {
-    return this.renderChildren(token);
+    this.renderTokens(token.children);
   }
 
   renderRefDefinition(token) {
@@ -301,16 +398,17 @@ class BaseRenderer {
   }
 
   renderRaw(token) {
+    this.addToken(token);
   }
 
-  renderPlainText(token) {
+  getPlainText(token) {
     const { text, html, children } = token;
     if (text) {
       return text;
     } else if (children) {
       const content = [];
       for (let child of children) {
-        content.push(this.renderPlainText(child));
+        content.push(this.getPlainText(child));
       }
       return content.join('');
     } else {
@@ -318,7 +416,7 @@ class BaseRenderer {
     }
   }
 
-  renderMarkedHeaderText(token) {
+  getMarkedHeaderText(token) {
     const { text, html, children } = token;
     if (text) {
       // the Marked slugger expects text with HTML entities
@@ -326,7 +424,7 @@ class BaseRenderer {
     } else if (children) {
       const content = [];
       for (let child of children) {
-        content.push(this.renderMarkedHeaderText(child));
+        content.push(this.getMarkedHeaderText(child));
       }
       return content.join('');
     } else if (html) {
@@ -342,10 +440,10 @@ class BaseRenderer {
     if (headerIds) {
       let plain;
       if (this.slugger instanceof SluggerMarked) {
-        plain = this.renderMarkedHeaderText(token)
+        plain = this.getMarkedHeaderText(token)
         plain = unescape(plain);
       } else {
-        plain = this.renderPlainText(token);
+        plain = this.getPlainText(token);
       }
       name = this.slugger.slug(plain);
       return headerPrefix + name;
@@ -360,7 +458,7 @@ class BaseRenderer {
     }
     let cleaned = cleanUrl(sanitize, baseUrl, url);
     if (unescapeAfter) {
-      cleaned = decodeHtmlEntities(cleaned);
+      cleaned = this.decodeEntities(cleaned);
     }
     return cleaned;
   }
@@ -376,8 +474,224 @@ class BaseRenderer {
     }
   }
 
-  packageCode(highlighted) {
-    return highlighted;
+  normalize() {
+    // push element onto stack when its start tag is encountered; pop it off
+    // when its end tag is seen (when tags are properly paired up)
+    const stack = [];
+    let index = 0;
+    for (;;) {
+      const token = this.tokens[index];
+      let newDepth = -1;
+      if (token) {
+        if (token.type == 'html_element') {
+          // see if the tag closes an element that permits omission of end-tag
+          for (let i = stack.length - 1; i >= 0; i--) {
+            if (this.isTerminatingElement(token.tagName, stack[i].tagName)) {
+              newDepth = i;
+              break;
+            } else if(this.isExpectedContent(token.tagName, stack[i].tagName)) {
+              // don't go further up the stack when the element is expected
+              // (e.g. <li> in <ul>)
+              break;
+            }
+          }
+          if (newDepth === -1) {
+            // don't push onto stack when element is void (e.g. <img>)
+            if (!this.isVoidElement(token.tagName)) {
+              stack.push(token);
+            }
+            index++;
+          }
+        } else if (token.type === 'html_element_end') {
+          // see if the end tag closes an element in the stack
+          for (let i = stack.length - 1; i >= 0; i--) {
+            if (token.tagName === stack[i].tagName) {
+              newDepth = i;
+              break;
+            }
+          }
+          if (newDepth !== -1 || !this.isVivificatingElement(token.tagName)) {
+            // toss the end tag
+            this.tokens.splice(index, 1);
+          } else {
+            // insert empty element to match browser behavior
+            this.tokens[index] = {
+              type: 'html_element',
+              tagName: token.tagName,
+              attributes: {},
+              children: []
+            };
+            index++;
+          }
+        } else {
+          // skip over tokens that aren't start or end tags
+          index++;
+        }
+      } else {
+        if (stack.length > 0) {
+          // we're out of tokens--pop everything off the stack
+          newDepth = 0;
+        } else {
+          break;
+        }
+      }
+      if (newDepth !== -1) {
+        // pop elements off the stack and insert children into them,
+        // keeping an eye out for text styling tags
+        const styleTags = [];
+        while (stack.length > newDepth) {
+          const openTag = stack.pop();
+          if (stack.length !== newDepth) {
+            // not the element explicitly targeted for closing
+            // might need to restore it later
+            if (this.isStylingElement(openTag.tagName)) {
+              styleTags.push({ ...openTag });
+            }
+          }
+          const openTagIndex = this.tokens.indexOf(openTag);
+          const startIndex = openTagIndex + 1;
+          openTag.children = this.tokens.splice(startIndex, index - startIndex);
+          this.createImplicitHtmlTags(openTag);
+          index = openTagIndex + 1;
+        }
+
+        if (styleTags.length > 0) {
+          // insert the styling tags where text content start again
+          let insertionIndex = -1;
+          for (let i = index; i < this.tokens.length; i++) {
+            const ahead = this.tokens[i];
+            if (ahead.type === 'html_element') {
+              // that is, unless we encounter a clearing table
+              // <table> is the only one, I think
+              if (this.isClearingElement(ahead.tagName)) {
+                break;
+              }
+            } else if (ahead.type !== 'text') {
+              insertionIndex = i;
+              break;
+            }
+          }
+          if (insertionIndex !== -1) {
+            for (let styleTag of styleTags) {
+              this.tokens.splice(insertionIndex, 0, styleTag);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  createImplicitHtmlTags(element) {
+    const { tagName, children } = element;
+    const implicitTagNames = this.getImplicitElements(tagName);
+    if (!implicitTagNames) {
+      return;
+    }
+    let index = 0;
+    let implicitTag = null;
+    while (index < children.length) {
+      const child = children[index];
+      if (child.type === 'html_element') {
+        if (implicitTag) {
+          // see if the child would terminate the implicitly created container
+          if (this.isTerminatingElement(child.tagName, implicitTag.tagName)) {
+            implicitTag = null;
+          }
+        }
+        // see if the tag would implicit create its (absent) container
+        const implicitTagName = implicitTagNames[child.tagName];
+        if (implicitTagName) {
+          if (!implicitTag || implicitTag.tagName !== implicitTagName) {
+            implicitTag = {
+              type: 'html_element',
+              tagName: implicitTagName,
+              html: `<${implicitTagName}>`,
+              children: [],
+            };
+            children.splice(index, 0, implicitTag);
+            index++;
+          }
+        }
+      }
+      if (implicitTag) {
+        // remove the child and place it in the implicit element instead
+        // (e.g. <tr> goes into <tbody>)
+        children.splice(index, 1);
+        implicitTag.children.push(child);
+      } else {
+        index++;
+      }
+    }
+  }
+
+  parseHtmlTag(html) {
+    const startTag = /^(\s*)<([a-zA-Z][\w.:-]*)([^>]*)>([\s\S]*)/;
+    const endTag = /^(\s*)<\/([a-zA-Z][\w.:-]*)[^>]*>([\s\S]*)/;
+    let scap = startTag.exec(html);
+    if (scap) {
+      const attribute = /\s*([a-zA-Z:_][\w.:-]*)(?:\s*=\s*"([^"]*)"|\s*=\s*'([^']*)'|\s*=\s*([^\s"'=<>`]+))?/g;
+      const tagType = 'start';
+      const tagName = scap[2].toLowerCase();
+      const before = scap[1];
+      const after = scap[4];
+      const attributes = {};
+      let m;
+      while (m = attribute.exec(scap[3])) {
+        const name = m[1]
+        const value = m[2] || m[3] || m[4] || '';
+        attributes[name] = this.decodeEntities(value);
+      }
+      return { tagType, tagName, attributes, before, after };
+    }
+    let ecap = endTag.exec(html);
+    if (ecap) {
+      const tagType = 'end';
+      const tagName = ecap[2].toLowerCase();
+      const before = ecap[1];
+      const after = ecap[3];
+      return { tagType, tagName, before, after };
+    }
+    return {};
+  }
+
+  decodeEntities(html) {
+    return decodeHtmlEntities(html);
+  }
+
+  isVoidElement(tagName) {
+    return voidCheck(tagName);
+  }
+
+  isTerminatingElement(tagName, openTagName) {
+    const f = terminationChecks[openTagName];
+    if (f) {
+      return f(tagName);
+    }
+    return false;
+  }
+
+  isExpectedContent(tagName, parentTagName) {
+    const f = expectedContentChecks[parentTagName];
+    if (f) {
+      return f(tagName);
+    }
+    return false;
+  }
+
+  isVivificatingElement(tagName) {
+    return vivificationCheck(tagName);
+  }
+
+  isStylingElement(tagName) {
+    return textStyleCheck(tagName);
+  }
+
+  isClearingElement(tagName) {
+    return styleClearanceCheck(tagName);
+  }
+
+  getImplicitElements(parentTagName) {
+    return implicitElements[parentTagName];
   }
 }
 

@@ -10,7 +10,7 @@ function not(list) {
   };
 }
 
-const voidTags = [
+const voidCheck = any([
   'area',
   'base',
   'br',
@@ -27,7 +27,7 @@ const voidTags = [
   'source',
   'track',
   'wbr'
-];
+]);
 
 const pTermination = any([
   'address',
@@ -168,48 +168,13 @@ const styleClearanceCheck = any([
   'tr',
 ]);
 
-function isVoidElement(tagName) {
-  return voidTags.indexOf(tagName) !== -1;
-}
-
-function isTerminatingElement(tagName, openTagName) {
-  const f = terminationChecks[openTagName];
-  if (f) {
-    return f(tagName);
-  }
-  return false;
-}
-
-function isExpectedContent(tagName, parentTagName) {
-  const f = expectedContentChecks[parentTagName];
-  if (f) {
-    return f(tagName);
-  }
-  return false;
-}
-
-function isVivificatingElement(tagName) {
-  return vivificationCheck(tagName);
-}
-
-function isStylingElement(tagName) {
-  return textStyleCheck(tagName);
-}
-
-function isClearingElement(tagName) {
-  return styleClearanceCheck(tagName);
-}
-
-function getImplicitElements(parentTagName) {
-  return implicitElements[parentTagName];
-}
-
 export {
-  isVoidElement,
-  isTerminatingElement,
-  isVivificatingElement,
-  isStylingElement,
-  isExpectedContent,
-  isClearingElement,
-  getImplicitElements,
+  voidCheck,
+  terminationChecks,
+  expectedContentChecks,
+  vivificationCheck,
+  textStyleCheck,
+  styleClearanceCheck,
+
+  implicitElements,
 };

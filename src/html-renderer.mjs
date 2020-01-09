@@ -1,13 +1,67 @@
 import { escape } from './helpers.mjs';
 import { BaseRenderer } from './base-renderer.mjs';
-import { isVoidElement } from './html-tag-attrs.mjs';
-import { decodeHtmlEntities } from './html-entities.mjs';
 
 class HtmlRenderer extends BaseRenderer {
-  createElement(type, props, children, options) {
-    let html = `<${type}`;
-    if (props) {
-      for (let [ key, value ] of Object.entries(props)) {
+  constructor(options, props) {
+    super(options, props);
+
+    this.outputFunctions = {
+      html_tag: this.outputHtmlTag,
+      html_element: this.outputHtmlElement,
+      html_element_end: this.outputHtmlElementEnd,
+      text: this.outputText,
+      raw: this.outputRaw,
+    };
+  }
+
+  output() {
+    return this.outputTokens(this.tokens);
+  }
+
+  outputTokens(tokens) {
+    const list = [];
+    if (tokens) {
+      for (let token of tokens) {
+        const output = this.outputToken(token);
+        if (output) {
+          list.push(output);
+        }
+      }
+    }
+    return list.join('');
+  }
+
+  outputToken(token) {
+    const f = this.outputFunctions[token.type];
+    if (!f) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`Unknown tag type: ${token.type}`);
+      }
+    }
+    return f.call(this, token);
+  }
+
+  outputHtmlTag(token) {
+    const { html } = token;
+    const { omitDeclarations, omitEmbeddedCode } = this.options;
+    if (omitDeclarations) {
+      if (/^\s*<!/.test(html)) {
+        return '';
+      }
+    }
+    if (omitEmbeddedCode) {
+      if (/^\s*<\?/.test(html)) {
+        return '';
+      }
+    }
+    return this.sanitize(html);
+  }
+
+  outputHtmlElement(token) {
+    const { tagName, attributes, children } = token;
+    let html = `<${tagName}`;
+    if (attributes) {
+      for (let [ key, value ] of Object.entries(attributes)) {
         if (key === 'className') {
           key = 'class';
         } else if (key === 'defaultChecked') {
@@ -23,129 +77,65 @@ class HtmlRenderer extends BaseRenderer {
         }
       }
     }
-    const isVoid = isVoidElement(type);
-    html += (isVoid && this.options.xhtml) ? '/>': '>';
-    if (!isVoid) {
-      // add linefeed before content
-      if (options && options.before) {
-        if (!this.options.omitLinefeed) {
-          html += options.before;
-        }
-      }
-
-      if (children) {
-        html += this.mergeElements(children);
-      }
-      html += `</${type}>`;
-    }
-    // add linefeed after tag
-    if (options && options.after) {
-      if (!this.options.omitLinefeed) {
-        html += options.after;
-      }
-    }
-    return new String(html);
-  }
-
-  mergeElements(elements) {
-    const content = [];
-    if (!(elements instanceof Array)) {
-      elements = [ elements ];
-    }
-    for (let element of elements) {
-      if (typeof(element) === 'string') {
-        element = escape(element, true);
-      }
-      content.push(element);
-    }
-    return content.join('');
-  }
-
-  render(tokens) {
-    this.initialize();
-    const elements = this.renderTokens(tokens);
-    return this.mergeElements(elements);
-  }
-
-  renderHtmlTag(token) {
-    const { html } = token;
-    if (this.options.omitDeclarations) {
-      if (/^\s*<!/.test(html)) {
-        return;
-      }
-    }
-    if (this.options.omitEmbeddedCode) {
-      if (/^\s*<\?/.test(html)) {
-        return;
-      }
-    }
-    return this.sanitize(html);
-  }
-
-  renderText(token) {
-    if (!this.options.decodeEntities) {
-      return this.boxRawHtml(escape(token.html));
-    }
-    return super.renderText(token);
-  }
-
-  renderUrl(token) {
-    if (!this.options.decodeEntities) {
-      const { href: hrefUnescaped, text } = token;
-      const children = text;
-      const hrefHtml = this.cleanUrl(hrefUnescaped, false, false);
-      if (hrefHtml === null) {
-        return children;
-      }
-      const href = this.boxRawHtml(escape(hrefHtml));
-      return this.createElement('a', { href }, children);
-    }
-    return super.renderUrl(token);
-  }
-
-  renderLink(token) {
-    if (!this.options.decodeEntities) {
-      const { hrefHtml: hrefEscaped, titleHtml } = token;
-      const children = this.renderChildren(token);
-      const hrefHtml = this.cleanUrl(hrefEscaped, true, false);
-      if (hrefHtml === null) {
-        return children;
-      }
-      const title = this.boxRawHtml(escape(titleHtml));
-      const href = this.boxRawHtml(escape(hrefHtml));
-      return this.createElement('a', { href, title }, children);
-    }
-    return super.renderLink(token);
-  }
-
-  renderImage(token) {
-    if (!this.options.decodeEntities) {
-      const { hrefHtml: hrefEscaped, titleHtml, text } = token;
-      const srcHtml = this.cleanUrl(hrefEscaped, true, false);
-      if (srcHtml === null) {
-        return text;
-      }
-      const title = this.boxRawHtml(escape(titleHtml));
-      const src = this.boxRawHtml(srcHtml);
-      return this.createElement('img', { src, alt: text, title });
-    }
-    return super.renderImage(token);
-  }
-
-  renderRaw(token) {
-    const { html } = token;
-    return this.sanitize(html);
-  }
-
-  boxRawHtml(html) {
-    if (html) {
-      return new String(html);
+    if (this.isVoidElement(tagName) && this.options.xhtml) {
+      html += '/>';
+    } else {
+      html += '>';
     }
     return html;
   }
 
-  packageCode(highlighted) {
-    return this.boxRawHtml(highlighted);
+  outputHtmlElementEnd(token) {
+    const { tagName } = token;
+    return `</${tagName}>`;
+  }
+
+  outputText(token) {
+    const { text, html } = token;
+    const { decodeEntities } = this.options;
+    if (decodeEntities || html === undefined) {
+      return escape(text, true);
+    } else {
+      return escape(html);
+    }
+  }
+
+  outputRaw(token) {
+    return this.sanitize(token.html);
+  }
+
+  renderLink(token) {
+    if (!this.options.decodeEntities) {
+      const { hrefHtml, titleHtml } = token;
+      const hrefCleaned = this.cleanUrl(hrefHtml, true, false);
+      if (hrefCleaned !== null) {
+        const href = this.boxAttribute(hrefCleaned, true);
+        const title = this.boxAttribute(titleHtml, true);
+        this.addElement('a', { href, title });
+      }
+      this.renderTokens(token.children);
+      if (hrefCleaned !== null) {
+        this.endElement('a');
+      }
+    } else {
+      super.renderLink(token);
+    }
+  }
+
+  renderImage(token) {
+    if (!this.options.decodeEntities) {
+      const { hrefHtml, titleHtml, text: alt } = token;
+      const srcHtml = this.cleanUrl(hrefHtml, true, false);
+      if (srcHtml !== null) {
+        const title = this.boxAttribute(titleHtml, true);
+        const src = this.boxAttribute(srcHtml, false);
+        this.addElement('img', { src, alt, title });
+      } else {
+        this.addText(alt);
+      }
+    } else {
+      super.renderImage(token);
+    }
   }
 
   cleanUrl(url, escaped, unescapeAfter) {
@@ -164,7 +154,17 @@ class HtmlRenderer extends BaseRenderer {
     if (sanitize) {
       html = (sanitizer) ? sanitizer(html) : escape(html);
     }
-    return new String(html);
+    return html;
+  }
+
+  boxAttribute(text, needEscaping) {
+    if (text) {
+      if (needEscaping) {
+        text = escape(text);
+      }
+      return new String(text);
+    }
+    return text;
   }
 
   mangle(text) {

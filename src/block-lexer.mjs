@@ -315,7 +315,7 @@ class BlockLexer {
       const bull = cap[2];
       const ordered = bull.length > 1;
       const variant = (ordered) ? undefined : bull;
-      const start = (ordered) ? parseInt(bull) : undefined;
+      const first = (ordered) ? parseInt(bull) : undefined;
 
       // Get each top-level item.
       const items = cap[0].match(this.rules.item);
@@ -375,7 +375,7 @@ class BlockLexer {
           }
         }
       }
-      return { type, variant, ordered, start, children };
+      return { type, variant, ordered, first, children };
     }
   }
 
