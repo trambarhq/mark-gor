@@ -250,5 +250,11 @@ describe('Normalization', function() {
     test('<a> in <td> unterminated', `
 <table>\n<tr>\n<td><a name="hi">hello</td>\n<td><a name="ho">world</td>\n</tr>\n</table>
     `)
+    test('missing <tr>', `
+<table><tr><td>Hello</td></tr><td>world</td></table>
+    `)
+    test('missing <tr>', `
+<table><th>Hello</th><th>world</th></table>
+    `)
   })
 })

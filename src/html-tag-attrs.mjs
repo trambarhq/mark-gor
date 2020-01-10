@@ -141,11 +141,23 @@ const expectedContentChecks = {
 
 const tableImplicitElements = {
   tr: 'tbody',
+  td: 'tbody',
+  th: 'tbody',
   col: 'colgroup',
 };
 
+const tbodyImplicitElements = {
+  td: 'tr',
+  th: 'tr',
+};
+const theadImplicitElements = tbodyImplicitElements;
+const tfootImplicitElements = tbodyImplicitElements;
+
 const implicitElements = {
-  table: tableImplicitElements
+  table: tableImplicitElements,
+  thead: theadImplicitElements,
+  tbody: tbodyImplicitElements,
+  tfoot: tfootImplicitElements,
 };
 
 const vivificationCheck = any([ 'p', 'br' ]);

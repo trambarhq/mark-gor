@@ -640,24 +640,17 @@ class BaseRenderer {
     }
     let index = 0;
     let implicitTag = null;
+    const newTags = [];
     while (index < children.length) {
       const child = children[index];
       if (child.type === 'html_element') {
         // see if the tag would implicit create its (absent) container
         const implicitTagName = implicitTagNames[child.tagName];
-
-        // see if current implicit tag should be closed
         if (implicitTag) {
-          let closing = false;
           // see if the child would terminate the implicitly created container
           if (this.isTerminatingElement(child.tagName, implicitTag.tagName)) {
-            closing = true;
-          }
-          if (implicitTagName && implicitTag.tagName !== implicitTagName) {
-            closing = true;
-          }
-          if (closing) {
-            this.removeExtraWhitespaces(implicitTag);
+            implicitTag = null;
+          } else if (implicitTagName && implicitTag.tagName !== implicitTagName) {
             implicitTag = null;
           }
         }
@@ -668,6 +661,7 @@ class BaseRenderer {
             html: `<${implicitTagName}>`,
             children: [],
           };
+          newTags.push(implicitTag);
           children.splice(index, 0, implicitTag);
           index++;
         }
@@ -681,8 +675,9 @@ class BaseRenderer {
         index++;
       }
     }
-    if (implicitTag) {
-      this.removeExtraWhitespaces(implicitTag);
+    for (let newTag of newTags) {
+      this.createImplicitElements(newTag);
+      this.removeExtraWhitespaces(newTag);
     }
   }
 
