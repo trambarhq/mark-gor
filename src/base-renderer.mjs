@@ -494,19 +494,6 @@ class BaseRenderer {
           // see if the tag closes an element that permits omission of end-tag
           for (let i = stack.length - 1; i >= 0; i--) {
             if (this.isTerminatingElement(token.tagName, stack[i].tagName)) {
-              // when an inline element is being terminated, check if there
-              // are any block element in the stack; terminate there if one
-              // is found
-              if (!this.isBlockElement(token.tagName)) {
-                for (let j = i + 1; j < stack.length; j++) {
-                  if (this.isBlockElement(stack[j].tagName)) {
-                    token = stack[j];
-                    index = this.tokens.indexOf(token);
-                    stack.splice(j);
-                    break;
-                  }
-                }
-              }
               newDepth = i;
               closureTagName = token.tagName;
               break;
@@ -558,16 +545,38 @@ class BaseRenderer {
         }
       }
       if (newDepth !== -1) {
+        for (let i = stack.length - 1; i >= newDepth; i--) {
+          // when an inline element is being terminated, check if there
+          // are any block element in the stack; terminate there if one
+          // is found
+          if (stack[i].tagName === 'a') {
+            for (let j = i + 1; j < stack.length; j++) {
+              if (this.isBlockElement(stack[j].tagName)) {
+                token = stack[j];
+                index = this.tokens.indexOf(token);
+                stack.splice(j);
+                closureTagName = token.tagName;
+                endTagPartner = undefined;
+                break;
+              }
+            }
+          }
+        }
+
         // pop elements off the stack and insert children into them,
         // keeping an eye out for text styling tags
         const styleTags = [];
+        const newContext = stack[newDepth - 1];
+        const restoreStyle = (newContext) ? !this.isEvictingElement(newContext.tagName) : true;
         while (stack.length > newDepth) {
           const openTag = stack.pop();
-          if (openTag !== endTagPartner && openTag.tagName !== closureTagName) {
-            // not the element explicitly targeted for closing
-            // we might need to restore it later
-            if (this.isStylingElement(openTag.tagName)) {
-              styleTags.push({ ...openTag });
+          if (restoreStyle) {
+            if (openTag !== endTagPartner && openTag.tagName !== closureTagName) {
+              // not the element explicitly targeted for closing
+              // we might need to restore it later
+              if (this.isStylingElement(openTag.tagName)) {
+                styleTags.push({ ...openTag });
+              }
             }
           }
           const openTagIndex = this.tokens.indexOf(openTag);

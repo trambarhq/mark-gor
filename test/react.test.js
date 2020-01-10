@@ -81,22 +81,24 @@ function test(desc, requireFunc, params) {
       }
       describe(`#${title}`, function() {
         it ('should produce the expected output', function() {
+          const fixAttributes = (s, v) => {
+            // remove minor formatting differences with style definition
+            v = v.replace(/\s*([:;])\s*/g, '$1 ');
+            // remove important
+            v = v.replace(/\s*!important/g, '');
+            // change 0 to 0px
+            v = v.replace(/\b0(\s|;|$)/g, '0px$1');
+            v = v.trim();
+            if (!/;$/.test(v)) {
+              v += ';';
+            }
+            return `style="${v}"`;
+          };
           const theirs = html
             // use hex entity instead of dec for single quote
             .replace(/&#39;/g, '&#x27;')
-            .replace(/style="(.*?)"/g, (s, v) => {
-              // remove minor formatting differences with style definition
-              v = v.replace(/\s*([:;])\s*/g, '$1 ');
-              // remove important
-              v = v.replace(/\s*!important/g, '');
-              // change 0 to 0px
-              v = v.replace(/\b0(\s|;|$)/g, '0px$1');
-              v = v.trim();
-              if (!/;$/.test(v)) {
-                v += ';';
-              }
-              return `style="${v}"`;
-            });
+            .replace(/style="(.*?)"/g, fixAttributes)
+            .replace(/style='(.*?)'/g, fixAttributes);
           const theirDiv = document.createElement('DIV');
           theirDiv.innerHTML = theirs;
           // get rid of whitespaces between table tags

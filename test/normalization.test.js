@@ -19,8 +19,10 @@ function test(title, markdown) {
 
 function processThruDOM(html) {
   const div = document.createElement('DIV');
+  const lf = />\n+</.test(html);
   div.innerHTML = html;
-  return div.innerHTML;
+  const result = div.innerHTML;
+  return (lf) ? result.replace(/>\n+</g, '><') : result;
 }
 
 function showDiff(results) {
@@ -199,13 +201,13 @@ describe('Normalization', function() {
     `)
     test('<u> <em> terminated by <ul>', `
 <p><u><em><ul><li>Hello<li>world
-    `);
+    `)
     test('<u> <em> terminated by <ul> with no <li>', `
 <p><u><em><ul>Hello
-    `);
+    `)
     test('misplaced </em>', `
 <p><u><em>Hello</u></em>
-    `);
+    `)
     test('<u> terminated by <td>', `
 <table><tr><td><u>Hello<td>world</tr></table>
     `)
@@ -235,9 +237,18 @@ describe('Normalization', function() {
     `)
     test('<strong> <em> terminated by <a>', `
 <p><a href="/uri">foo <strong><em>bar <a href="/uri">baz</a></em></a></p>
-    `);
+    `)
     test('<a> terminated by <a> inside block element', `
 <a name="hi">hello <p>world</p> <div><b>now<a href="/uri">What?</a></b>!!!</a>
-    `);
+    `)
+    test('<p> in <a>', `
+<a href="/uri">Hello <p>world</a>
+    `)
+    test('<p>...<p> in <a>', `
+<a href="/uri">Hello <p>world<p>!</a>
+    `)
+    test('<a> in <td> unterminated', `
+<table>\n<tr>\n<td><a name="hi">hello</td>\n<td><a name="ho">world</td>\n</tr>\n</table>
+    `)
   })
 })
