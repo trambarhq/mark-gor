@@ -581,6 +581,12 @@ class BaseRenderer {
               // <table> is the only one, I think
               if (this.isClearingElement(ahead.tagName)) {
                 break;
+              } else if (ahead === token) {
+                // Chrome doesn't place the style tag in the <a> for some reason
+                if (ahead.tagName === 'a') {
+                  insertionIndex = i;
+                  break;
+                }
               }
             } else if (ahead.type === 'text') {
               insertionIndex = i;
@@ -670,11 +676,10 @@ class BaseRenderer {
         }
       }
     } else if (this.isSwallowingElement(tagName)) {
-      for (let child of children) {
-        if (/^\n/.test(child.text)) {
-          child.text = child.text.substr(1);
-          child.html = child.html.substr(1);
-        }
+      const first = children[0];
+      if (first.type === 'text' && /^\n/.test(first.text)) {
+        first.text = first.text.substr(1);
+        first.html = first.html.substr(1);
       }
     }
   }

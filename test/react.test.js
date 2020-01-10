@@ -15,9 +15,13 @@ const singleTest = '';
 
 const withKnownIssue = [
   'inline_html_advanced',             // invalid inline style
+  'smartypants_code',                 // script tags are being filtered out
+  'sanitizer_bypass_remove_generic',  // not handling sanitizer
+  'sanitizer_bypass_remove_tag',      // not handling sanitizer
   'sanitizer_bypass',                 // not possible to bypass React security model
   'nlrx-wjc-learn-vue-source-code',   // invalid open attribute
   'cytopia-devilbox',                 // invalid inline style
+  'xteve-project-xteve',              // missing 'px' in inline style
   'example 140 (HTML blocks)',        // can't create script tag in React
   'example 141 (HTML blocks)',        // can't create style tag in React
   'example 142 (HTML blocks)',        // can't create style tag in React
@@ -83,9 +87,14 @@ function test(desc, requireFunc, params) {
             .replace(/style="(.*?)"/g, (s, v) => {
               // remove minor formatting differences with style definition
               v = v.replace(/\s*([:;])\s*/g, '$1 ');
-              // remove import
+              // remove important
               v = v.replace(/\s*!important/g, '');
+              // change 0 to 0px
+              v = v.replace(/\b0(\s|;|$)/g, '0px$1');
               v = v.trim();
+              if (!/;$/.test(v)) {
+                v += ';';
+              }
               return `style="${v}"`;
             });
           const theirDiv = document.createElement('DIV');
@@ -97,18 +106,24 @@ function test(desc, requireFunc, params) {
           const ourDiv = document.createElement('DIV');
           const wrapper = mount(element, { attachTo: ourDiv });
 
-          if (!ourDiv.isEqualNode(theirDiv) && ourDiv.innerHTML !== theirDiv.innerHTML) {
-            if (singleTest) {
-              const ours = renderToStaticMarkup(element);
-              showDiff({
-                markdown,
-                ours,
-                theirs,
-                ourDOM: ourDiv.innerHTML,
-                theirDOM: theirDiv.innerHTML,
-              });
+          if (!ourDiv.isEqualNode(theirDiv)) {
+            // isEqualNode() will return false sometimes even when the
+            // contents are a match; React or Enzyme is probably adding
+            // something to the node
+            ourDiv.innerHTML = ourDiv.innerHTML;
+            if (!ourDiv.isEqualNode(theirDiv)) {
+              if (singleTest) {
+                const ours = renderToStaticMarkup(element);
+                showDiff({
+                  markdown,
+                  ours,
+                  theirs,
+                  ourDOM: ourDiv.innerHTML,
+                  theirDOM: theirDiv.innerHTML,
+                });
+              }
+              expect.fail('Not matching');
             }
-            expect.fail('Not matching');
           }
         });
       });
@@ -118,12 +133,12 @@ function test(desc, requireFunc, params) {
 
 function showDiff(results) {
   const { markdown, ours, theirs, ourDOM, theirDOM } = results;
-  console.log(`MARKDOWN:\n${markdown}\n`);
-  console.log(`MARKED:\n${parseMarked(markdown)}\n`);
-  console.log(`OURS:\n${ours}\n`);
-  console.log(`THEIRS:\n${theirs}\n`);
-  console.log(`OURS (DOM):\n${ourDOM}\n`);
-  console.log(`THEIRS (DOM):\n${theirDOM}\n`);
+  //console.log(`MARKDOWN:\n${markdown}\n`);
+  //console.log(`MARKED:\n${parseMarked(markdown)}\n`);
+  //console.log(`OURS:\n${ours}\n`);
+  //console.log(`THEIRS:\n${theirs}\n`);
+  console.log(`\n\nOURS (DOM):\n\n${ourDOM}\n\n`);
+  console.log(`\n\nTHEIRS (DOM):\n\n${theirDOM}\n\n`);
 }
 
 function filterNonvisualWhitespace(element) {

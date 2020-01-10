@@ -188,6 +188,12 @@ describe('Normalization', function() {
     test('<u> <em> <h1> terminated by <p>', `
 <p><u><em><h1>Hello<p>world
     `)
+    test('<u> <em> <h1> terminated by <p> with <strong>', `
+<p><u><em><h1>Hello<p><strong>world
+    `)
+    test('<u> <em> <h1> terminated by <p> with <a>', `
+<p><u><em><h1>Hello<p><a href="/uri">world</a>
+    `)
     test('<u> <em> terminated by <table>', `
 <p><u><em><table><tr><td>Hello<td>world</tr></table>
     `)
@@ -227,5 +233,8 @@ describe('Normalization', function() {
     test('leading \n in <pre> ', `
 <pre>\n\nHello</pre>
     `)
+    test('<strong> <em> terminated by <a>', `
+<p><a href="/uri">foo <strong><em>bar <a href="/uri">baz</a></em></a></p>
+    `);
   })
 })
