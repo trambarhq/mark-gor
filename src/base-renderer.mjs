@@ -89,6 +89,9 @@ class BaseRenderer {
   }
 
   addHighlighted(highlighted) {
+    const type = 'raw';
+    const html = highlighted;
+    this.addToken({ type, html });
   }
 
   addElement(tagName, attributes) {
