@@ -221,6 +221,7 @@ const contentEvictionCheck = any([
   'tfoot',
   'thead',
   'tr',
+  'colgroup',
 ]);
 
 const linefeedEliminationCheck = any([ 'pre' ]);

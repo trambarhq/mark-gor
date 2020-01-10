@@ -11,8 +11,8 @@ import {
   blockCheck,
   styleClearanceCheck,
   contentEvictionCheck,
-  implicitElements,
   linefeedEliminationCheck,
+  implicitElements,
 } from './html-tag-attrs.mjs';
 
 class BaseRenderer {
@@ -627,10 +627,8 @@ class BaseRenderer {
                 break;
               }
             } else if (ahead.type === 'text') {
-              if (/\S/.test(ahead.text)) {
-                insertionIndex = i;
-                break;
-              }
+              insertionIndex = i;
+              break;
             }
           }
           if (insertionIndex !== -1) {

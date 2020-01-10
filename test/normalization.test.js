@@ -258,8 +258,11 @@ describe('Normalization', function() {
     test('missing <tr>', `
 <table><th>Hello</th><th>world</th></table>
     `)
-    test('<a> without endtag in <li>', `
+    test('<a> endtag outside <li>', `
 <ul><li><a href="/a">Hello</li></a>\n<li><a href="/a">World</li></a>\n</ul>
+    `)
+    test('<a> without endtag in <li>', `
+<ul><li><a href="/a">Hello</li>\n<li>World</li>\n</ul>
     `)
   })
 })
