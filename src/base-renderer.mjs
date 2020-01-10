@@ -8,6 +8,7 @@ import {
   expectedContentChecks,
   vivificationCheck,
   textStyleCheck,
+  blockCheck,
   styleClearanceCheck,
   contentEvictionCheck,
   implicitElements,
@@ -484,14 +485,30 @@ class BaseRenderer {
     const stack = [];
     let index = 0;
     for (;;) {
-      const token = this.tokens[index];
+      let token = this.tokens[index];
       let newDepth = -1;
+      let endTagPartner = null;
+      let closureTagName = '';
       if (token) {
         if (token.type == 'html_element') {
           // see if the tag closes an element that permits omission of end-tag
           for (let i = stack.length - 1; i >= 0; i--) {
             if (this.isTerminatingElement(token.tagName, stack[i].tagName)) {
+              // when an inline element is being terminated, check if there
+              // are any block element in the stack; terminate there if one
+              // is found
+              if (!this.isBlockElement(token.tagName)) {
+                for (let j = i + 1; j < stack.length; j++) {
+                  if (this.isBlockElement(stack[j].tagName)) {
+                    token = stack[j];
+                    index = this.tokens.indexOf(token);
+                    stack.splice(j);
+                    break;
+                  }
+                }
+              }
               newDepth = i;
+              closureTagName = token.tagName;
               break;
             } else if(this.isExpectedContent(token.tagName, stack[i].tagName)) {
               // don't go further up the stack when the element is expected
@@ -511,6 +528,7 @@ class BaseRenderer {
           for (let i = stack.length - 1; i >= 0; i--) {
             if (token.tagName === stack[i].tagName) {
               newDepth = i;
+              endTagPartner = stack[i];
               break;
             }
           }
@@ -545,7 +563,7 @@ class BaseRenderer {
         const styleTags = [];
         while (stack.length > newDepth) {
           const openTag = stack.pop();
-          if (stack.length !== newDepth) {
+          if (openTag !== endTagPartner && openTag.tagName !== closureTagName) {
             // not the element explicitly targeted for closing
             // we might need to restore it later
             if (this.isStylingElement(openTag.tagName)) {
@@ -571,7 +589,8 @@ class BaseRenderer {
           }
         }
 
-        if (styleTags.length > 0) {
+        let styleTag;
+        while (styleTag = styleTags.pop()) {
           // insert the styling tags where text content start again
           let insertionIndex = -1;
           for (let i = index; i < this.tokens.length; i++) {
@@ -581,10 +600,13 @@ class BaseRenderer {
               // <table> is the only one, I think
               if (this.isClearingElement(ahead.tagName)) {
                 break;
+              } else if (ahead.tagName === 'a') {
+                insertionIndex = i;
+                break;
               } else if (ahead === token) {
                 // Chrome doesn't place the style tag in the <a> for some reason
-                if (ahead.tagName === 'a') {
-                  insertionIndex = i;
+                if (styleTag.tagName === 'a') {
+                  insertionIndex = i + 1;
                   break;
                 }
               }
@@ -594,9 +616,7 @@ class BaseRenderer {
             }
           }
           if (insertionIndex !== -1) {
-            for (let styleTag of styleTags) {
-              this.tokens.splice(insertionIndex, 0, styleTag);
-            }
+            this.tokens.splice(insertionIndex, 0, styleTag);
           }
         }
       }
@@ -768,6 +788,10 @@ class BaseRenderer {
 
   isStylingElement(tagName) {
     return textStyleCheck(tagName);
+  }
+
+  isBlockElement(tagName) {
+    return blockCheck(tagName);
   }
 
   isClearingElement(tagName) {

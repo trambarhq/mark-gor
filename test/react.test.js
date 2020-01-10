@@ -133,10 +133,10 @@ function test(desc, requireFunc, params) {
 
 function showDiff(results) {
   const { markdown, ours, theirs, ourDOM, theirDOM } = results;
-  //console.log(`MARKDOWN:\n${markdown}\n`);
-  //console.log(`MARKED:\n${parseMarked(markdown)}\n`);
-  //console.log(`OURS:\n${ours}\n`);
-  //console.log(`THEIRS:\n${theirs}\n`);
+  //console.log(`\n\nMARKDOWN:\n\n${markdown}\n`);
+  console.log(`\n\nMARKED:\n\n${parseMarked(markdown)}\n`);
+  //console.log(`\n\nOURS:\n\n${ours}\n`);
+  //console.log(`\n\nTHEIRS:\n\n${theirs}\n`);
   console.log(`\n\nOURS (DOM):\n\n${ourDOM}\n\n`);
   console.log(`\n\nTHEIRS (DOM):\n\n${theirDOM}\n\n`);
 }

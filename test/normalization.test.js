@@ -236,5 +236,8 @@ describe('Normalization', function() {
     test('<strong> <em> terminated by <a>', `
 <p><a href="/uri">foo <strong><em>bar <a href="/uri">baz</a></em></a></p>
     `);
+    test('<a> terminated by <a> inside block element', `
+<a name="hi">hello <p>world</p> <div><b>now<a href="/uri">What?</a></b>!!!</a>
+    `);
   })
 })
