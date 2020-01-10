@@ -22,6 +22,7 @@ const withKnownIssue = [
   'nlrx-wjc-learn-vue-source-code',   // invalid open attribute
   'cytopia-devilbox',                 // invalid inline style
   'xteve-project-xteve',              // missing 'px' in inline style
+  'juanpe-skeletonview',              // legacy box-shadow style used
   'example 140 (HTML blocks)',        // can't create script tag in React
   'example 141 (HTML blocks)',        // can't create style tag in React
   'example 142 (HTML blocks)',        // can't create style tag in React
@@ -81,7 +82,7 @@ function test(desc, requireFunc, params) {
       }
       describe(`#${title}`, function() {
         it ('should produce the expected output', function() {
-          const fixAttributes = (s, v) => {
+          const adjustStyles = (s, v) => {
             // remove minor formatting differences with style definition
             v = v.replace(/\s*([:;])\s*/g, '$1 ');
             // remove important
@@ -97,8 +98,8 @@ function test(desc, requireFunc, params) {
           const theirs = html
             // use hex entity instead of dec for single quote
             .replace(/&#39;/g, '&#x27;')
-            .replace(/style="(.*?)"/g, fixAttributes)
-            .replace(/style='(.*?)'/g, fixAttributes);
+            .replace(/style="(.*?)"/g, adjustStyles)
+            .replace(/style='(.*?)'/g, adjustStyles);
           const theirDiv = document.createElement('DIV');
           theirDiv.innerHTML = theirs;
           // get rid of whitespaces between table tags

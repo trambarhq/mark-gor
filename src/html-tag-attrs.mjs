@@ -148,7 +148,7 @@ const implicitElements = {
   table: tableImplicitElements
 };
 
-const vivificationCheck = any([ 'p' ]);
+const vivificationCheck = any([ 'p', 'br' ]);
 
 const textStyleCheck = any([
   'a',
