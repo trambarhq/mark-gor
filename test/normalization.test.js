@@ -7,8 +7,12 @@ function test(title, markdown) {
   describe(`#${title}`, function() {
     it ('should match the browser\'s behavior', function() {
       const options = { normalizeTags: true };
-      const ours = parseHtml(markdown, options);
-      const theirs = processThruDOM(markdown);
+      let ours = parseHtml(markdown, options);
+      let theirs = processThruDOM(markdown);
+      if (/>\n+</.test(markdown)) {
+        ours = ours.replace(/>\n+</g, '><');
+        theirs = theirs.replace(/>\n+</g, '><');
+      }
       if (ours !== theirs) {
         showDiff({ markdown, ours, theirs });
         expect.fail('Not matching');
@@ -19,10 +23,8 @@ function test(title, markdown) {
 
 function processThruDOM(html) {
   const div = document.createElement('DIV');
-  const lf = />\n+</.test(html);
   div.innerHTML = html;
-  const result = div.innerHTML;
-  return (lf) ? result.replace(/>\n+</g, '><') : result;
+  return div.innerHTML;
 }
 
 function showDiff(results) {
@@ -255,6 +257,9 @@ describe('Normalization', function() {
     `)
     test('missing <tr>', `
 <table><th>Hello</th><th>world</th></table>
+    `)
+    test('<a> without endtag in <li>', `
+<ul><li><a href="/a">Hello</li></a>\n<li><a href="/a">World</li></a>\n</ul>
     `)
   })
 })

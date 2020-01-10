@@ -619,9 +619,15 @@ class BaseRenderer {
                   break;
                 }
               }
+            } else if (ahead.type === 'html_element_end') {
+              if (styleTag.tagName === ahead.tagName) {
+                break;
+              }
             } else if (ahead.type === 'text') {
-              insertionIndex = i;
-              break;
+              if (/\S/.test(ahead.text)) {
+                insertionIndex = i;
+                break;
+              }
             }
           }
           if (insertionIndex !== -1) {

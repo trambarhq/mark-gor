@@ -14,21 +14,23 @@ import { contentEvictionCheck } from '../src/html-tag-attrs.mjs';
 const singleTest = '';
 
 const withKnownIssue = [
-  'inline_html_advanced',             // invalid inline style
-  'smartypants_code',                 // script tags are being filtered out
-  'sanitizer_bypass_remove_generic',  // not handling sanitizer
-  'sanitizer_bypass_remove_tag',      // not handling sanitizer
-  'sanitizer_bypass',                 // not possible to bypass React security model
-  'nlrx-wjc-learn-vue-source-code',   // invalid open attribute
-  'cytopia-devilbox',                 // invalid inline style
-  'xteve-project-xteve',              // missing 'px' in inline style
-  'juanpe-skeletonview',              // legacy box-shadow style used
-  'example 140 (HTML blocks)',        // can't create script tag in React
-  'example 141 (HTML blocks)',        // can't create style tag in React
-  'example 142 (HTML blocks)',        // can't create style tag in React
-  'example 145 (HTML blocks)',        // can't create style tag in React
-  'example 147 (HTML blocks)',        // can't create script tag in React
-  'example 612 (Raw HTML)',           // can't replicate completely broken HTML
+  'inline_html_advanced',                           // invalid inline style
+  'smartypants_code',                               // script tags are being filtered out
+  'sanitizer_bypass_remove_generic',                // not handling sanitizer
+  'sanitizer_bypass_remove_tag',                    // not handling sanitizer
+  'sanitizer_bypass',                               // not possible to bypass React security model
+  'nlrx-wjc-learn-vue-source-code',                 // invalid open attribute
+  'cytopia-devilbox',                               // invalid inline style
+  'xteve-project-xteve',                            // missing 'px' in inline style
+  'juanpe-skeletonview',                            // legacy box-shadow style used
+  'mindorksopensource-android-interview-questions', // misformatted table leave bare <tr>
+  'microsoft-nni',                                  // border-top specified in reversed fashion
+  'example 140 (HTML blocks)',                      // can't create script tag in React
+  'example 141 (HTML blocks)',                      // can't create style tag in React
+  'example 142 (HTML blocks)',                      // can't create style tag in React
+  'example 145 (HTML blocks)',                      // can't create style tag in React
+  'example 147 (HTML blocks)',                      // can't create script tag in React
+  'example 612 (Raw HTML)',                         // can't replicate completely broken HTML
 ];
 
 function test(desc, requireFunc, params) {
@@ -62,7 +64,7 @@ function test(desc, requireFunc, params) {
         const module = requireFunc(path);
         const fm = FrontMatter(module.default);
         const options = { ...params.options, ...fm.attributes, silent: true };
-        const markdown = fm.body;
+        const markdown = fm.body.replace(/\u00a0/g, ' ');
         if (options.sanitizer) {
           options.sanitizer = eval(options.sanitizer);
         }
@@ -137,7 +139,7 @@ function test(desc, requireFunc, params) {
 function showDiff(results) {
   const { markdown, ours, theirs, ourDOM, theirDOM } = results;
   //console.log(`\n\nMARKDOWN:\n\n${markdown}\n`);
-  console.log(`\n\nMARKED:\n\n${parseMarked(markdown)}\n`);
+  //console.log(`\n\nMARKED:\n\n${parseMarked(markdown)}\n`);
   //console.log(`\n\nOURS:\n\n${ours}\n`);
   //console.log(`\n\nTHEIRS:\n\n${theirs}\n`);
   console.log(`\n\nOURS (DOM):\n\n${ourDOM}\n\n`);
@@ -165,12 +167,12 @@ function filterNonvisualWhitespace(element) {
 describe('React', function() {
   test('Marked specs', require.context('./specs', true, /\.md$/), {
     options: { mangle: false }
-  });
+  })
   test('Commonmark', require.context('./specs/commonmark', true, /\.json/), {
     commonmark: true,
     options: { mangle: false }
-  });
+  })
   test('GitHub READMEs', require.context('./github', true, /\.md$/), {
     options: { mangle: false }
-  });
+  })
 })
