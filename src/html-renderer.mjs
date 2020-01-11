@@ -105,7 +105,12 @@ class HtmlRenderer extends BaseRenderer {
   }
 
   outputRaw(token) {
-    return this.sanitize(token.html);
+    const { html, highlighted } = token;
+    if (highlighted) {
+      return highlighted;
+    } else {
+      return this.sanitize(html);
+    }
   }
 
   renderLink(token) {

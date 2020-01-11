@@ -62,6 +62,10 @@ class PreactRenderer extends BaseRenderer {
   }
 
   outputRaw(token) {
+    const { highlighted } = token;
+    if (highlighted) {
+      return highlighted;
+    }
   }
 
   convertAttributes(tagName, attrs) {
