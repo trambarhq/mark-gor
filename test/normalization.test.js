@@ -264,5 +264,11 @@ describe('Normalization', function() {
     test('<a> without endtag in <li>', `
 <ul><li><a href="/a">Hello</li>\n<li>World</li>\n</ul>
     `)
+    test('<small> extending into block container', `
+<p><small><div><del><em>world</em></del></div></div>
+    `)
+    test('<small> extending into two block containers', `
+<p><small><div><del><em><pre>world</pre></em></del></div></div>
+    `)
   })
 })

@@ -602,10 +602,10 @@ class BaseRenderer {
           }
         }
 
-        let styleTag;
-        while (styleTag = styleTags.pop()) {
+        for (let styleTag of styleTags) {
           // insert the styling tags where text content start again
           let insertionIndex = -1;
+          let firstInlineIndex = -1;
           for (let i = index; i < this.tokens.length; i++) {
             const ahead = this.tokens[i];
             if (ahead.type === 'html_element') {
@@ -613,14 +613,10 @@ class BaseRenderer {
               // <table> is the only one, I think
               if (this.isClearingElement(ahead.tagName)) {
                 break;
-              } else if (ahead.tagName === 'a') {
-                insertionIndex = i;
-                break;
-              } else if (ahead === token) {
-                // Chrome doesn't place the style tag in the <a> for some reason
-                if (styleTag.tagName === 'a') {
-                  insertionIndex = i + 1;
-                  break;
+              }
+              if (firstInlineIndex === -1) {
+                if (!this.isBlockElement(ahead.tagName)) {
+                  firstInlineIndex = i;
                 }
               }
             } else if (ahead.type === 'html_element_end') {
@@ -628,7 +624,11 @@ class BaseRenderer {
                 break;
               }
             } else if (ahead.type === 'text') {
-              insertionIndex = i;
+              if (firstInlineIndex !== -1) {
+                insertionIndex = firstInlineIndex;
+              } else {
+                insertionIndex = i;
+              }
               break;
             }
           }

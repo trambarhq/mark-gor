@@ -54,7 +54,8 @@ class InlineLexer {
   tokenize(text, containerType) {
     const inHtmlBlock = (containerType === 'html_block');
     const inRawBlock = false;
-    this.initialize(text, { inHtmlBlock, inRawBlock });
+    const inLink = false;
+    this.initialize(text, { inHtmlBlock, inRawBlock, inLink });
     this.process();
     this.finalize();
     return this.tokens;
