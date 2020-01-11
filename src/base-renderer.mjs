@@ -614,6 +614,11 @@ class BaseRenderer {
               if (this.isClearingElement(ahead.tagName)) {
                 break;
               }
+              // if the same tag is encountered then there's no need to restore
+              if (styleTag.tagName === ahead.tagName) {
+                break;
+              }
+              // remember where we first encountered an inline element
               if (firstInlineIndex === -1) {
                 if (!this.isBlockElement(ahead.tagName)) {
                   firstInlineIndex = i;
@@ -624,6 +629,7 @@ class BaseRenderer {
                 break;
               }
             } else if (ahead.type === 'text') {
+              // restore the style at the first inline element or right here
               if (firstInlineIndex !== -1) {
                 insertionIndex = firstInlineIndex;
               } else {
