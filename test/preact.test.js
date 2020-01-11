@@ -1,12 +1,12 @@
 import { expect } from 'chai';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render } from 'preact-render-to-string';
 import { configure, mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-preact-pure';
 import FrontMatter from 'front-matter';
 
 import { parse as parseMarked } from 'marked';
 import { parse as parseHtml } from '../src/html.mjs';
-import { parse as parseReact } from '../src/react.mjs';
+import { parse as parsePreact } from '../src/preact.mjs';
 import { contentEvictionCheck } from '../src/html-tag-attrs.mjs';
 
 const singleTest = '';
@@ -85,14 +85,14 @@ function test(desc, requireFunc, params) {
       describe(`#${title}`, function() {
         it ('should produce the expected output', function() {
           // use hex entity instead of dec for single quote
-          const theirs = html.replace(/&#39;/g, '&#x27;')
+          const theirs = html.replace(/&#39;/g, '&#x27;');
           const theirDiv = document.createElement('DIV');
           theirDiv.innerHTML = theirs;
           adjustDOMNode(theirDiv);
 
-          const element = parseReact(markdown, options);
-          const ourDiv = document.createElement('DIV');
+          const element = parsePreact(markdown, options);
           configure({ adapter });
+          const ourDiv = document.createElement('DIV');
           const wrapper = mount(element, { attachTo: ourDiv });
 
           if (!ourDiv.isEqualNode(theirDiv)) {
@@ -102,7 +102,7 @@ function test(desc, requireFunc, params) {
             ourDiv.innerHTML = ourDiv.innerHTML;
             if (!ourDiv.isEqualNode(theirDiv)) {
               if (singleTest) {
-                const ours = renderToStaticMarkup(element);
+                const ours = render(element);
                 showDiff({
                   markdown,
                   ours,
@@ -141,6 +141,8 @@ function fixDimension(element, name) {
     }
     if (value !== undefined) {
       element.setAttribute(name, value);
+    } else {
+      element.removeAttribute(name);
     }
   }
 }
@@ -186,7 +188,7 @@ function adjustDOMNode(element) {
   }
 }
 
-describe('React', function() {
+describe('Preact', function() {
   test('Marked specs', require.context('./specs', true, /\.md$/), {
     options: { mangle: false }
   })

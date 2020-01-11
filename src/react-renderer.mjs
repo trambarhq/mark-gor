@@ -47,10 +47,10 @@ class ReactRenderer extends BaseRenderer {
   }
 
   outputHtmlElement(token, key) {
-    const { tagName, attributes, children } = token;
-    if (this.shouldOmit(tagName, attributes)) {
+    if (this.shouldOmit(token)) {
       return;
     }
+    const { tagName, attributes, children } = token;
     const props = this.convertAttributes(tagName, attributes);
     const elements = this.outputTokens(children);
     return React.createElement(tagName, { key, ...props }, elements);
@@ -65,7 +65,7 @@ class ReactRenderer extends BaseRenderer {
   }
 
   convertAttributes(tagName, attrs) {
-    return convertAttributes(tagName, attrs);
+    return convertAttributes(tagName, attrs, { omitInvalidDimensions: false });
   }
 }
 

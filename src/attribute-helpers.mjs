@@ -1,4 +1,4 @@
-function convertAttributes(tagName, attrs) {
+function convertAttributes(tagName, attrs, options) {
   if (!attrs) {
     return;
   }
@@ -8,13 +8,36 @@ function convertAttributes(tagName, attrs) {
       // omit handlers
       continue;
     }
-    name = getDOMName(name);
-    if (name === 'style') {
-      value = parseStyle(value);
-    } else if (isBooleanProp(tagName, name, attrs)) {
-      value = true;
+    if (value != undefined) {
+      name = getDOMName(name);
+      if (name === 'style') {
+        value = parseStyle(value);
+      } else if (isBooleanProp(tagName, name, attrs)) {
+        value = true;
+      } else if (name === 'width' || name === 'height') {
+        if (tagName === 'img' || tagName === 'image') {
+          if (!/^\d+$/.test(value)) {
+            const { omitInvalidDimensions } = options;
+            let newValue;
+            if (value.endsWith('%')) {
+              if (omitInvalidDimensions) {
+                continue;
+              }
+            } else {
+              const number = parseInt(value);
+              if (!isNaN(number)) {
+                value = number.toString();
+              } else {
+                if (omitInvalidDimensions) {
+                  continue;
+                }
+              }
+            }
+          }
+        }
+      }
+      props[name] = value;
     }
-    props[name] = value;
   }
   return props;
 }

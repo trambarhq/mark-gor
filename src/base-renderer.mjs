@@ -471,14 +471,15 @@ class BaseRenderer {
     return cleaned;
   }
 
-  shouldOmit(tagName, attributes) {
+  shouldOmit(element) {
+    const { tagName, attributes, children } = element;
     const omit = this.options.omitTags;
     if (omit instanceof Array) {
       if (omit.indexOf(tagName) !== -1) {
         return true;
       }
     } else if (omit instanceof Function) {
-      return omit(tagName, attributes);
+      return omit(tagName, attributes, children);
     }
   }
 

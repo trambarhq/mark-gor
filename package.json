@@ -57,6 +57,7 @@
     "chai": "^4.2.0",
     "cross-fetch": "^3.0.4",
     "enzyme": "^3.11.0",
+    "enzyme-adapter-preact-pure": "^2.2.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "front-matter": "^3.0.2",
     "glob": "^7.1.6",
@@ -67,16 +68,13 @@
     "karma-mocha": "^1.3.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
-    "markdown": "*",
     "mocha": "^7.0.0",
     "preact": "^10.1.1",
-    "prettydiff": "^101.2.6",
     "raw-loader": "^4.0.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "rollup": "^1.28.0",
     "rollup-plugin-babel": "^4.3.3",
-    "showdown": "*",
     "webpack": "^4.41.5"
   }
 }

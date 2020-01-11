@@ -59,7 +59,10 @@ class HtmlRenderer extends BaseRenderer {
   }
 
   outputHtmlElement(token) {
-    const { tagName, attributes } = token;
+    if (this.shouldOmit(token)) {
+      return;
+    }
+    const { tagName, attributes, children } = token;
     let html = `<${tagName}`;
     if (attributes) {
       for (let [ key, value ] of Object.entries(attributes)) {
@@ -80,7 +83,7 @@ class HtmlRenderer extends BaseRenderer {
       html += '>';
     }
     if (!isVoid && this.options.normalizeTags) {
-      html += this.outputTokens(token.children);
+      html += this.outputTokens(children);
       html += `</${tagName}>`;
     }
     return html;

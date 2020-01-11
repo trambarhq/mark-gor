@@ -18,6 +18,7 @@ const voidCheck = any([
   'command',
   'embed',
   'hr',
+  'image',
   'img',
   'input',
   'keygen',
