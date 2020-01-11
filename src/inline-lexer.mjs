@@ -26,6 +26,27 @@ class InlineLexer {
         this.rules = inline.gfm;
       }
     }
+    this.captureFunctions = [
+      this.captureEscape,
+      this.captureTag,
+      this.captureLink,
+      this.captureRefLink,
+      this.captureNoLink,
+      this.captureStrong,
+      this.captureEmphasized,
+      this.captureCode,
+      this.captureLineBreak,
+      this.captureDeleted,
+      this.captureAutolink,
+      this.captureUrl,
+      this.captureBrokenTag,
+      this.captureText,
+    ];
+    this.htmlCaptureFunctions = [
+      this.captureTag,
+      this.captureBrokenTag,
+      this.captureText,
+    ];
 
     Object.assign(this, props);
   }
@@ -122,32 +143,19 @@ class InlineLexer {
   }
 
   captureToken() {
-    let token;
-    if (this.inHtmlBlock || this.inRawBlock) {
-      // only scan for tag and text when we're in a HTML or raw block
-      token = this.captureTag() || this.captureBrokenTag() || this.captureText();
-    } else {
-      token = this.captureEscape()
-        || this.captureTag()
-        || this.captureLink()
-        || this.captureRefLink('reflink')
-        || this.captureRefLink('nolink')
-        || this.captureStrong()
-        || this.captureEmphasized()
-        || this.captureCode()
-        || this.captureLineBreak()
-        || this.captureDeleted()
-        || this.captureAutolink()
-        || this.captureUrl()
-        || this.captureBrokenTag()
-        || this.captureText();
-    }
-    if (!token) {
-      if (this.remaining) {
-        throw new Error('Infinite loop on byte: ' + this.remaining.charCodeAt(0));
+    // only scan for tag and text when we're in a HTML or raw block
+    const functions = (this.inHtmlBlock || this.inRawBlock)
+                    ? this.htmlCaptureFunctions
+                    : this.captureFunctions;
+    for (let f of functions) {
+      const token = f.call(this);
+      if (token !== undefined) {
+        return token;
       }
     }
-    return token;
+    if (this.remaining) {
+      throw new Error('Infinite loop on byte: ' + this.remaining.charCodeAt(0));
+    }
   }
 
   captureEscape() {
@@ -261,10 +269,14 @@ class InlineLexer {
         return { type, href, hrefHtml, title, titleHtml, markdown, children };
       }
     }
-  };
+  }
+
+  captureNoLink() {
+    return this.captureRefLink('nolink');
+  }
 
   captureRefLink(rule) {
-    const cap = this.capture(rule);
+    const cap = this.capture(rule || 'reflink');
     if (cap) {
       const type = (cap[0].charAt(0) === '!') ? 'image' : 'link';
       const ref = (cap[2] || cap[1])

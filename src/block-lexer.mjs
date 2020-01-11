@@ -19,6 +19,22 @@ class BlockLexer {
     } else if (this.options.gfm) {
       this.rules = block.gfm;
     }
+    this.captureFunctions = [
+      this.captureNewline,
+      this.captureCode,
+      this.captureFences,
+      this.captureHeading,
+      this.capturePipelessTable,
+      this.captureHorizontalRule,
+      this.captureBlockquote,
+      this.captureList,
+      this.captureHtml,
+      this.captureDefinition,
+      this.captureTable,
+      this.captureUnderlineHeading,
+      this.captureParagraph,
+      this.captureText,
+    ];
 
     Object.assign(this, props);
   }
@@ -100,26 +116,15 @@ class BlockLexer {
   }
 
   captureToken() {
-    const token = this.captureNewline()
-      || this.captureCode()
-      || this.captureFences()
-      || this.captureHeading()
-      || this.captureTable('nptable')
-      || this.captureHorizontalRule()
-      || this.captureBlockquote()
-      || this.captureList()
-      || this.captureHtml()
-      || this.captureDefinition()
-      || this.captureTable('table')
-      || this.captureUnderlineHeading()
-      || this.captureParagraph()
-      || this.captureText();
-    if (token === undefined) {
-      if (this.remaining) {
-        throw new Error('Infinite loop on byte: ' + this.remaining.charCodeAt(0));
+    for (let f of this.captureFunctions) {
+      const token = f.call(this);
+      if (token !== undefined) {
+        return token;
       }
     }
-    return token;
+    if (this.remaining) {
+      throw new Error('Infinite loop on byte: ' + this.remaining.charCodeAt(0));
+    }
   }
 
   captureNewline() {
@@ -174,8 +179,12 @@ class BlockLexer {
     }
   }
 
+  capturePipelessTable() {
+    return this.captureTable('nptable');
+  }
+
   captureTable(rule) {
-    const cap = this.capture(rule);
+    const cap = this.capture(rule || 'table');
     if (cap) {
       const type = 'table';
       const header = this.lexTableHeader(rule, cap[1], cap[2]);
