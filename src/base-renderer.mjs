@@ -1,4 +1,4 @@
-import { cleanUrl, escape, unescape } from './helpers.mjs';
+import { cleanUrl, escape, unescape, findTextStrings, findMarkedStrings } from './helpers.mjs';
 import { mergeDefaults } from './defaults.mjs';
 import { SluggerMarked } from './slugger.mjs';
 import { decodeHtmlEntities } from './html-entities.mjs';
@@ -90,8 +90,7 @@ class BaseRenderer {
 
   addHighlighted(highlighted) {
     const type = 'raw';
-    const html = highlighted;
-    this.addToken({ type, html });
+    this.addToken({ type, highlighted });
   }
 
   addElement(tagName, attributes) {
@@ -410,7 +409,7 @@ class BaseRenderer {
   }
 
   getPlainText(token) {
-    const { text, html, children } = token;
+    const { children } = token;
     if (text) {
       return text;
     } else if (children) {
@@ -424,34 +423,16 @@ class BaseRenderer {
     }
   }
 
-  getMarkedHeaderText(token) {
-    const { text, html, children } = token;
-    if (text) {
-      // the Marked slugger expects text with HTML entities
-      return html ? escape(html) : text;
-    } else if (children) {
-      const content = [];
-      for (let child of children) {
-        content.push(this.getMarkedHeaderText(child));
-      }
-      return content.join('');
-    } else if (html) {
-      // the Marked slugger expects to see HTML tags too
-      return html;
-    } else {
-      return '';
-    }
-  }
-
   generateHeadingId(token) {
     const { headerIds, headerPrefix } = this.options;
     if (headerIds) {
       let plain;
       if (this.slugger instanceof SluggerMarked) {
-        plain = this.getMarkedHeaderText(token)
-        plain = unescape(plain);
+        const strings = findMarkedStrings(token);
+        plain = unescape(strings.join(''));
       } else {
-        plain = this.getPlainText(token);
+        const strings = findTextStrings(token);
+        plain = strings.join('');
       }
       name = this.slugger.slug(plain);
       return headerPrefix + name;

@@ -4,6 +4,7 @@ import { BlockLexer } from './block-lexer.mjs';
 import { InlineLexer } from './inline-lexer.mjs';
 import { PreactRenderer } from './preact-renderer.mjs';
 import { JsonRenderer } from './json-renderer.mjs';
+import { findCodeSections, findTextStrings } from './helpers.mjs';
 
 function parse(text, options) {
     const parser = new Parser(options);
@@ -22,9 +23,6 @@ function parseHtml(text, options) {
 }
 
 export {
-    parse,
-    parseHtml,
-    parseHtml as parseHTML,
     Parser,
     HtmlParser,
     HtmlParser as HTMLParser,
@@ -34,5 +32,11 @@ export {
     PreactRenderer as Renderer,
     JsonRenderer,
     JsonRenderer as JSONRenderer,
+
+    parse,
+    parseHtml,
+    parseHtml as parseHTML,
+    findCodeSections,
+    findTextStrings,
 };
 export * from './defaults.mjs';

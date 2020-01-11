@@ -82,6 +82,7 @@ function test(desc, requireFunc, params) {
         continue;
       }
       describe(`#${title}`, function() {
+        this.timeout(5000);
         it ('should produce the expected output', function() {
           // use hex entity instead of dec for single quote
           const theirs = html.replace(/&#39;/g, '&#x27;')
