@@ -618,6 +618,11 @@ class BaseRenderer {
               if (styleTag.tagName === ahead.tagName) {
                 break;
               }
+              if (this.isVoidElement(ahead.tagName)) {
+                // treat void element like text
+                insertionIndex = (firstInlineIndex !== -1) ? firstInlineIndex : i;
+                break;
+              }
               // remember where we first encountered an inline element
               if (firstInlineIndex === -1) {
                 if (!this.isBlockElement(ahead.tagName)) {
@@ -630,11 +635,7 @@ class BaseRenderer {
               }
             } else if (ahead.type === 'text') {
               // restore the style at the first inline element or right here
-              if (firstInlineIndex !== -1) {
-                insertionIndex = firstInlineIndex;
-              } else {
-                insertionIndex = i;
-              }
+              insertionIndex = (firstInlineIndex !== -1) ? firstInlineIndex : i;
               break;
             }
           }

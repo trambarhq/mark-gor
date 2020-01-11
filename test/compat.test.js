@@ -78,11 +78,21 @@ function test(desc, requireFunc, params) {
           const ours = parse(markdown, ourOptions);
           const theirs = html;
           if (ours !== theirs) {
-            if (compareThruDOM(ours, theirs)) {
+            const ourDiv = document.createElement('DIV');
+            const theirDiv = document.createElement('DIV');
+            ourDiv.innerHTML = ours;
+            theirDiv.innerHTML = theirs;
+            if (ourDiv.isEqualNode(theirDiv)) {
               mismatchList.push({ title, ours, theirs, markdown });
             } else {
               if (singleTest) {
-                showDiff({ markdown, ours, theirs });
+                showDiff({
+                  markdown,
+                  ours,
+                  theirs,
+                  ourDOM: ourDiv.innerHTML,
+                  theirDOM: theirDiv.innerHTML,
+                });
               }
               expect.fail('Not matching');
             }
@@ -93,19 +103,13 @@ function test(desc, requireFunc, params) {
   });
 }
 
-function compareThruDOM(ours, theirs) {
-  const ourDiv = document.createElement('DIV');
-  const theirDiv = document.createElement('DIV');
-  ourDiv.innerHTML = ours;
-  theirDiv.innerHTML = theirs;
-  return ourDiv.isEqualNode(theirDiv);
-}
-
 function showDiff(results) {
-  const { markdown, ours, theirs } = results;
-  console.log(`MARKDOWN:\n${markdown}\n`);
-  console.log(`OURS:\n${ours}\n`);
-  console.log(`THEIRS:\n${theirs}\n`);
+  const { markdown, ours, theirs, ourDOM, theirDOM } = results;
+  //console.log(`\n\nMARKDOWN:\n\n${markdown}\n`);
+  //console.log(`\n\nOURS:\n\n${ours}\n`);
+  //console.log(`\n\nTHEIRS:\n\n${theirs}\n`);
+  console.log(`\n\nOURS (DOM):\n\n${ourDOM}\n\n`);
+  console.log(`\n\nTHEIRS (DOM):\n\n${theirDOM}\n\n`);
 }
 
 describe('Compatibility', function() {

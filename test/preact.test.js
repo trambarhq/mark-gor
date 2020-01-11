@@ -4,7 +4,6 @@ import { configure, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-preact-pure';
 import FrontMatter from 'front-matter';
 
-import { parse as parseMarked } from 'marked';
 import { parse as parseHtml } from '../src/html.mjs';
 import { parse as parsePreact } from '../src/preact.mjs';
 import { contentEvictionCheck } from '../src/html-tag-attrs.mjs';
@@ -123,7 +122,6 @@ function test(desc, requireFunc, params) {
 function showDiff(results) {
   const { markdown, ours, theirs, ourDOM, theirDOM } = results;
   //console.log(`\n\nMARKDOWN:\n\n${markdown}\n`);
-  //console.log(`\n\nMARKED:\n\n${parseMarked(markdown)}\n`);
   //console.log(`\n\nOURS:\n\n${ours}\n`);
   //console.log(`\n\nTHEIRS:\n\n${theirs}\n`);
   console.log(`\n\nOURS (DOM):\n\n${ourDOM}\n\n`);
@@ -150,15 +148,28 @@ function fixDimension(element, name) {
 function adjustStyles(element) {
   let value = element.getAttribute('style');
   if (value) {
-    // remove minor formatting differences with style definition
-    value = value.replace(/\s*([:;])\s*/g, '$1 ');
-    // remove important
-    value = value.replace(/\s*!important/g, '');
-    // change 0 to 0px
-    value = value.replace(/\b0(\s|;|$)/g, '0px$1');
-    value = value.trim();
-    if (!value.endsWith(';')) {
-      value += ';';
+    const orgDefs = value.split(';').filter((s) => !!s.trim());
+    const newDefs = [];
+    for (let orgDef of orgDefs) {
+      const m = /([^:]+):\s*([\s\S]+)/.exec(orgDef.trim());
+      if (m) {
+        let name = m[1], decl = m[2];
+        // remove important
+        decl = decl.replace(/\s*!important/, '');
+        // change 0 to 0px
+        decl = decl.replace(/\b0(\s|;|$)/g, '0px$1');
+        // insert space after common in rgb(...)
+        decl = decl.replace(/\b(rgba?)\((.*)\)/g, (s, f, a) => {
+          const args = a.split(/\s*,\s*/);
+          return `${f}(${args.join(', ')})`;
+        });
+        newDefs.push(`${name}: ${decl}`);
+      }
+    }
+    if (newDefs.length > 0) {
+      value = newDefs.join('; ') + ';';
+    } else {
+      value = '';
     }
     element.setAttribute('style', value);
   }

@@ -270,5 +270,17 @@ describe('Normalization', function() {
     test('<small> extending into two block containers', `
 <p><small><div><del><em><pre>world</pre></em></del></div></div>
     `)
+    test('restoring <small> to <br>', `
+<p><small><div><del><em><br></em></del></div></div>
+    `)
+    test('restoring <small> to <hr>', `
+<p><small><div><del><em><br></em></del></div></div>
+    `)
+    test('restoring <small> to <img>', `
+<p><small><div><del><em><img></em></del></div></div>
+    `)
+    test('restoring <small> to <input>', `
+<p><small><div><del><em><input></em></del></div></div>
+    `)
   })
 })
