@@ -28,6 +28,8 @@ If you are interested, you can check out a [demo of Astuto](http://116.203.226.1
 
 ## Installation
 
+**Note**: it is strongly suggested to run Astuto on Linux or macOS. As of today, Windows is likely to [cause problems](https://github.com/riggraz/astuto/wiki/Common-problems#standard_init_linuxgo211-exec-user-process-caused-no-such-file-or-directory). If you want to try anyway, follow along with the [Windows users installation guide](https://github.com/riggraz/astuto/wiki/Installation-for-Windows-users).
+
 1. Ensure that you have the required software installed.
 2. Clone this repository.
 3. In Astuto's root directory, create a file named `.env` and fill it with the required environment variables (see `.env-example` for an example and check [this wiki page](https://github.com/riggraz/astuto/wiki/Required-environment-variables) for an explanation of the variables).
@@ -45,9 +47,8 @@ If you are interested, you can check out a [demo of Astuto](http://116.203.226.1
 
 Astuto is licensed under the [GNU GPLv3](https://github.com/riggraz/astuto/blob/master/LICENSE) license. You are welcome to contribute:
 * Join the [Discord channel](https://discord.gg/SrtUMRp) to get in touch.
-* Take a look at the [tasks](https://github.com/riggraz/astuto/projects/1) to be done to get Astuto to v1.0.
-* You can find a [todo list](https://github.com/riggraz/astuto/wiki/Improving-Astuto) of what we would like to work on next.
+* You can find a [todo list](https://github.com/riggraz/astuto/projects/1) of what we would like to work on right now.
 * You should take a look at the [contribution guidelines](https://github.com/riggraz/astuto/wiki/Contribution-Guidelines).
 * You should take a look at the [technologies](https://github.com/riggraz/astuto/wiki/Technologies) used to build Astuto.
-* You can run the test suite by typing `rspec`.
+* You can run the test suite by typing `rspec` inside the `web` container. Before you can run `rspec`, you need to uncomment the Google Chrome installation lines in `docker/app/Dockerfile` and run `./script/docker-update-and-run.sh`.
 * If you just have some suggestions you can [create an issue](https://github.com/riggraz/astuto/issues), [email us directly](mailto:riccardo.graziosi97@gmail.com) or [text us in our Discord server](https://discord.gg/SrtUMRp).

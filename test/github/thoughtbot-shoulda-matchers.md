@@ -19,7 +19,7 @@ complex, and error-prone.
 
 ## Quick links
 
-📖 **[Read the documentation for the latest version (4.1.2)][rubydocs].**  
+📖 **[Read the documentation for the latest version][rubydocs].**  
 📢 **[See what's changed in a recent version][news].**
 
 [rubydocs]: http://matchers.shoulda.io/docs
@@ -406,7 +406,7 @@ Shoulda Matchers follows Semantic Versioning 2.0 as defined at
 
 ## License
 
-Shoulda Matchers is copyright © 2006-2019
+Shoulda Matchers is copyright © 2006-2020
 [thoughtbot, inc][thoughtbot-website]. It is free software,
 and may be redistributed under the terms specified in the
 [MIT-LICENSE](MIT-LICENSE) file.
