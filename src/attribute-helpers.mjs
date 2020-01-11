@@ -3,6 +3,7 @@ function convertAttributes(tagName, attrs, options) {
     return;
   }
   const props = {};
+  let count = 0;
   for (let [ name, value ] of Object.entries(attrs)) {
     if (/^on/i.test(name)) {
       // omit handlers
@@ -37,9 +38,10 @@ function convertAttributes(tagName, attrs, options) {
         }
       }
       props[name] = value;
+      count++;
     }
   }
-  return props;
+  return (count > 0) ? props : undefined;
 }
 
 const camelCaseNames = {

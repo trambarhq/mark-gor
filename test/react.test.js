@@ -82,8 +82,10 @@ function test(desc, requireFunc, params) {
         continue;
       }
       describe(`#${title}`, function() {
-        this.timeout(5000);
         it ('should produce the expected output', function() {
+          this.timeout(5000);
+          configure({ adapter });
+
           // use hex entity instead of dec for single quote
           const theirs = html.replace(/&#39;/g, '&#x27;')
           const theirDiv = document.createElement('DIV');
@@ -92,7 +94,6 @@ function test(desc, requireFunc, params) {
 
           const element = parseReact(markdown, options);
           const ourDiv = document.createElement('DIV');
-          configure({ adapter });
           const wrapper = mount(element, { attachTo: ourDiv });
 
           if (!ourDiv.isEqualNode(theirDiv)) {
