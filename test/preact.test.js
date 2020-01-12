@@ -68,8 +68,8 @@ function test(desc, requireFunc, params) {
         continue;
       }
       describe(`#${title}`, function() {
-        it ('should produce the expected output', function() {
-          this.timeout(5000);
+        it ('should produce the expected output', async function() {
+          this.timeout(10000);
           configure({ adapter });
 
           const theirOptions = {

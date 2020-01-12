@@ -64,10 +64,11 @@ function test(desc, requireFunc, params) {
         continue;
       }
       describe(`#${title}`, function() {
-        it ('should produce the expected output', function() {
+        it ('should produce the expected output', async function() {
           const theirs = parseMarked(markdown, options);
           const ourOptions = {
             ...options,
+            headerIdFormat: 'marked',
             normalizeTags: false,
             decodeEntities: false,
             omitLinefeed: false,
