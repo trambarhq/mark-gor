@@ -83,4 +83,52 @@ describe('Header IDs', function() {
     const html = parse(markdown, options)
     expect(html).to.equal(`<h1 id="multiple-space-------------doh">Multiple space           &lt;- Doh!</h1>`);
   })
+  it ('should match how GitHub handles arrows, lines, blocks, another symbols', function() {
+    const options = { headerIdFormat: 'github' };
+    const markdown = `# ←↑→↓─━│┃☀☁☂☃▀▁▂▃`;
+    const html = parse(markdown, options)
+    expect(html).to.equal(`<h1 id="">←↑→↓─━│┃☀☁☂☃▀▁▂▃</h1>`);
+  })
+  it ('should match how GitHub handles currency symbols', function() {
+    const options = { headerIdFormat: 'github' };
+    const markdown = `# ₠₡₢₣₤₥₿€₩`;
+    const html = parse(markdown, options)
+    expect(html).to.equal(`<h1 id="">₠₡₢₣₤₥₿€₩</h1>`);
+  })
+  it ('should match how GitHub handles Chinese characters', function() {
+    const options = { headerIdFormat: 'github' };
+    const markdown = `# 餃子`;
+    const html = parse(markdown, options)
+    expect(html).to.equal(`<h1 id="餃子">餃子</h1>`);
+  })
+  it ('should match how GitHub handles letter-like symbols', function() {
+    const options = { headerIdFormat: 'github' };
+    const markdown = `# ②③④①℀℁ℂ℃ℙℚℛℜ⁴⁵⁶⅓⅔⅕⅐⅒`;
+    const html = parse(markdown, options)
+    expect(html).to.equal(`<h1 id="ℂℙℚℛℜ">②③④①℀℁ℂ℃ℙℚℛℜ⁴⁵⁶⅓⅔⅕⅐⅒</h1>`);
+  })
+  it ('should match how GitHub handles Geez', function() {
+    const options = { headerIdFormat: 'github' };
+    const markdown = `# ሳቜሬ`;
+    const html = parse(markdown, options)
+    expect(html).to.equal(`<h1 id="ሳቜሬ">ሳቜሬ</h1>`);
+  })
+  it ('should match how GitHub handles dingbats', function() {
+    const options = { headerIdFormat: 'github' };
+    const markdown = `# ✀✁✂✃✄✅✆✇✈✉`;
+    const html = parse(markdown, options)
+    expect(html).to.equal(`<h1 id="">✀✁✂✃✄✅✆✇✈✉</h1>`);
+  })
+  it ('should match how GitHub handles Braille', function() {
+    const options = { headerIdFormat: 'github' };
+    const markdown = `# ⠁⠂⠃⠄⠅⠆`;
+    const html = parse(markdown, options)
+    expect(html).to.equal(`<h1 id="">⠁⠂⠃⠄⠅⠆</h1>`);
+  })
+  it ('should match how GitHub handles soft-hypthen', function() {
+    const options = { headerIdFormat: 'github' };
+    const markdown = `# soft­hyphen`;
+    const html = parse(markdown, options)
+    expect(html).to.equal(`<h1 id="softhyphen">soft­hyphen</h1>`);
+  })
 })
