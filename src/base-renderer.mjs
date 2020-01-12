@@ -1,6 +1,6 @@
 import { cleanUrl, escape, unescape, findTextStrings, findMarkedStrings } from './helpers.mjs';
 import { mergeDefaults } from './defaults.mjs';
-import { SluggerMarked } from './slugger.mjs';
+import { Slugger, MarkedSlugger } from './slugger.mjs';
 import { decodeHtmlEntities } from './html-entities.mjs';
 import {
   voidCheck,
@@ -19,9 +19,10 @@ class BaseRenderer {
   constructor(options, props) {
     this.options = mergeDefaults(options);
     this.slugger = null;
-    if (typeof(this.options.headerIds) === 'string') {
+    if (this.options.headerIdFormat === 'marked') {
+      this.sluggerClass = MarkedSlugger;
     } else {
-      this.sluggerClass = SluggerMarked;
+      this.sluggerClass = Slugger;
     }
 
     this.renderFunctions = {
@@ -62,7 +63,7 @@ class BaseRenderer {
 
   initialize() {
     this.tokens = [];
-    this.slugger = new this.sluggerClass(this.options.headerIds);
+    this.slugger = new this.sluggerClass;
   }
 
   finalize() {
@@ -427,7 +428,7 @@ class BaseRenderer {
     const { headerIds, headerPrefix } = this.options;
     if (headerIds) {
       let plain;
-      if (this.slugger instanceof SluggerMarked) {
+      if (this.slugger instanceof MarkedSlugger) {
         const strings = findMarkedStrings(token);
         plain = unescape(strings.join(''));
       } else {
