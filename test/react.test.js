@@ -41,19 +41,12 @@ function test(desc, requireFunc, params) {
         const items = requireFunc(path);
         const options = { ...params.options, silent: true };
         for (let item of items) {
-          const { markdown, example, section, html: expected } = item;
+          const { markdown, example, section } = item;
           const title = `example ${(example + '').padStart(3, '0')} (${section})`;
           if (singleTest && !title.startsWith(singleTest)) {
             continue;
           }
-          const theirOptions = {
-            ...options,
-            normalizeTags: false,
-            decodeEntities: false,
-            omitLinefeed: true,
-          };
-          const html = parseHtml(markdown, theirOptions);
-          tests.push({ title, markdown, options, html });
+          tests.push({ title, markdown, options });
         }
       } else {
         const title = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
@@ -62,22 +55,15 @@ function test(desc, requireFunc, params) {
         }
         const module = requireFunc(path);
         const fm = FrontMatter(module.default);
-        const options = { ...params.options, ...fm.attributes, silent: true };
         const markdown = fm.body.replace(/\u00a0/g, ' ');
+        const options = { ...params.options, ...fm.attributes, silent: true };
         if (options.sanitizer) {
           options.sanitizer = eval(options.sanitizer);
         }
-        const theirOptions = {
-          ...options,
-          normalizeTags: false,
-          decodeEntities: false,
-          omitLinefeed: true,
-        };
-        const html = parseHtml(markdown, theirOptions);
-        tests.push({ title, markdown, options, html });
+        tests.push({ title, markdown, options });
       }
     }
-    for (let { title, markdown, options, html } of tests) {
+    for (let { title, markdown, options } of tests) {
       if (withKnownIssue.indexOf(title) !== -1) {
         continue;
       }
@@ -86,8 +72,13 @@ function test(desc, requireFunc, params) {
           this.timeout(5000);
           configure({ adapter });
 
-          // use hex entity instead of dec for single quote
-          const theirs = html.replace(/&#39;/g, '&#x27;')
+          const theirOptions = {
+            ...options,
+            normalizeTags: false,
+            decodeEntities: false,
+            omitLinefeed: true,
+          };
+          const theirs = parseHtml(markdown, theirOptions);
           const theirDiv = document.createElement('DIV');
           theirDiv.innerHTML = theirs;
           adjustDOMNode(theirDiv);

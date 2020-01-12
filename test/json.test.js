@@ -19,7 +19,7 @@ function test(desc, requireFunc, params) {
         const items = requireFunc(path);
         for (let item of items) {
           const options = { ...params.options, silent: true };
-          const { markdown, example, section, html: expected } = item;
+          const { markdown, example, section } = item;
           const title = `example ${(example + '').padStart(3, '0')} (${section})`;
           if (singleTest && !title.startsWith(singleTest)) {
             continue;
@@ -33,8 +33,8 @@ function test(desc, requireFunc, params) {
         }
         const module = requireFunc(path);
         const fm = FrontMatter(module.default);
-        const options = { ...params.options, ...fm.attributes, silent: true };
         const markdown = fm.body.replace(/\u00a0/g, ' ');
+        const options = { ...params.options, ...fm.attributes, silent: true };
         tests.push({ title, markdown, options });
       }
     }

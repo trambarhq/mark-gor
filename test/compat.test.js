@@ -41,8 +41,7 @@ function test(desc, requireFunc, params) {
           if (singleTest && !title.startsWith(singleTest)) {
             continue;
           }
-          const html = parseMarked(markdown, options);
-          tests.push({ title, markdown, options, html });
+          tests.push({ title, markdown, options });
         }
       } else {
         const title = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
@@ -51,13 +50,12 @@ function test(desc, requireFunc, params) {
         }
         const module = requireFunc(path);
         const fm = FrontMatter(module.default);
-        const options = { ...getMarkedDefaults(), ...params.options, ...fm.attributes, silent: true };
         const markdown = fm.body;
+        const options = { ...getMarkedDefaults(), ...params.options, ...fm.attributes, silent: true };
         if (options.sanitizer) {
           options.sanitizer = eval(options.sanitizer);
         }
-        const html = parseMarked(markdown, options);
-        tests.push({ title, markdown, options, html });
+        tests.push({ title, markdown, options });
       }
     }
     for (let test of tests) {
@@ -67,6 +65,7 @@ function test(desc, requireFunc, params) {
       }
       describe(`#${title}`, function() {
         it ('should produce the expected output', function() {
+          const theirs = parseMarked(markdown, options);
           const ourOptions = {
             ...options,
             normalizeTags: false,
@@ -76,7 +75,6 @@ function test(desc, requireFunc, params) {
             omitEmbeddedCode: false,
           };
           const ours = parse(markdown, ourOptions);
-          const theirs = html;
           if (ours !== theirs) {
             const ourDiv = document.createElement('DIV');
             const theirDiv = document.createElement('DIV');
