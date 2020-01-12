@@ -1,4 +1,6 @@
-# Głośną, wrzaskliwą, a nic nie znaczącą."
+# Głośną, wrzaskliwą, a nic nie znaczącą.
+
+# Głośną, wrzaskliwą, a nic nie znaczącą.
 
 Hello
 
