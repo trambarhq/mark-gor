@@ -19,7 +19,7 @@ class BaseRenderer {
   constructor(options, props) {
     this.options = mergeDefaults(options);
     this.slugger = null;
-    if (this.options.headerIdFormat === 'marked') {
+    if (this.options.headerFormat === 'marked') {
       this.sluggerClass = MarkedSlugger;
     } else {
       this.sluggerClass = Slugger;

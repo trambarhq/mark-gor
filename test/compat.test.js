@@ -68,7 +68,7 @@ function test(desc, requireFunc, params) {
           const theirs = parseMarked(markdown, options);
           const ourOptions = {
             ...options,
-            headerIdFormat: 'marked',
+            headerFormat: 'marked',
             normalizeTags: false,
             decodeEntities: false,
             omitLinefeed: false,
