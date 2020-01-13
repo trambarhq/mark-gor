@@ -36,7 +36,14 @@ class Parser {
   }
 
   processBlocks() {
-    this.tokens = this.blockLexer.tokenize(this.text);
+    if (this.options.htmlOnly) {
+      const type = 'html_block';
+      const markdown = this.text;
+      const children = null;
+      this.tokens = [ { type, markdown, children } ];
+    } else {
+      this.tokens = this.blockLexer.tokenize(this.text);
+    }
   }
 
   processInline(tokens) {

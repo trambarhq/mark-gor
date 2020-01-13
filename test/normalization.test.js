@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { parseHtml } from '../src/html.mjs';
+import { parse } from '../src/html.mjs';
 
 function test(title, markdown) {
   markdown = markdown.trim();
@@ -19,6 +19,10 @@ function test(title, markdown) {
       }
     })
   })
+}
+
+function parseHtml(html, options) {
+  return parse(html, { ...options, htmlOnly: true });
 }
 
 function processThruDOM(html) {

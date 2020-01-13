@@ -4,6 +4,7 @@ const defaults = getDefaults();
 
 function getDefaults() {
   return {
+    htmlOnly: false,
     headerFormat: 'github',
     decodeEntities: true,
     fixBrokenTags: true,
