@@ -52,19 +52,17 @@ class InlineLexer {
   }
 
   tokenize(text, containerType) {
-    const inHtmlBlock = (containerType === 'html_block');
-    const inRawBlock = false;
-    const inLink = false;
-    this.initialize(text, { inHtmlBlock, inRawBlock, inLink });
+    this.initialize(text, containerType);
     this.process();
     this.finalize();
     return this.tokens;
   }
 
-  initialize(text, props) {
-    this.input = this.remaining = text;
-    this.tokens = [];
-    Object.assign(this, props);
+  initialize(text, containerType) {
+    const inHtmlBlock = (containerType === 'html_block');
+    const inRawBlock = false;
+    const inLink = false;
+    this.setState(text, { inHtmlBlock, inRawBlock, inLink });
   }
 
   process() {
@@ -75,6 +73,12 @@ class InlineLexer {
   }
 
   finalize() {
+  }
+
+  setState(text, props) {
+    this.input = this.remaining = text;
+    this.tokens = [];
+    Object.assign(this, props);
   }
 
   pushState() {
@@ -111,7 +115,7 @@ class InlineLexer {
       // process children
       const inMarkdownLink = (token.type === 'link');
       this.pushState();
-      this.initialize(token.markdown, { inMarkdownLink });
+      this.setState(token.markdown, { inMarkdownLink });
       this.process();
       this.finalize();
       token.children = this.tokens;

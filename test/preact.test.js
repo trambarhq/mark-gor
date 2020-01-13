@@ -6,7 +6,7 @@ import FrontMatter from 'front-matter';
 
 import { parse as parseHtml } from '../src/html.mjs';
 import { parse as parsePreact } from '../src/preact.mjs';
-import { contentEvictionCheck } from '../src/html-tag-attrs.mjs';
+import { contentEvictionCheck } from '../src/html-tags.mjs';
 
 const singleTest = '';
 

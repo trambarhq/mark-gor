@@ -40,20 +40,17 @@ class BlockLexer {
   }
 
   tokenize(text) {
-    text = text
-            .replace(/\r\n|\r/g, '\n')
-            .replace(/\t/g, '    ')
-            .replace(/^ +$/gm, '');
     this.initialize(text);
     this.process();
     this.finalize();
     return this.tokens;
   }
 
-  initialize(text, props) {
-    this.input = this.remaining = text.replace(/^ +$/gm, '');
-    this.tokens = [];
-    Object.assign(this, props);
+  initialize(text) {
+    text = text.replace(/\r\n|\r/g, '\n')
+               .replace(/\t/g, '    ')
+               .replace(/^ +$/gm, '');
+    this.setState(text);
   }
 
   process() {
@@ -63,6 +60,12 @@ class BlockLexer {
   }
 
   finalize() {
+  }
+
+  setState(text, props) {
+    this.input = this.remaining = text.replace(/^ +$/gm, '');
+    this.tokens = [];
+    Object.assign(this, props);
   }
 
   pushState() {
@@ -302,7 +305,7 @@ class BlockLexer {
       // Keep the current "topLevel" state. This is exactly
       // how markdown.pl works.
       this.pushState();
-      this.initialize(text, { blockquote: true });
+      this.setState(text, { blockquote: true });
       this.process();
       this.finalize();
       const children = this.tokens;
@@ -344,8 +347,8 @@ class BlockLexer {
         if (~item.indexOf('\n ')) {
           space -= item.length;
           item = !this.options.pedantic
-            ? item.replace(new RegExp('^ {1,' + space + '}', 'gm'), '')
-            : item.replace(/^ {1,4}/gm, '');
+               ? item.replace(new RegExp('^ {1,' + space + '}', 'gm'), '')
+               : item.replace(/^ {1,4}/gm, '');
         }
 
         // Determine whether the next list item belongs here.
@@ -398,7 +401,7 @@ class BlockLexer {
     }
     const loose = false;
     this.pushState();
-    this.initialize(text, { topLevel: false, blockquote: false });
+    this.setState(text, { topLevel: false, blockquote: false });
     this.process();
     this.finalize();
     const children = this.tokens;
