@@ -44,20 +44,17 @@ class HtmlRenderer extends BaseRenderer {
 
   outputHtmlTag(token) {
     const { html } = token;
-    const { normalizeTags, omitDeclarations, omitEmbeddedCode } = this.options;
-    if (omitDeclarations) {
+    if (this.options.omitDeclarations) {
       if (/^\s*<!/.test(html)) {
         return '';
       }
     }
-    if (omitEmbeddedCode) {
+    if (this.options.omitEmbeddedCode) {
       if (/^\s*<\?/.test(html)) {
         return '';
       }
     }
-    if (!normalizeTags) {
-      return this.sanitize(html);
-    }
+    return this.sanitize(html);
   }
 
   outputHtmlElement(token) {
@@ -93,16 +90,12 @@ class HtmlRenderer extends BaseRenderer {
 
   outputHtmlElementEnd(token) {
     const { tagName } = token;
-    const { normalizeTags } = this.options;
-    if (!normalizeTags) {
-      return `</${tagName}>`;
-    }
+    return `</${tagName}>`;
   }
 
   outputText(token) {
     const { text, html } = token;
-    const { decodeEntities } = this.options;
-    if (decodeEntities || html === undefined) {
+    if (this.options.decodeEntities || html === undefined) {
       return escape(text, true);
     } else {
       return escape(html);
@@ -111,13 +104,10 @@ class HtmlRenderer extends BaseRenderer {
 
   outputRaw(token) {
     const { html, highlighted } = token;
-    const { normalizeTags } = this.options;
     if (highlighted) {
       return highlighted;
     } else {
-      if (!normalizeTags) {
-        return this.sanitize(html);
-      }
+      return this.sanitize(html);
     }
   }
 

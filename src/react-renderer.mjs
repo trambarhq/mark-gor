@@ -1,6 +1,6 @@
 import { default as React } from 'react';
 import { BaseRenderer } from './base-renderer.mjs';
-import { convertAttributes } from './attribute-helpers.mjs';
+import { convertAttributes } from './html-attributes.mjs';
 
 class ReactRenderer extends BaseRenderer {
   constructor(options, props) {

@@ -1,6 +1,6 @@
 import { default as Preact } from 'preact';
 import { BaseRenderer } from './base-renderer.mjs';
-import { convertAttributes } from './attribute-helpers.mjs';
+import { convertAttributes } from './html-attributes.mjs';
 
 class PreactRenderer extends BaseRenderer {
   constructor(options, props) {

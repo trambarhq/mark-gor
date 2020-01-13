@@ -13,7 +13,7 @@ import {
   contentEvictionCheck,
   linefeedEliminationCheck,
   implicitElements,
-} from './html-tag-attrs.mjs';
+} from './html-tags.mjs';
 
 class BaseRenderer {
   constructor(options, props) {
