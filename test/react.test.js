@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { configure, mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { render } from 'react-dom';
 import FrontMatter from 'front-matter';
 
 import { parse as parseHtml } from '../src/html.mjs';
@@ -29,8 +28,6 @@ const withKnownIssue = [
   'example 147 (HTML blocks)',                      // can't create script tag in React
   'example 612 (Raw HTML)',                         // can't replicate completely broken HTML
 ];
-
-const adapter = new Adapter;
 
 function test(desc, requireFunc, params) {
   describe(desc, function() {
@@ -70,7 +67,6 @@ function test(desc, requireFunc, params) {
       describe(`#${title}`, function() {
         it ('should produce the expected output', async function() {
           this.timeout(10000);
-          configure({ adapter });
 
           const theirOptions = {
             ...options,
@@ -82,29 +78,19 @@ function test(desc, requireFunc, params) {
           const theirDiv = document.createElement('DIV');
           theirDiv.innerHTML = theirs;
           adjustDOMNode(theirDiv);
+          const theirDOM = theirDiv.innerHTML;
 
           const element = parseReact(markdown, options);
           const ourDiv = document.createElement('DIV');
-          const wrapper = mount(element, { attachTo: ourDiv });
+          render(element, ourDiv);
+          const ourDOM = ourDiv.innerHTML;
+          const ours = renderToStaticMarkup(element);
 
-          if (!ourDiv.isEqualNode(theirDiv)) {
-            // isEqualNode() will return false sometimes even when the
-            // contents are a match; React or Enzyme is probably adding
-            // something to the node
-            ourDiv.innerHTML = ourDiv.innerHTML;
-            if (!ourDiv.isEqualNode(theirDiv)) {
-              if (singleTest) {
-                const ours = renderToStaticMarkup(element);
-                showDiff({
-                  markdown,
-                  ours,
-                  theirs,
-                  ourDOM: ourDiv.innerHTML,
-                  theirDOM: theirDiv.innerHTML,
-                });
-              }
-              expect.fail('Not matching');
+          if (!ourDiv.isEqualNode(theirDiv) && ourDOM !== theirDOM) {
+            if (singleTest) {
+              showDiff({ markdown, ours, theirs, ourDOM, theirDOM });
             }
+            expect.fail('Not matching');
           }
         });
       });

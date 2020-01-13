@@ -1,14 +1,11 @@
 import { expect } from 'chai';
-import { configure, mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { render } from 'react-dom';
 import FrontMatter from 'front-matter';
 
 import { Parser, JsonRenderer, ReactRenderer } from '../src/react.mjs';
 import { reactivate } from '../src/reactivate.mjs';
 
 const singleTest = '';
-
-const adapter = new Adapter;
 
 function test(desc, requireFunc, params) {
   describe(desc, function() {
@@ -42,7 +39,6 @@ function test(desc, requireFunc, params) {
       describe(`#${title}`, function() {
         it ('should produce the same output after reactivation', function() {
           this.timeout(10000);
-          configure({ adapter });
 
           const parser = new Parser(options);
           const jsonRenderer = new JsonRenderer(options);
@@ -51,20 +47,18 @@ function test(desc, requireFunc, params) {
 
           const theirElement = reactRenderer.render(tokens);
           const theirDiv = document.createElement('DIV');
-          const theirWrapper = mount(theirElement, { attachTo: theirDiv });
+          render(theirElement, theirDiv);
+          const theirDOM = theirDiv.innerHTML;
 
           const json = jsonRenderer.render(tokens);
           const ourElement = reactivate(json);
           const ourDiv = document.createElement('DIV');
-          const ourWrapper = mount(ourElement, { attachTo: ourDiv });
+          render(ourElement, ourDiv);
+          const ourDOM = ourDiv.innerHTML;
 
           if (!ourDiv.isEqualNode(theirDiv)) {
             if (singleTest) {
-              showDiff({
-                markdown,
-                ourDOM: ourDiv.innerHTML,
-                theirDOM: theirDiv.innerHTML,
-              });
+              showDiff({ markdown, ourDOM, theirDOM });
             }
             expect.fail('Not matching');
           }
