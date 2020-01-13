@@ -83,6 +83,10 @@ function mergeStrings(list) {
   return result;
 }
 
+function nextTick() {
+  return new Promise((resolve) => { setImmediate(resolve) })
+}
+
 export {
   escape,
   unescape,
@@ -100,4 +104,5 @@ export {
   findTextStrings,
   findMarkedStrings,
   mergeStrings,
+  nextTick,
 };

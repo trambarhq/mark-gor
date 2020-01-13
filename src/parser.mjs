@@ -24,14 +24,10 @@ class Parser {
     });
   }
 
-  finalize() {
-  }
-
   parse(text) {
     this.initialize(text);
     this.processBlocks();
     this.processInline();
-    this.finalize();
     return this.tokens;
   }
 

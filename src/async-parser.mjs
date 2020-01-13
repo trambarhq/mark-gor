@@ -1,6 +1,7 @@
 import { Parser } from './parser.mjs';
 import { AsyncInlineLexer } from './async-inline-lexer.mjs';
 import { AsyncBlockLexer } from './async-block-lexer.mjs';
+import 'setimmediate';
 
 class AsyncParser extends Parser {
   constructor(options, props) {
@@ -15,7 +16,6 @@ class AsyncParser extends Parser {
     this.initialize(text);
     await this.processBlocks();
     await this.processInline();
-    this.finalize();
     return this.tokens;
   }
 

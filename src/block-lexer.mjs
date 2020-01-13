@@ -42,7 +42,6 @@ class BlockLexer {
   tokenize(text) {
     this.initialize(text);
     this.process();
-    this.finalize();
     return this.tokens;
   }
 
@@ -57,9 +56,6 @@ class BlockLexer {
     while (this.remaining) {
       this.append(this.captureToken());
     }
-  }
-
-  finalize() {
   }
 
   setState(text, props) {
@@ -307,7 +303,6 @@ class BlockLexer {
       this.pushState();
       this.setState(text, { blockquote: true });
       this.process();
-      this.finalize();
       const children = this.tokens;
       this.popState();
       // put the text in a <p>
@@ -403,7 +398,6 @@ class BlockLexer {
     this.pushState();
     this.setState(text, { topLevel: false, blockquote: false });
     this.process();
-    this.finalize();
     const children = this.tokens;
     this.popState();
     return { type, checked, loose, children };

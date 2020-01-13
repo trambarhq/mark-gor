@@ -55,13 +55,6 @@ class BaseRenderer {
     this.slugger = new this.sluggerClass;
   }
 
-  finalize() {
-    const { normalizeTags } = this.options;
-    if (normalizeTags) {
-      this.normalize();
-    }
-  }
-
   addToken(token) {
     this.tokens.push(token);
   }
@@ -97,7 +90,9 @@ class BaseRenderer {
   render(tokens) {
     this.initialize();
     this.renderTokens(tokens);
-    this.finalize();
+    if (this.options.normalizeTags) {
+      this.normalize();
+    }
     return this.output();
   }
 
@@ -161,7 +156,7 @@ class BaseRenderer {
         this.addText(before);
       }
       if (type === 'start') {
-        const alias = this.findTagAlias(name);
+        const alias = (this.options.fixBrokenTags) ? this.findTagAlias(name) : null;
         this.addElement(alias || name, attributes);
       } else if (type === 'end') {
         this.endElement(name);

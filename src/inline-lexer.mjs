@@ -54,7 +54,6 @@ class InlineLexer {
   tokenize(text, containerType) {
     this.initialize(text, containerType);
     this.process();
-    this.finalize();
     return this.tokens;
   }
 
@@ -70,9 +69,6 @@ class InlineLexer {
       const token = this.captureToken();
       this.append(token);
     }
-  }
-
-  finalize() {
   }
 
   setState(text, props) {
@@ -117,7 +113,6 @@ class InlineLexer {
       this.pushState();
       this.setState(token.markdown, { inMarkdownLink });
       this.process();
-      this.finalize();
       token.children = this.tokens;
       this.popState();
     }
