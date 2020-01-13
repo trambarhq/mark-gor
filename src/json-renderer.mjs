@@ -1,5 +1,6 @@
 import { BaseRenderer } from './base-renderer.mjs';
 import { convertAttributes } from './html-attributes.mjs';
+import { mergeStrings } from './helpers.mjs';
 
 class JsonRenderer extends BaseRenderer {
   constructor(options, props) {
@@ -27,7 +28,7 @@ class JsonRenderer extends BaseRenderer {
         }
       }
     }
-    return (list.length > 0) ? list : undefined;
+    return (list.length > 0) ? mergeStrings(list) : undefined;
   }
 
   outputToken(token, key) {

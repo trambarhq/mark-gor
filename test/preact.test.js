@@ -5,7 +5,7 @@ import FrontMatter from 'front-matter';
 
 import { parse as parseHtml } from '../src/html.mjs';
 import { parse as parsePreact } from '../src/preact.mjs';
-import { contentEvictionCheck } from '../src/html-tags.mjs';
+import { getTagProperties } from '../src/html-tags.mjs';
 
 const singleTest = '';
 
@@ -78,16 +78,16 @@ function test(desc, requireFunc, params) {
           const theirDiv = document.createElement('DIV');
           theirDiv.innerHTML = theirs;
           adjustDOMNode(theirDiv);
-          const theirDOM = theirDiv.innerHTML;
 
           const element = parsePreact(markdown, options);
           const ourDiv = document.createElement('DIV');
           render(element, ourDiv);
-          const ourDOM = ourDiv.innerHTML;
-          const ours = renderToStaticMarkup(element);
 
-          if (!ourDiv.isEqualNode(theirDiv) && ourDOM !== theirDOM) {
+          if (!ourDiv.isEqualNode(theirDiv)) {
             if (singleTest) {
+              const theirDOM = theirDiv.innerHTML;
+              const ourDOM = ourDiv.innerHTML;
+              const ours = renderToStaticMarkup(element);
               showDiff({ markdown, ours, theirs, ourDOM, theirDOM });
             }
             expect.fail('Not matching');
@@ -160,13 +160,12 @@ function adjustDOMNode(element) {
     fixDimension(element, 'width');
     fixDimension(element, 'height');
   }
-
-  const filtering = contentEvictionCheck(element.tagName.toLowerCase());
+  const tag = getTagProperties(element.tagName.toLowerCase());
   let c = element.firstChild;
   while (c) {
     let n = c.nextSibling;
     if (c.nodeType === 3) {
-      if (filtering) {
+      if (tag.evicts) {
         if (/^\s+$/.test(c.textContent)) {
           c.remove();
         }

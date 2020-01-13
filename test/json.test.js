@@ -48,16 +48,16 @@ function test(desc, requireFunc, params) {
           const theirElement = reactRenderer.render(tokens);
           const theirDiv = document.createElement('DIV');
           render(theirElement, theirDiv);
-          const theirDOM = theirDiv.innerHTML;
 
           const json = jsonRenderer.render(tokens);
           const ourElement = reactivate(json);
           const ourDiv = document.createElement('DIV');
           render(ourElement, ourDiv);
-          const ourDOM = ourDiv.innerHTML;
 
           if (!ourDiv.isEqualNode(theirDiv)) {
             if (singleTest) {
+              const ourDOM = ourDiv.innerHTML;
+              const theirDOM = theirDiv.innerHTML;
               showDiff({ markdown, ourDOM, theirDOM });
             }
             expect.fail('Not matching');

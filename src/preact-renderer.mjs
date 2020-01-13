@@ -1,6 +1,7 @@
 import { default as Preact } from 'preact';
 import { BaseRenderer } from './base-renderer.mjs';
 import { convertAttributes } from './html-attributes.mjs';
+import { mergeStrings } from './helpers.mjs';
 
 class PreactRenderer extends BaseRenderer {
   constructor(options, props) {
@@ -29,7 +30,7 @@ class PreactRenderer extends BaseRenderer {
         }
       }
     }
-    return (list.length > 0) ? list : undefined;
+    return (list.length > 0) ? mergeStrings(list) : undefined;
   }
 
   outputToken(token, key) {

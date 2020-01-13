@@ -64,6 +64,25 @@ function findMarkedStrings(tokens) {
   return strings;
 }
 
+function mergeStrings(list) {
+  const result = [];
+  let wasString = false;
+  for (let item of list) {
+    if (typeof(item) === 'string') {
+      if (wasString) {
+        result[result.length - 1] += item;
+      } else {
+        result.push(item);
+        wasString = true;
+      }
+    } else {
+      result.push(item);
+      wasString = false;
+    }
+  }
+  return result;
+}
+
 export {
   escape,
   unescape,
@@ -80,4 +99,5 @@ export {
   findCodeSections,
   findTextStrings,
   findMarkedStrings,
+  mergeStrings,
 };

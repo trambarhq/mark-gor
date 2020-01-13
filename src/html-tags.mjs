@@ -10,237 +10,271 @@ function not(list) {
   };
 }
 
-const voidCheck = any([
-  'area',
-  'base',
-  'br',
-  'col',
-  'command',
-  'embed',
-  'hr',
-  'image',
-  'img',
-  'input',
-  'keygen',
-  'link',
-  'meta',
-  'param',
-  'source',
-  'track',
-  'wbr'
-]);
-
-const pTermination = any([
-  'address',
-  'article',
-  'aside',
-  'blockquote',
-  'details',
-  'div',
-  'dl',
-  'fieldset',
-  'figcaption',
-  'figure',
-  'footer',
-  'form',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-  'header',
-  'hgroup',
-  'hr',
-  'main',
-  'menu',
-  'nav',
-  'ol',
-  'p',
-  'pre',
-  'section',
-  'table',
-  'ul',
-]);
-const hTermination = any([
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-]);
-const liTermination = any([ 'li' ]);
-const trTermination = any([ 'tr' ]);
-const tdTermination = any([ 'td', 'th' ]);
-const thTermination = tdTermination;
-const tbodyTermination = any([ 'tbody', 'thead', 'tfoot' ]);
-const theadTermination = tbodyTermination;
-const tfootTermination = tbodyTermination;
-const dtTermination = any([ 'dd', 'dt' ]);
-const ddTermination = dtTermination;
-const captionTermination = any([
-  'td',
-  'tr',
-  'tbody',
-  'thead',
-  'tfoot',
-  'colgroup',
-  'col',
-]);
-const colgroupTermination = not([ 'col' ]);
-const aTermination = any([ 'a' ]);
-
-const terminationChecks = {
-  p: pTermination,
-  h1: hTermination,
-  h2: hTermination,
-  h3: hTermination,
-  h4: hTermination,
-  h5: hTermination,
-  h6: hTermination,
-  li: liTermination,
-  tr: trTermination,
-  td: tdTermination,
-  th: thTermination,
-  tbody: tbodyTermination,
-  thead: theadTermination,
-  tfoot: tfootTermination,
-  dt: dtTermination,
-  dd: ddTermination,
-  caption: captionTermination,
-  colgroup: colgroupTermination,
-  a: aTermination,
+const block = {
+  block: true,
+};
+const childless = {
+  void: true,
+};
+const style = {
+  styles: true,
+};
+const unknown = {
+  unknown: true,
 };
 
-const ulContent = any([ 'li' ]);
-const olContent = ulContent;
-const tableContent = any([
-  'td',
-  'tr',
-  'tbody',
-  'thead',
-  'tfoot',
-  'caption',
-  'colgroup',
-  'col',
-]);
-const trContent = any([ 'td', 'th' ]);
-const tbodyContent = any([ 'tr' ]);
-const theadContent = tbodyContent;
-const tfootContent = tbodyContent;
+const a = {
+  endsOn: any([ 'a' ]),
+  styles: true,
+};
+const address = block;
+const area = childless;
+const article = block;
+const aside = block;
+const blockquote = block;
+const canvas = block;
+const b = style;
+const base = childless;
+const br = {
+  vivificates: true,
+  void: true,
+};
+const caption = {
+  endsOn: any([
+    'td',
+    'tr',
+    'tbody',
+    'thead',
+    'tfoot',
+    'colgroup',
+    'col',
+  ]),
+};
+const code = style;
+const col = childless;
+const colgroup = {
+  endsOn: not([ 'col' ]),
+  evicts: true,
+};
+const command = childless;
+const dd = {
+  block: true,
+  endsOn: any([ 'dd', 'dt' ]),
+};
+const div = block;
+const dl = block;
+const dt = dd;
+const em = style;
+const embed = childless;
+const fieldset = block;
+const figcaption = block;
+const figure = block;
+const footer = block;
+const form = block;
+const header = block;
+const h1 = {
+  block: true,
+  endsOn: any([ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ])
+};
+const h2 = h1;
+const h3 = h1;
+const h4 = h1;
+const h5 = h1;
+const h6 = h1;
+const hr = {
+  block: true,
+  void: true,
+};
+const i = style;
+const img = childless;
+const input = childless;
+const keygen = childless;
+const li = {
+  block: true,
+  endsOn: any([ 'li' ]),
+};
+const link = childless;
+const main = block;
+const meta = childless;
+const nav = block;
+const noscript = block;
+const ol = {
+  block: true,
+  expects: any([ 'li' ]),
+};
+const p = {
+  block: true,
+  endsOn: any([
+    'address',
+    'article',
+    'aside',
+    'blockquote',
+    'details',
+    'div',
+    'dl',
+    'fieldset',
+    'figcaption',
+    'figure',
+    'footer',
+    'form',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'header',
+    'hgroup',
+    'hr',
+    'main',
+    'menu',
+    'nav',
+    'ol',
+    'p',
+    'pre',
+    'section',
+    'table',
+    'ul',
+  ]),
+  vivificates: true,
+};
+const param = childless;
+const pre = {
+  block: true,
+  trims: true,
+};
+const section = block;
+const source = childless;
+const small = style;
+const strong = style;
+const table = {
+  block: true,
+  clears: true,
+  evicts: true,
+  expects: any([
+    'td',
+    'tr',
+    'tbody',
+    'thead',
+    'tfoot',
+    'caption',
+    'colgroup',
+    'col',
+  ]),
+  implicit: {
+    tr: 'tbody',
+    td: 'tbody',
+    th: 'tbody',
+    col: 'colgroup',
+  },
+};
+const tbody = {
+  clears: true,
+  endsOn: any([ 'tbody', 'thead', 'tfoot' ]),
+  evicts: true,
+  expects: any([ 'tr' ]),
+  implicit: {
+    td: 'tr',
+    th: 'tr',
+  },
+};
+const td = {
+  clears: true,
+  endsOn: any([ 'td', 'th' ]),
+};
+const tfoot = tbody;
+const th = td;
+const thead = tbody;
+const tr = {
+  clears: true,
+  endsOn: any([ 'tr' ]),
+  evicts: true,
+  expects: any([ 'td', 'th' ]),
+};
+const track = childless;
+const u = style;
+const ul = ol;
+const wbr = childless;
 
-const expectedContentChecks = {
-  ul: ulContent,
-  ol: olContent,
-  table: tableContent,
-  tr: trContent,
-  tbody: tbodyContent,
-  thead: theadContent,
-  tfoot: tfootContent,
+const tagProperties = {
+  a,
+  address,
+  area,
+  article,
+  aside,
+  blockquote,
+  canvas,
+  b,
+  base,
+  br,
+  caption,
+  code,
+  col,
+  colgroup,
+  command,
+  dd,
+  div,
+  dl,
+  dt,
+  em,
+  embed,
+  fieldset,
+  figcaption,
+  figure,
+  footer,
+  form,
+  header,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  hr,
+  i,
+  img,
+  input,
+  keygen,
+  li,
+  link,
+  main,
+  meta,
+  nav,
+  noscript,
+  ol,
+  p,
+  param,
+  pre,
+  section,
+  source,
+  small,
+  strong,
+  table,
+  tbody,
+  td,
+  tfoot,
+  th,
+  thead,
+  tr,
+  track,
+  u,
+  ul,
+  wbr,
 };
 
-const tableImplicitElements = {
-  tr: 'tbody',
-  td: 'tbody',
-  th: 'tbody',
-  col: 'colgroup',
+function getTagProperties(tagName) {
+  return tagProperties[tagName] || unknown;
+}
+
+const tagAliases = {
+  image: 'img',
 };
 
-const tbodyImplicitElements = {
-  td: 'tr',
-  th: 'tr',
-};
-const theadImplicitElements = tbodyImplicitElements;
-const tfootImplicitElements = tbodyImplicitElements;
-
-const implicitElements = {
-  table: tableImplicitElements,
-  thead: theadImplicitElements,
-  tbody: tbodyImplicitElements,
-  tfoot: tfootImplicitElements,
-};
-
-const vivificationCheck = any([ 'p', 'br' ]);
-
-const textStyleCheck = any([
-  'a',
-  'b',
-  'code',
-  'em',
-  'i',
-  'small',
-  'strong',
-  'u',
-]);
-
-const blockCheck = any([
-  'address',
-  'article',
-  'aside',
-  'blockquote',
-  'canvas',
-  'dd',
-  'div',
-  'dl',
-  'dt',
-  'fieldset',
-  'figcaption',
-  'figure',
-  'footer',
-  'form',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-  'header',
-  'hr',
-  'li',
-  'main',
-  'nav',
-  'noscript',
-  'ol',
-  'p',
-  'pre',
-  'section',
-  'table',
-  'tfoot',
-  'ul',
-  'video',
-]);
-
-const styleClearanceCheck = any([
-  'table',
-  'tbody',
-  'tfoot',
-  'thead',
-  'td',
-  'tr',
-]);
-
-const contentEvictionCheck = any([
-  'table',
-  'tbody',
-  'tfoot',
-  'thead',
-  'tr',
-  'colgroup',
-]);
-
-const linefeedEliminationCheck = any([ 'pre' ]);
+function findTagAlias(tagName) {
+  return tagAliases[tagName];
+}
 
 export {
-  voidCheck,
-  terminationChecks,
-  expectedContentChecks,
-  vivificationCheck,
-  textStyleCheck,
-  blockCheck,
-  styleClearanceCheck,
-  contentEvictionCheck,
-  linefeedEliminationCheck,
-
-  implicitElements,
+  getTagProperties,
+  findTagAlias,
 };

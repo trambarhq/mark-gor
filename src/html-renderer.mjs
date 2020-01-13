@@ -62,6 +62,7 @@ class HtmlRenderer extends BaseRenderer {
       return;
     }
     const { tagName, attributes, children } = token;
+    const tag = this.getTagProperties(tagName);
     let html = `<${tagName}`;
     if (attributes) {
       for (let [ key, value ] of Object.entries(attributes)) {
@@ -75,13 +76,12 @@ class HtmlRenderer extends BaseRenderer {
         }
       }
     }
-    const isVoid = this.isVoidElement(tagName);
-    if (this.options.xhtml) {
+    if (tag.void && this.options.xhtml) {
       html += '/>';
     } else {
       html += '>';
     }
-    if (!isVoid && this.options.normalizeTags) {
+    if (!tag.void && this.options.normalizeTags) {
       html += this.outputTokens(children);
       html += `</${tagName}>`;
     }

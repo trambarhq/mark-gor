@@ -2,18 +2,7 @@ import { cleanUrl, escape, unescape, findTextStrings, findMarkedStrings } from '
 import { mergeDefaults } from './defaults.mjs';
 import { Slugger, MarkedSlugger } from './slugger.mjs';
 import { decodeHtmlEntities } from './html-entities.mjs';
-import {
-  voidCheck,
-  terminationChecks,
-  expectedContentChecks,
-  vivificationCheck,
-  textStyleCheck,
-  blockCheck,
-  styleClearanceCheck,
-  contentEvictionCheck,
-  linefeedEliminationCheck,
-  implicitElements,
-} from './html-tags.mjs';
+import { getTagProperties, findTagAlias } from './html-tags.mjs';
 
 class BaseRenderer {
   constructor(options, props) {
@@ -167,15 +156,15 @@ class BaseRenderer {
     const { normalizeTags } = this.options;
     if (normalizeTags) {
       const { html } = token;
-      const tag = this.parseHtmlTag(html);
-      const { tagType, tagName, attributes, before, after } = tag;
+      const { type, name, attributes, before, after } = this.parseHtmlTag(html);
       if (before) {
         this.addText(before);
       }
-      if (tagType === 'start') {
-        this.addElement(tagName, attributes);
-      } else if (tagType === 'end') {
-        this.endElement(tagName);
+      if (type === 'start') {
+        const alias = this.findTagAlias(name);
+        this.addElement(alias || name, attributes);
+      } else if (type === 'end') {
+        this.endElement(name);
       }
       if (after) {
         this.addText(after);
@@ -477,13 +466,15 @@ class BaseRenderer {
       let closureTagName = '';
       if (token) {
         if (token.type == 'html_element') {
+          const tag = this.getTagProperties(token.tagName);
           // see if the tag closes an element that permits omission of end-tag
           for (let i = stack.length - 1; i >= 0; i--) {
-            if (this.isTerminatingElement(token.tagName, stack[i].tagName)) {
+            const priorTag = this.getTagProperties(stack[i].tagName);
+            if (priorTag.endsOn && priorTag.endsOn(token.tagName)) {
               newDepth = i;
               closureTagName = token.tagName;
               break;
-            } else if(this.isExpectedContent(token.tagName, stack[i].tagName)) {
+            } else if(priorTag.expects && priorTag.expects(token.tagName)) {
               // don't go further up the stack when the element is expected
               // (e.g. <li> in <ul>)
               break;
@@ -491,13 +482,14 @@ class BaseRenderer {
           }
           if (newDepth === -1) {
             // don't push onto stack when element is void (e.g. <img>)
-            if (!this.isVoidElement(token.tagName)) {
+            if (!tag.void) {
               stack.push(token);
             }
             index++;
           }
         } else if (token.type === 'html_element_end') {
           // see if the end tag closes an element in the stack
+          const tag = this.getTagProperties(token.tagName);
           for (let i = stack.length - 1; i >= 0; i--) {
             if (token.tagName === stack[i].tagName) {
               newDepth = i;
@@ -505,7 +497,7 @@ class BaseRenderer {
               break;
             }
           }
-          if (newDepth !== -1 || !this.isVivificatingElement(token.tagName)) {
+          if (newDepth !== -1 || !tag.vivificates) {
             // toss the end tag
             this.tokens.splice(index, 1);
           } else {
@@ -537,7 +529,8 @@ class BaseRenderer {
           // is found
           if (stack[i].tagName === 'a') {
             for (let j = i + 1; j < stack.length; j++) {
-              if (this.isBlockElement(stack[j].tagName)) {
+              const priorTag = this.getTagProperties(stack[j].tagName);
+              if (priorTag.block) {
                 token = stack[j];
                 index = this.tokens.indexOf(token);
                 stack.splice(j);
@@ -551,68 +544,73 @@ class BaseRenderer {
 
         // pop elements off the stack and insert children into them,
         // keeping an eye out for text styling tags
-        const styleTags = [];
+        const styleElements = [];
         const newContext = stack[newDepth - 1];
-        const restoreStyle = (newContext) ? !this.isEvictingElement(newContext.tagName) : true;
+        const outerTag = (newContext) ? this.getTagProperties(newContext.tagName) : null;
+        const restoreStyle = (outerTag) ? !outerTag.evicts : true;
         while (stack.length > newDepth) {
-          const openTag = stack.pop();
+          const closingElement = stack.pop();
           if (restoreStyle) {
-            if (openTag !== endTagPartner && openTag.tagName !== closureTagName) {
-              // not the element explicitly targeted for closing
-              // we might need to restore it later
-              if (this.isStylingElement(openTag.tagName)) {
-                styleTags.push({ ...openTag });
+            if (closingElement !== endTagPartner) {
+              if (closingElement.tagName !== closureTagName) {
+                // not the element explicitly targeted for closing
+                // we might need to restore it later
+                const closingTag = this.getTagProperties(closingElement.tagName);
+                if (closingTag.styles) {
+                  styleElements.push({ ...closingElement });
+                }
               }
             }
           }
-          const openTagIndex = this.tokens.indexOf(openTag);
-          const startIndex = openTagIndex + 1;
-          openTag.children = this.tokens.splice(startIndex, index - startIndex);
-          index = openTagIndex + 1;
+          const closingElementIndex = this.tokens.indexOf(closingElement);
+          const startIndex = closingElementIndex + 1;
+          closingElement.children = this.tokens.splice(startIndex, index - startIndex);
+          index = closingElementIndex + 1;
 
           // create implicit elements
-          this.createImplicitElements(openTag);
+          this.createImplicitElements(closingElement);
 
           // remove white-space
-          this.removeExtraWhitespaces(openTag);
+          this.removeExtraWhitespaces(closingElement);
 
           // extract stray elements and place them in front of this one
-          const evictions = this.evictStrayElements(openTag);
+          const evictions = this.evictStrayElements(closingElement);
           for (let evicted of evictions) {
             this.tokens.splice(index - 1, 0, evicted);
             index++;
           }
         }
 
-        for (let styleTag of styleTags) {
+        for (let styleElement of styleElements) {
           // insert the styling tags where text content start again
           let insertionIndex = -1;
           let firstInlineIndex = -1;
           for (let i = index; i < this.tokens.length; i++) {
             const ahead = this.tokens[i];
             if (ahead.type === 'html_element') {
+              const tagAhead = this.getTagProperties(ahead.tagName);
               // that is, unless we encounter a clearing table
               // <table> is the only one, I think
-              if (this.isClearingElement(ahead.tagName)) {
+              if (tagAhead.clears) {
                 break;
               }
               // if the same tag is encountered then there's no need to restore
-              if (styleTag.tagName === ahead.tagName) {
+              if (styleElement.tagName === ahead.tagName) {
                 break;
               }
-              if (this.isVoidElement(ahead.tagName)) {
+              if (tagAhead.void) {
                 // treat void element like text
                 insertionIndex = (firstInlineIndex !== -1) ? firstInlineIndex : i;
                 break;
               }
               // remember where we first encountered an inline element
               if (firstInlineIndex === -1) {
-                if (!this.isBlockElement(ahead.tagName)) {
+                if (!tagAhead.block) {
                   firstInlineIndex = i;
                 }
               }
             } else if (ahead.type === 'html_element_end') {
-              if (styleTag.tagName === ahead.tagName) {
+              if (styleElement.tagName === ahead.tagName) {
                 break;
               }
             } else if (ahead.type === 'text') {
@@ -622,7 +620,7 @@ class BaseRenderer {
             }
           }
           if (insertionIndex !== -1) {
-            this.tokens.splice(insertionIndex, 0, styleTag);
+            this.tokens.splice(insertionIndex, 0, styleElement);
           }
         }
       }
@@ -631,56 +629,59 @@ class BaseRenderer {
 
   createImplicitElements(element) {
     const { tagName, children } = element;
-    const implicitTagNames = this.getImplicitElements(tagName);
-    if (!implicitTagNames) {
+    const tag = this.getTagProperties(tagName);
+    if (!tag.implicit) {
       return;
     }
     let index = 0;
+    let implicitElement = null;
     let implicitTag = null;
-    const newTags = [];
+    const newElements = [];
     while (index < children.length) {
       const child = children[index];
       if (child.type === 'html_element') {
         // see if the tag would implicit create its (absent) container
-        const implicitTagName = implicitTagNames[child.tagName];
-        if (implicitTag) {
+        const implicitTagName = tag.implicit[child.tagName];
+        if (implicitElement) {
           // see if the child would terminate the implicitly created container
-          if (this.isTerminatingElement(child.tagName, implicitTag.tagName)) {
-            implicitTag = null;
-          } else if (implicitTagName && implicitTag.tagName !== implicitTagName) {
-            implicitTag = null;
+          if (implicitTag.endsOn && implicitTag.endsOn(child.tagName)) {
+            implicitElement = implicitTag = null;
+          } else if (implicitTagName && implicitElement.tagName !== implicitTagName) {
+            implicitElement = implicitTag = null;
           }
         }
-        if (implicitTagName && !implicitTag) {
-          implicitTag = {
+        if (implicitTagName && !implicitElement) {
+          implicitElement = {
             type: 'html_element',
             tagName: implicitTagName,
             html: `<${implicitTagName}>`,
             children: [],
           };
-          newTags.push(implicitTag);
-          children.splice(index, 0, implicitTag);
+          implicitTag = this.getTagProperties(implicitTagName);
+          newElements.push(implicitElement);
+          children.splice(index, 0, implicitElement);
           index++;
         }
       }
-      if (implicitTag) {
+      if (implicitElement) {
         // remove the child and place it in the implicit element instead
         // (e.g. <tr> goes into <tbody>)
         children.splice(index, 1);
-        implicitTag.children.push(child);
+        implicitElement.children.push(child);
       } else {
         index++;
       }
     }
-    for (let newTag of newTags) {
-      this.createImplicitElements(newTag);
-      this.removeExtraWhitespaces(newTag);
+    for (let newElement of newElements) {
+      this.createImplicitElements(newElement);
+      this.removeExtraWhitespaces(newElement);
     }
   }
 
   removeExtraWhitespaces(element) {
     const { tagName, children } = element;
-    if (this.isEvictingElement(tagName)) {
+    const tag = this.getTagProperties(tagName);
+    if (tag.evicts) {
       if (this.options.omitNonvisualWhitespace) {
         let index = 0;
         while (index < children.length) {
@@ -696,7 +697,7 @@ class BaseRenderer {
           }
         }
       }
-    } else if (this.isSwallowingElement(tagName)) {
+    } else if (tag.trims) {
       const first = children[0];
       if (first.type === 'text' && /^\n/.test(first.text)) {
         first.text = first.text.substr(1);
@@ -707,14 +708,15 @@ class BaseRenderer {
 
   evictStrayElements(element) {
     const { tagName, children } = element;
+    const tag = this.getTagProperties(tagName);
     const evictions = [];
-    if (this.isEvictingElement(tagName)) {
+    if (tag.evicts) {
       let index = 0;
       while (index < children.length) {
         const child = children[index];
         let evict = false;
         if (child.type === 'html_element') {
-          evict = !this.isExpectedContent(child.tagName, tagName);
+          evict = (tag.expects) ? !tag.expects(child.tagName) : false;
         } else if (child.type === 'text') {
           evict = /\S/.test(child.text);
         }
@@ -735,26 +737,26 @@ class BaseRenderer {
     let scap = startTag.exec(html);
     if (scap) {
       const attribute = /\s*([a-zA-Z:_][\w.:-]*)(?:\s*=\s*"([^"]*)"|\s*=\s*'([^']*)'|\s*=\s*([^\s"'=<>`]+))?/g;
-      const tagType = 'start';
-      const tagName = scap[2].toLowerCase();
+      const type = 'start';
+      const name = scap[2].toLowerCase();
       const before = scap[1];
       const after = scap[4];
       const attributes = {};
       let m;
       while (m = attribute.exec(scap[3])) {
-        const name = m[1]
+        const key = m[1]
         const value = m[2] || m[3] || m[4] || '';
-        attributes[name] = this.decodeEntities(value);
+        attributes[key] = this.decodeEntities(value);
       }
-      return { tagType, tagName, attributes, before, after };
+      return { type, name, attributes, before, after };
     }
     let ecap = endTag.exec(html);
     if (ecap) {
-      const tagType = 'end';
-      const tagName = ecap[2].toLowerCase();
+      const type = 'end';
+      const name = ecap[2].toLowerCase();
       const before = ecap[1];
       const after = ecap[3];
-      return { tagType, tagName, before, after };
+      return { type, name, before, after };
     }
     return {};
   }
@@ -763,52 +765,12 @@ class BaseRenderer {
     return decodeHtmlEntities(html);
   }
 
-  isVoidElement(tagName) {
-    return voidCheck(tagName);
+  getTagProperties(tagName) {
+    return getTagProperties(tagName);
   }
 
-  isTerminatingElement(tagName, openTagName) {
-    const f = terminationChecks[openTagName];
-    if (f) {
-      return f(tagName);
-    }
-    return false;
-  }
-
-  isExpectedContent(tagName, parentTagName) {
-    const f = expectedContentChecks[parentTagName];
-    if (f) {
-      return f(tagName);
-    }
-    return false;
-  }
-
-  isVivificatingElement(tagName) {
-    return vivificationCheck(tagName);
-  }
-
-  isStylingElement(tagName) {
-    return textStyleCheck(tagName);
-  }
-
-  isBlockElement(tagName) {
-    return blockCheck(tagName);
-  }
-
-  isClearingElement(tagName) {
-    return styleClearanceCheck(tagName);
-  }
-
-  isEvictingElement(tagName) {
-    return contentEvictionCheck(tagName);
-  }
-
-  isSwallowingElement(tagName) {
-    return linefeedEliminationCheck(tagName);
-  }
-
-  getImplicitElements(parentTagName) {
-    return implicitElements[parentTagName];
+  findTagAlias(tagName) {
+    return findTagAlias(tagName);
   }
 }
 
