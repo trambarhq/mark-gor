@@ -1,6 +1,6 @@
 # Mark-Gor
 
-Mark-Gor is a Markdown parser based on [Marked](https://github.com/chjj/marked) that can generate both HTML text and React elements. The lexers was completely reworked to make them independent from the rendering stage. It generates a complete token tree that can then be fed to either the HTML renderer or React renderer. The new engine is also much more flexible. Most aspects can be customized by overriding methods of the lexers or renderers.
+Mark-Gor is a Markdown parser designed for [React](https://github.com/facebook/react) applications. It's based on on [Marked](https://github.com/markedjs/marked). It makes use of regular expressions and helper functions from that library. Besides Markdown formatted text, Mark-Gor is also capable of correctly rendering embedded HTML contents (starting from version 2).
 
 ## Install
 
@@ -8,28 +8,41 @@ Mark-Gor is a Markdown parser based on [Marked](https://github.com/chjj/marked) 
 npm install mark-gor --save-dev
 ```
 
-## Usage
+## Simple Usage
+
+Mark-Gor is distributed in three separate bundles: one for React, one for [Preact](https://github.com/preactjs/preact), and one for straight HTML. The React one is the default:
+
+```js
+import { parse } from 'mark-gor';
+
+function Markdown(props) {
+  return parse(props.markdown);
+}
+```
+
+`parse()` is a helper function that let you display Markdown text with one function call. It returns a `React.Fragment`. For customized behaviors you would want to work directly with the classes provided by the library.
+
+The Preact version of Mark-Gor requires importing different bundle:
+
+```js
+import { parse } from 'mark-gor/preact';
+
+function Markdown(props) {
+  return parse(props.markdown);
+}
+```
 
 HTML:
 
 ```js
-var markGor = require('mark-gor');
-console.log(markGor.parse('I am using __markdown__.'));
+import { parse } from 'mark-gor/html';
+
+const markdown = 'I am using __markdown__.';
+const html = parse(markdown);
+console.log(html);
+
 // Outputs: <p>I am using <strong>markdown</strong>.</p>
 ```
-
-React:
-
-```js
-var markGor = require('mark-gor/react');
-
-function Markdown(props) {
-  var elements = markGor.parse(props.text, props.options);
-  return <div>{elements}</div>;
-}
-```
-
-Note: The React version of the parse() returns an array of ReactElement or strings. You will need to place them in a container element.
 
 ## Options
 
@@ -76,12 +89,6 @@ Used by: BlockLexer
 
 Use smarter list behavior than the original markdown.
 
-### sanitize
-
-Type: `boolean`
-Default: `false`
-Used by: HTMLRenderer, ReactRenderer
-
 ### langPrefix
 
 Type: `string`
@@ -90,18 +97,76 @@ Used by: HTMLRenderer, ReactRenderer
 
 Prefix added to language name when it's used as a CSS class name of code blocks.
 
+### headerIds
+
+Type: `boolean`
+Default: `true`
+Used by: HTMLRenderer, ReactRenderer
+
+Automatically add IDs to heading tags.
+
 ### headerPrefix
 
 Type: `string`
 Default: `<empty>`
 Used by: HTMLRenderer, ReactRenderer
 
-Prefix added to anchor names of headers.
+Prefix added to IDs of headings.
 
-## Limitations
+### headerFormat
 
-Currently, the React renderer ignores HTML tags embedded in the Markdown text.
+Type: `string`
+Default: `github`
+Used by: HTMLRenderer, ReactRenderer
 
-## Performance
+Controls how header IDs are generated. By default, the library follows the convention used in GitHub. Set this option to `marked` if you want to replicate the library's odd behaviors.
 
-Mark-Gor performs roughly as well as Marked. Generally it's slightly slower.
+### decodeEntities
+
+Type: `boolean`
+Default: `true`
+Used by: HTMLRenderer
+
+Determines whether HTML entities get decoded and get sent as regular Unicode characters.
+
+### fixBrokenTags
+
+Type: `boolean`
+Default: `true`
+Used by: HTMLRenderer, ReactRenderer
+
+### normalizeTags
+
+Type: `boolean`
+Default: `true`
+Used by: HTMLRenderer, ReactRenderer
+
+### omitLinefeed
+
+Type: `boolean`
+Default: `true`
+Used by: HTMLRenderer, ReactRenderer
+
+### omitDeclarations
+
+Type: `boolean`
+Default: `true`
+Used by: HTMLRenderer
+
+### omitEmbeddedCode
+
+Type: `boolean`
+Default: `true`
+Used by: HTMLRenderer
+
+### omitNonvisualWhitespace
+
+Type: `boolean`
+Default: `true`
+Used by: HTMLRenderer, ReactRenderer
+
+### omitTags
+
+Type: `string[]`
+Default: `[ 'script', 'style', 'link', 'meta' ]`
+Used by: HTMLRenderer, ReactRenderer

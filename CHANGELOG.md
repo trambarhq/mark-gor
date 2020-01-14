@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.0
+
+* Complete rewrite
+
 ## 0.0.9
 
 * Fixed React renderer.
