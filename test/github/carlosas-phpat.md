@@ -44,7 +44,7 @@ composer require --dev carlosas/phpat
 
 You might want to setup a basic configuration:
 ```yaml
-# phpat.yml
+# phpat.yaml
 src:
   path: src/
 tests:
@@ -111,13 +111,13 @@ class ExampleTest extends ArchitectureTest
 
 Run the bin with your configuration file:
 ```bash
-vendor/bin/phpat phpat.yml
+vendor/bin/phpat phpat.yaml
 ```
 
 <h2></h2>
 
-⚠ Launching early stage releases (0.x.x) with a different SemVer strategy. We are using *minor* for breaking changes.
-This will change to strict SemVer with the release of `1.0.0`. See [Semantic Versioning](https://semver.org/).
+⚠ Launching early stage releases (0.x.x) could break the API according to [Semantic Versioning 2.0](https://semver.org/). We are using *minor* for breaking changes.
+This will change with the release of the stable `1.0.0` version.
 
 <h2></h2>
 
