@@ -1,10 +1,10 @@
 # Glow
 
-[![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](https://godoc.org/github.com/charmbracelet/glow) [![Build Status](https://travis-ci.org/charmbracelet/glow.svg?branch=master)](https://travis-ci.org/charmbracelet/glow) [![Go ReportCard](http://goreportcard.com/badge/charmbracelet/glow)](http://goreportcard.com/report/charmbracelet/glow)
+[![Latest Release](https://img.shields.io/github/release/charmbracelet/glow.svg)](https://github.com/charmbracelet/glow/releases) [![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](https://godoc.org/github.com/charmbracelet/glow) [![Build Status](https://github.com/charmbracelet/glow/workflows/build/badge.svg)](https://github.com/charmbracelet/glow/actions) [![Go ReportCard](http://goreportcard.com/badge/charmbracelet/glow)](http://goreportcard.com/report/charmbracelet/glow)
 
 Render markdown on the CLI, with _pizzazz_!
 
-![Glamour Dark Style](https://github.com/charmbracelet/glow/raw/master/example.png)
+![Glow example output](https://github.com/charmbracelet/glow/raw/master/example.png)
 
 
 ## Installation
@@ -12,11 +12,14 @@ Render markdown on the CLI, with _pizzazz_!
 Use your fave package manager:
 
 ```bash
-# MacOS
-brew install charmbracelet/homebrew-tap/glow
+# macOS or Linux
+brew install glow
 
 # Arch Linux (btw)
 yay -S glow
+
+# Nix
+nix-env -iA nixpkgs.glow
 
 # FreeBSD
 pkg install glow
@@ -63,6 +66,11 @@ The `-w` flag lets you set a maximum width at which the output will be wrapped:
 glow -w 60
 ```
 
+### Paging
+
+The output can be displayed in the user's preferred pager with the `-p` flag.
+This defaults to the ANSI-aware `less -r` if `$PAGER` is not explicitly set.
+
 ### Styles
 
 You can choose a style with the `-s` flag (`dark` being the default):
@@ -95,8 +103,7 @@ glow --help
 * [Toby Padilla](https://github.com/toby)
 * [Christian Rocha](https://github.com/meowgorithm)
 
-Part of [Charm](https://charm.sh). For more info see `ssh charm.sh`
-
+Part of [Charm](https://charm.sh). For more info see `ssh charm.sh`. Charm热爱开源!
 
 ## License
 

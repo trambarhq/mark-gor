@@ -79,15 +79,15 @@ $ yarn add beautiful-react-hooks
 * [useOnlineState](docs/useOnlineState.md)
 * [useViewportSpy](docs/useViewportSpy.md)
 * [useGeolocation](docs/useGeolocation.md), [useGeolocationState](docs/useGeolocationState.md) and [useGeolocationEvents](docs/useGeolocationEvents.md)
+* [useDrag](docs/useDrag.md), [useDragEvents](docs/useDragEvents.md)
 * [useMouse](docs/useMouse.md), [useMouseState](docs/useMouseState.md) and [useMouseEvents](docs/useMouseEvents.md)
 * [useLifecycle](docs/useLifecycle.md), [useDidMount](docs/useDidMount.md) and [useWillUnmount](docs/useWillUnmount.md)
-* [useCallbackRef](docs/useCallbackRef.md)
 * [useWindowResize](docs/useWindowResize.md)
 * [useWindowScroll](docs/useWindowScroll.md)
 * [useTimeout](docs/useTimeout.md)
 * [useInterval](docs/useInterval.md)
 * [useDebouncedFn](docs/useDebouncedFn.md)
-* [useThrottledFn](docs/useDebouncedFn.md)
+* [useThrottledFn](docs/useThrottledFn.md)
 
 <div>
   <p align="center">

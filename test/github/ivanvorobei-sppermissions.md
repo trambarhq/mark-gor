@@ -3,7 +3,7 @@
 <img align="left" src="https://github.com/ivanvorobei/SPPermissions/blob/master/Assets/Readme/Preview - 5.0.jpg" width="470"/>
 
 ### About
-SPPermissions is an API to ask for user permissions using Swift. The API provides for three UI options (list, dialog & native). The UI/UX is in an **Apple style** and supports iPad, dark mode, & tvOS. Also you can check the state permissions using the API.
+`SPPermissions` is an API to ask for user permissions using Swift. The API provides for three UI options (list, dialog & native). The UI/UX is in an **Apple style** and supports iPad, dark mode, & tvOS. Also you can check the state permissions using the API.
 
 Visit my store for iOS developers:
 
@@ -13,7 +13,7 @@ If you like the project, do not forget to `put star ★` and follow me on GitHub
 
 [![https://github.com/ivanvorobei](https://github.com/ivanvorobei/SPPermissions/blob/master/Assets/Buttons/follow-me-on-github.svg)](https://github.com/ivanvorobei)
 
-To help on this project, see the [Сooperation](#сooperation) section or our [chat](https://t.me/sppermissions).
+To help on this project, see the [Сooperation](#сooperation) section.
 
 ## 5.x Migration
 
