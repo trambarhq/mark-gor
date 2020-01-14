@@ -1,7 +1,6 @@
 import { Parser } from './parser.mjs';
 import { AsyncInlineLexer } from './async-inline-lexer.mjs';
 import { AsyncBlockLexer } from './async-block-lexer.mjs';
-import 'setimmediate';
 
 class AsyncParser extends Parser {
   constructor(options, props) {
