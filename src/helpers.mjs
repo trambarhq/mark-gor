@@ -83,14 +83,20 @@ function mergeStrings(list) {
   return result;
 }
 
-const hasSetImmediate = (typeof(setImmediate) === 'function');
+let noSetImmediate = false;
 
 function nextTick() {
-  if (hasSetImmediate) {
-    return new Promise((resolve) => { setImmediate(resolve) })
-  } else {
-    return Promise.resolve();
-  }
+  return new Promise((resolve) => {
+    if (!noSetImmediate) {
+      try {
+        setImmediate(resolve);
+        return;
+      } catch (err) {
+        noSetImmediate = true;
+      }
+    }
+    resolve();
+  });
 }
 
 export {
