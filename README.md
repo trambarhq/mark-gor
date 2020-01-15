@@ -50,6 +50,8 @@ console.log(html);
 
 ## Asynchronous parsing
 
+Parsing long document could cause the browser to become unresponsive momentarily. Mark-Gor provides an alternative, asynchronous mode of operation that does not block event handling. Instead of returning the result, `parseAsync()` returns a promise of the result:   
+
 ```js
 import { useState, useEffect } from 'react';
 import { parseAsync } from 'mark-gor';
@@ -57,15 +59,18 @@ import { parseAsync } from 'mark-gor';
 function Markdown(props) {
   const { markdown } = props;
   const [ content, setContent ] = useState();
-  useEffect(async () => {
-    const content = await parseAsync(markdown);
-    setContent(content);
+  useEffect(() => {
+    parseAsync(markdown).then(setContent);
   }, [ markdown ]);
   return content;
 }
 ```
 
+During the initial render, `content` is `undefined`. The `useEffect` hook is used to trigger parseing of the Markdown text whenever it changes. When the promise returned by `parseAsync()` is filfilled, the callback passed to its `then()` method is called with the outcome. The component then rerenders with the newly available content.
+
 ## Parsing HTML
+
+You can use Mark-Gor to render HTML fragments, leveraging the same code that handles HTML embedded in Markdown. The `htmlOnly` option basically disables the parsing of Markdown format:
 
 ```js
 import { useMemo } from 'react';
@@ -80,7 +85,25 @@ function HTML(props) {
 }
 ```
 
-## Using the classes
+## Using the Mark-Gor classes
+
+`parse()` is simply a helper function. Most of the heavy lifting is actually performed by Mark-Gor's classes. They're listed below along with their descendants:
+
+* Parser
+  - AsyncParser
+* BlockLexer
+  - AsyncBlockLexer
+* InlineLexer
+  - AsyncInlineLexer
+* BaseRenderer
+  - ReactRenderer
+  - PreactRenderer
+  - HtmlRenderer
+  - JsonRenderer
+
+`Parser` parses the Markdown text into a list of tokens. It uses `BlockLexer` to scan for the basic  document structure and `InlineLexer` to scan for styling applied to the text. `BaseRenderer` takes this tree-like structure and generates a linear list of HTML tokens (start tags, end tags, and text basically). It then performs [normalization](#html-normalization), transforming the list into something that resembles the final DOM structure. Each of the descendant renderer will then render it in the appropriate manner.
+
+The following example shows how to parse Markdown text by using the classes directly:  
 
 ```js
 import { useMemo } from 'react';
@@ -98,34 +121,56 @@ function Markdown(props) {
 }
 ```
 
-* Parser
-  - AsyncParser
-* BlockLexer
-  - AsyncBlockLexer
-* InlineLexer
-  - AsyncInlineLexer
-* BaseRenderer
-  - ReactRenderer
-  - PreactRenderer
-  - HtmlRenderer
-  - JsonRenderer
+Mark-Gor is designed to be highly customizable. Nearly all its behaviors can be altered by extending the appropriate class and overriding a method.
 
 ## Extracting text
+
+If you need to index some Markdown text for search purpose, you can use the helper function `findTextStrings()` to extract text strings from a list of tokens produced by `Parser`:
 
 ```js
 import { Parser, findTextStrings } from 'mark-gor';
 
 const markdown = `
-`;
+Heading level 1
+===============
+
+I really like using Markdown.
+
+I just love **bold text**.
+
+- First item
+- Second item
+- Third item
+- Fourth item
+
+![Tux, the Linux mascot](/assets/images/tux.png)
+
+<h1>Embedded HTML</h1>`;
 const parser = new Parser;
 const tokens = parser.parse(markdown);
 const strings = findTextStrings(tokens);
 console.log(strings);
 
-// Outputs:
+/* Outputs: [
+'Heading level 1',
+'I really like using Markdown.',
+'I just love ',
+'bold text',
+'.',
+'First item',
+'Second item',
+'Third item',
+'Fourth item',
+'Tux, the Linux mascot',
+'Embedded HTML'
+]; */
 ```
 
+Note that this function is not designed to produce a plain text representation of the Markdown text.
+
 ## Server-side parsing
+
+Parsing Markdown takes time. You can make your web application feels more responsive by parsing the text on the server side and caching the result. Mark-Gor provides the class `JsonRenderer`, which produces an object containing arguments to `React.createElement()`. On the client side, you just need to create the elements through a simple recursive function:  
 
 Server-side code:
 
@@ -160,6 +205,14 @@ function PreparsedMarkdown(props) {
   return content;
 }
 ```
+
+`reactivate()` is provided in a separate bundle for the purpose of handling the simplest case. You can easily roll your own solution instead.
+
+## HTML normalization
+
+Hand-written HTML is often not completely standard compliant. The HTML5 specification itself permits certain omissions. For instance, <tbody> tags in <table> and end-tags of <p>. While web-browsers are able to deal with not-so-well-formed HTML, rendering in React requires elements to follow strict rules (as they are created directly through the DOM API). To avoid inconsistent appearance and warning messages from React, Mark-Gor endeavors to normalize its output to match what Chrome's parser would produce.
+
+For example, `<p>Hello<p>world` would get normalized to `<p>Hello</p><p>world</p>`. Meanwhile, `<p><div>Hello</div><div>world</div></p>` would become `<p></p><div>Hello</div><div>world</div><p></p>` because according to the standard, `<p>` tags are automatically closed by `<div>` tags (hence `<div>` cannot reside within `<p>`).   
 
 ## Options
 
