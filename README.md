@@ -1,6 +1,6 @@
 # Mark-Gor
 
-Mark-Gor is a Markdown parser designed for [React](https://github.com/facebook/react) applications. It's based on on [Marked](https://github.com/markedjs/marked). It makes use of regular expressions and helper functions from that library. Besides Markdown formatted text, Mark-Gor is also capable of correctly rendering embedded HTML contents (starting from version 2).
+Mark-Gor is a Markdown parser designed for [React](https://github.com/facebook/react) applications. It's based on on [Marked](https://github.com/markedjs/marked). It makes use of regular expressions and helper functions from that library. Besides Markdown formatted text, Mark-Gor is also capable of correctly rendering embedded HTML contents (without resorting to `dangerouslySetInnerHTML`).
 
 ## Install
 
@@ -8,7 +8,7 @@ Mark-Gor is a Markdown parser designed for [React](https://github.com/facebook/r
 npm install mark-gor --save-dev
 ```
 
-## Simple Usage
+## Basic usage
 
 Mark-Gor is distributed in three separate bundles: one for React, one for [Preact](https://github.com/preactjs/preact), and one for straight HTML. The React one is the default:
 
@@ -16,23 +16,27 @@ Mark-Gor is distributed in three separate bundles: one for React, one for [Preac
 import { parse } from 'mark-gor';
 
 function Markdown(props) {
-  return parse(props.markdown);
+  const { markdown } = props;
+  return parse(markdown);
 }
 ```
 
-`parse()` is a helper function that let you display Markdown text with one function call. It returns a `React.Fragment`. For customized behaviors you would want to work directly with the classes provided by the library.
+`parse()` is a helper function that let you display Markdown text with a single function call. It returns a `React.Fragment`.
 
-The Preact version of Mark-Gor requires importing different bundle:
+For more complex behaviors you would want to work directly with the classes provided by this library.
+
+The Preact version of Mark-Gor requires importing a different bundle:
 
 ```js
 import { parse } from 'mark-gor/preact';
 
 function Markdown(props) {
-  return parse(props.markdown);
+  const { markdown } = props;
+  return parse(markdown);
 }
 ```
 
-HTML:
+Use the `html` bundle if you want HTML as the output:
 
 ```js
 import { parse } from 'mark-gor/html';
@@ -42,6 +46,119 @@ const html = parse(markdown);
 console.log(html);
 
 // Outputs: <p>I am using <strong>markdown</strong>.</p>
+```
+
+## Asynchronous parsing
+
+```js
+import { useState, useEffect } from 'react';
+import { parseAsync } from 'mark-gor';
+
+function Markdown(props) {
+  const { markdown } = props;
+  const [ content, setContent ] = useState();
+  useEffect(async () => {
+    const content = await parseAsync(markdown);
+    setContent(content);
+  }, [ markdown ]);
+  return content;
+}
+```
+
+## Parsing HTML
+
+```js
+import { useMemo } from 'react';
+import { parse } from 'mark-gor';
+
+function HTML(props) {
+  const { html } = props;
+  const content = useMemo(() => {
+    return parse(html, { htmlOnly: true });
+  }, [ html ])
+  return content;
+}
+```
+
+## Using the classes
+
+```js
+import { useMemo } from 'react';
+import { Parser, ReactRenderer } from 'mark-gor';
+
+function Markdown(props) {
+  const { markdown, options } = props;
+  const content = useMemo(() => {
+    const parser = new Parser(options);
+    const renderer = new ReactRenderer(options);
+    const tokens = parser.parse(text);
+    return renderer.render(tokens);
+  }, [ markdown ]);
+  return content;
+}
+```
+
+* Parser
+  - AsyncParser
+* BlockLexer
+  - AsyncBlockLexer
+* InlineLexer
+  - AsyncInlineLexer
+* BaseRenderer
+  - ReactRenderer
+  - PreactRenderer
+  - HtmlRenderer
+  - JsonRenderer
+
+## Extracting text
+
+```js
+import { Parser, findTextStrings } from 'mark-gor';
+
+const markdown = `
+`;
+const parser = new Parser;
+const tokens = parser.parse(markdown);
+const strings = findTextStrings(tokens);
+console.log(strings);
+
+// Outputs:
+```
+
+## Server-side parsing
+
+Server-side code:
+
+```js
+import Express from 'express';
+import { promises as FS } from 'FS';
+import { AsyncParser, JsonRenderer } from 'mark-gor';
+
+let app = Express();
+
+app.get('/markdown/*', async(req, res) => {
+  const markdown = await FS.readFile(req.url);
+  const parser = new AsyncParser;
+  const renderer = new JsonRenderer;
+  const tokens = await parser.parse(markdown);
+  const json = renderer.render(tokens);
+  res.json(json);
+});
+```
+
+Client-side code:
+
+```js
+import { useMemo } from 'react';
+import { reactivate } from 'mark-gor/reactivate';
+
+function PreparsedMarkdown(props) {
+  const { json } = props;
+  const content = useMemo(() => {
+    return reactivate(json);
+  }, [ json ]);
+  return content;
+}
 ```
 
 ## Options
