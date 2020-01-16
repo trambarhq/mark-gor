@@ -3,6 +3,7 @@ import { AsyncParser } from './async-parser.mjs';
 import { BlockLexer } from './block-lexer.mjs';
 import { InlineLexer } from './inline-lexer.mjs';
 import { ReactRenderer } from './react-renderer.mjs';
+import { HtmlRenderer } from './html-renderer.mjs';
 import { JsonRenderer } from './json-renderer.mjs';
 import { findCodeSections, findTextStrings, nextTick } from './helpers.mjs';
 
@@ -47,6 +48,8 @@ export {
     InlineLexer,
     ReactRenderer,
     ReactRenderer as Renderer,
+    HtmlRenderer,
+    HtmlRenderer as HTMLRenderer,
     JsonRenderer,
     JsonRenderer as JSONRenderer,
 

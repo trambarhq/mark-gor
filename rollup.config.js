@@ -5,12 +5,14 @@ const CommonJS = require('@rollup/plugin-commonjs');
 module.exports = [
   'html',
   'react',
-  'preact'
+  'preact',
+  'reactivate',
+  'preactivate'
 ].map((name) => {
   return {
     input: `src/${name}.mjs`,
     output: {
-      file: `lib/${name}.js`,
+      file: `./${name}.js`,
       format: 'umd',
       name: 'markGor',
       globals: {

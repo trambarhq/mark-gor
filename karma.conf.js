@@ -44,7 +44,6 @@ module.exports = function(config) {
               plugins: [
                 '@babel/transform-regenerator',
                 '@babel/transform-runtime',
-                'syntax-async-functions',
               ]
             }
           },

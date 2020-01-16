@@ -6,11 +6,13 @@ module.exports = [
   'html',
   'react',
   'preact',
+  'reactivate',
+  'preactivate',
 ].map((name) => {
   return {
     input: `src/${name}.mjs`,
     output: {
-      file: `lib/${name}.esm.js`,
+      file: `./${name}.mjs`,
       format: 'esm'
     },
     plugins: [

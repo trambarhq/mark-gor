@@ -123,6 +123,8 @@ function Markdown(props) {
 
 Mark-Gor is designed to be highly customizable. Nearly all its behaviors can be altered by extending the appropriate class and overriding a method.
 
+Both `HtmlRenderer` and `JsonRenderer` are included in the React/Preact bundles.
+
 ## Extracting text
 
 If you need to index Markdown text for search purpose, you can use the helper function `findTextStrings()` to extract text strings from a list of tokens produced by `Parser`:

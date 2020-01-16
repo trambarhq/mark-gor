@@ -38,6 +38,7 @@ export {
     BlockLexer,
     InlineLexer,
     HtmlRenderer,
+    HtmlRenderer as HTMLRenderer,
     HtmlRenderer as Renderer,
     JsonRenderer,
     JsonRenderer as JSONRenderer,
