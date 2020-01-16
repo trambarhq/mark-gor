@@ -218,16 +218,16 @@ For example, `<p>Hello<p>world` would get normalized to `<p>Hello</p><p>world</p
 
 ### gfm
 
-Type: `boolean`
-Default: `true`
+Type: `boolean`  
+Default: `true`  
 Used by: BlockLexer, InlineLexer
 
 Enable [GitHub flavored markdown][gfm].
 
 ### tables
 
-Type: `boolean`
-Default: `true`
+Type: `boolean`  
+Default: `true`  
 Used by: BlockLexer, InlineLexer
 
 Enable GFM [tables][tables].
@@ -235,8 +235,8 @@ This option requires the `gfm` option to be true.
 
 ### breaks
 
-Type: `boolean`
-Default: `false`
+Type: `boolean`  
+Default: `false`  
 Used by: BlockLexer, InlineLexer
 
 Enable GFM [line breaks][breaks].
@@ -244,8 +244,8 @@ This option requires the `gfm` option to be true.
 
 ### pedantic
 
-Type: `boolean`
-Default: `false`
+Type: `boolean`  
+Default: `false`  
 Used by: BlockLexer, InlineLexer
 
 Conform to obscure parts of `markdown.pl` as much as possible. Don't fix any of
@@ -253,104 +253,104 @@ the original markdown bugs or poor behavior.
 
 ### smartLists
 
-Type: `boolean`
-Default: `true`
+Type: `boolean`  
+Default: `true`  
 Used by: BlockLexer
 
 Use smarter list behavior than the original markdown.
 
 ### langPrefix
 
-Type: `string`
-Default: `lang-`
+Type: `string`  
+Default: `lang-`  
 Used by: BaseRenderer
 
 Prefix added to language name when it's used as a CSS class name of code blocks.
 
 ### headerIds
 
-Type: `boolean`
-Default: `true`
+Type: `boolean`  
+Default: `true`  
 Used by: BaseRenderer
 
 Automatically add IDs to heading tags.
 
 ### headerPrefix
 
-Type: `string`
-Default: `<empty>`
+Type: `string`  
+Default: `<empty>`  
 Used by: BaseRenderer
 
 Prefix added to IDs of headings.
 
 ### headerFormat
 
-Type: `string`
-Default: `github`
+Type: `string`  
+Default: `github`  
 Used by: BaseRenderer
 
 Controls how header IDs are generated. By default, the library follows the convention used in GitHub. Set this option to `marked` if you want to replicate that library's odder behaviors.
 
 ### decodeEntities
 
-Type: `boolean`
-Default: `true`
+Type: `boolean`  
+Default: `true`  
 Used by: HTMLRenderer
 
 Determines whether HTML entities get decoded and get sent as regular Unicode characters.
 
 ### fixBrokenTags
 
-Type: `boolean`
-Default: `true`
+Type: `boolean`  
+Default: `true`  
 Used by: InlineLexer
 
 Handle ill-formated HTML attributes.
 
 ### normalizeTags
 
-Type: `boolean`
-Default: `true`
+Type: `boolean`  
+Default: `true`  
 Used by: BaseRenderer
 
 Apply transformations such that resultant HTML tree is structurally sound.  
 
 ### omitLinefeed
 
-Type: `boolean`
-Default: `true`
+Type: `boolean`  
+Default: `true`  
 Used by: BaseRenderer
 
 Do not put a line-feed after each end-tag.
 
 ### omitDeclarations
 
-Type: `boolean`
-Default: `true`
+Type: `boolean`  
+Default: `true`  
 Used by: HTMLRenderer
 
 Omit HTML comments and other declarations.
 
 ### omitEmbeddedCode
 
-Type: `boolean`
-Default: `true`
+Type: `boolean`  
+Default: `true`  
 Used by: HTMLRenderer
 
 Omit `<? ... ?>` tags.
 
 ### omitNonvisualWhitespace
 
-Type: `boolean`
-Default: `true`
+Type: `boolean`  
+Default: `true`  
 Used by: BaseRenderer
 
 Remove whitespaces from places where they serve no purpose. Between <tr> tags in a table, for instance. Setting this to `false` will lead to complaints from React.
 
 ### omitTags
 
-Type: `string[]`
-Default: `[ 'script', 'style', 'link', 'meta' ]`
+Type: `string[]`  
+Default: `[ 'script', 'style', 'link', 'meta' ]`  
 Used by: BaseRenderer
 
 Omit certain HTML tags from the output. Only works when `normalizeTags` is `true`.
