@@ -50,7 +50,7 @@ console.log(html);
 
 ## Asynchronous parsing
 
-Parsing long document could cause the browser to become unresponsive momentarily. Mark-Gor provides an alternative, asynchronous mode of operation that does not block event handling. Instead of returning the result, `parseAsync()` returns a promise of the result:   
+Parsing long document could cause the browser to become unresponsive momentarily. Mark-Gor provides an alternative, asynchronous mode of operation that keeps this from happening. Instead of returning the result, `parseAsync()` returns a promise of the result:   
 
 ```js
 import { useState, useEffect } from 'react';
@@ -125,7 +125,7 @@ Mark-Gor is designed to be highly customizable. Nearly all its behaviors can be 
 
 ## Extracting text
 
-If you need to index some Markdown text for search purpose, you can use the helper function `findTextStrings()` to extract text strings from a list of tokens produced by `Parser`:
+If you need to index Markdown text for search purpose, you can use the helper function `findTextStrings()` to extract text strings from a list of tokens produced by `Parser`:
 
 ```js
 import { Parser, findTextStrings } from 'mark-gor';
@@ -170,7 +170,7 @@ Note that this function is not designed to produce a plain text representation o
 
 ## Server-side parsing
 
-Parsing Markdown takes time. You can make your web application feels more responsive by parsing the text on the server side and caching the result. Mark-Gor provides the class `JsonRenderer`, which produces an object containing arguments to `React.createElement()`. On the client side, you just need to create the elements through a simple recursive function:  
+Parsing Markdown takes time. You can make your web application feels more responsive by parsing the text on the server side and caching the result. Mark-Gor provides the class `JsonRenderer`. It produces an object containing arguments to `React.createElement()`. On the client side, you just need to create the elements through a simple recursive function:  
 
 Server-side code:
 
@@ -263,7 +263,7 @@ Use smarter list behavior than the original markdown.
 
 Type: `string`
 Default: `lang-`
-Used by: HTMLRenderer, ReactRenderer
+Used by: BaseRenderer
 
 Prefix added to language name when it's used as a CSS class name of code blocks.
 
@@ -271,7 +271,7 @@ Prefix added to language name when it's used as a CSS class name of code blocks.
 
 Type: `boolean`
 Default: `true`
-Used by: HTMLRenderer, ReactRenderer
+Used by: BaseRenderer
 
 Automatically add IDs to heading tags.
 
@@ -279,7 +279,7 @@ Automatically add IDs to heading tags.
 
 Type: `string`
 Default: `<empty>`
-Used by: HTMLRenderer, ReactRenderer
+Used by: BaseRenderer
 
 Prefix added to IDs of headings.
 
@@ -287,9 +287,9 @@ Prefix added to IDs of headings.
 
 Type: `string`
 Default: `github`
-Used by: HTMLRenderer, ReactRenderer
+Used by: BaseRenderer
 
-Controls how header IDs are generated. By default, the library follows the convention used in GitHub. Set this option to `marked` if you want to replicate the library's odd behaviors.
+Controls how header IDs are generated. By default, the library follows the convention used in GitHub. Set this option to `marked` if you want to replicate that library's odder behaviors.
 
 ### decodeEntities
 
@@ -303,19 +303,25 @@ Determines whether HTML entities get decoded and get sent as regular Unicode cha
 
 Type: `boolean`
 Default: `true`
-Used by: HTMLRenderer, ReactRenderer
+Used by: InlineLexer
+
+Handle ill-formated HTML attributes.
 
 ### normalizeTags
 
 Type: `boolean`
 Default: `true`
-Used by: HTMLRenderer, ReactRenderer
+Used by: BaseRenderer
+
+Apply transformations such that resultant HTML tree is structurally sound.  
 
 ### omitLinefeed
 
 Type: `boolean`
 Default: `true`
-Used by: HTMLRenderer, ReactRenderer
+Used by: BaseRenderer
+
+Do not put a line-feed after each end-tag.
 
 ### omitDeclarations
 
@@ -323,20 +329,28 @@ Type: `boolean`
 Default: `true`
 Used by: HTMLRenderer
 
+Omit HTML comments and other declarations.
+
 ### omitEmbeddedCode
 
 Type: `boolean`
 Default: `true`
 Used by: HTMLRenderer
 
+Omit `<? ... ?>` tags.
+
 ### omitNonvisualWhitespace
 
 Type: `boolean`
 Default: `true`
-Used by: HTMLRenderer, ReactRenderer
+Used by: BaseRenderer
+
+Remove whitespaces from places where they serve no purpose. Between <tr> tags in a table, for instance. Setting this to `false` will lead to complaints from React.
 
 ### omitTags
 
 Type: `string[]`
 Default: `[ 'script', 'style', 'link', 'meta' ]`
-Used by: HTMLRenderer, ReactRenderer
+Used by: BaseRenderer
+
+Omit certain HTML tags from the output. Only works when `normalizeTags` is `true`.
