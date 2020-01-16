@@ -5,7 +5,7 @@
   "version": "2.0.0",
   "main": "./react.js",
   "module": "./react.mjs",
-  "file": [
+  "files": [
     "src/",
     "html.js",
     "html.mjs",
