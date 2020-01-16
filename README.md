@@ -210,7 +210,7 @@ function PreparsedMarkdown(props) {
 
 ## HTML normalization
 
-Hand-written HTML is often not completely standard compliant. The HTML5 specification itself permits certain omissions. For instance, <tbody> tags in <table> and end-tags of <p>. While web-browsers are able to deal with not-so-well-formed HTML, rendering in React requires elements to follow strict rules (as they are created directly through the DOM API). To avoid inconsistent appearance and warning messages from React, Mark-Gor endeavors to normalize its output to match what Chrome's parser would produce.
+Hand-written HTML is often not completely standard compliant. The HTML5 specification itself permits certain omissions. For instance, `<tbody>` tags in `<table>` and end-tags of `<p>`. While web-browsers are able to deal with not-so-well-formed HTML, rendering in React requires elements to follow strict rules (as they are created directly through the DOM API). To avoid inconsistent appearance and warning messages from React, Mark-Gor endeavors to normalize its output to match what Chrome's parser would produce.
 
 For example, `<p>Hello<p>world` would get normalized to `<p>Hello</p><p>world</p>`. Meanwhile, `<p><div>Hello</div><div>world</div></p>` would become `<p></p><div>Hello</div><div>world</div><p></p>` because according to the standard, `<p>` tags are automatically closed by `<div>` tags (hence `<div>` cannot reside within `<p>`).   
 
