@@ -10,8 +10,11 @@ import { parse } from '../src/html.mjs';
 const singleTest = '';
 
 const withKnownIssue = [
-  'nlrx-wjc-learn-vue-source-code',       // omission of leading " leads to incorrect URL
+  'nlrx-wjc-learn-vue-source-code',       // omission of leading " leads to incorrect URL in marked
   'example 128 (HTML blocks)',            // markdown results in broken HTML
+  'zeromq-libzmq',                        // unclosed <a> tag disables autolinks
+  'bregman-arie-devops-exercises',        // marked is unescaping \? in code sections
+  'nuwave-lighthouse',                    // // omission of leading " leads to incorrect URL in marked
 ];
 
 function test(desc, requireFunc, params) {
@@ -101,10 +104,10 @@ function test(desc, requireFunc, params) {
 function showDiff(results) {
   const { markdown, ours, theirs, ourDOM, theirDOM } = results;
   //console.log(`\n\nMARKDOWN:\n\n${markdown}\n`);
-  console.log(`\n\nOURS:\n\n${ours}\n`);
-  console.log(`\n\nTHEIRS:\n\n${theirs}\n`);
-  //console.log(`\n\nOURS (DOM):\n\n${ourDOM}\n\n`);
-  //console.log(`\n\nTHEIRS (DOM):\n\n${theirDOM}\n\n`);
+  //console.log(`\n\nOURS:\n\n${ours}\n`);
+  //console.log(`\n\nTHEIRS:\n\n${theirs}\n`);
+  console.log(`\n\nOURS (DOM):\n\n${ourDOM}\n\n`);
+  console.log(`\n\nTHEIRS (DOM):\n\n${theirDOM}\n\n`);
 }
 
 describe('Compatibility', function() {

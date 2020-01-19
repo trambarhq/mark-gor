@@ -63,7 +63,6 @@ class InlineLexer {
       inLink: false,
       inMarkdownfreeBlock: (containerType === 'html_block'),
       inMarkdownfreeTag: false,
-      capturingRaw: false,
       preservingText: false,
     });
   }
@@ -263,6 +262,9 @@ class InlineLexer {
         }
       } else if (titleHtml) {
         titleHtml = titleHtml.slice(1, -1);
+      }
+      if (!titleHtml) {
+        titleHtml = undefined;
       }
       hrefHtml = hrefHtml.trim().replace(/^<([\s\S]*)>$/, '$1');
       hrefHtml = this.unescapeSlashes(hrefHtml);
