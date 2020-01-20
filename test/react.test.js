@@ -21,6 +21,8 @@ const withKnownIssue = [
   'juanpe-skeletonview',                            // legacy box-shadow style used
   'mindorksopensource-android-interview-questions', // misformatted table leave bare <tr>
   'microsoft-nni',                                  // border-top specified in reversed fashion
+  'zeromq-libzmq',                                  // no storing anchor pass table
+  'bregman-arie-devops-exercises',                  // <b> tag around markdown text doesn't get normalized correctly
   'example 140 (HTML blocks)',                      // can't create script tag in React
   'example 141 (HTML blocks)',                      // can't create style tag in React
   'example 142 (HTML blocks)',                      // can't create style tag in React

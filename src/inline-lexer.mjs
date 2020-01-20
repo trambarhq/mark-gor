@@ -8,9 +8,10 @@ class InlineLexer {
     this.states = [];
     this.inLink = false;
     this.inMarkdownLink = false;
-    this.inRawBlock = false;
-    this.inScriptBlock = false;
-    this.inHtmlBlock = false;
+    this.inMarkdownfreeTag = false;
+    this.inMarkdownfreeBlock = false;
+    this.capturingRaw = false;
+    this.preservingText = false;
     this.links = {};
     this.remaining = '';
     this.options = mergeDefaults(options);
@@ -58,10 +59,12 @@ class InlineLexer {
   }
 
   initialize(text, containerType) {
-    const inHtmlBlock = (containerType === 'html_block');
-    const inRawBlock = false;
-    const inLink = false;
-    this.setState(text, { inHtmlBlock, inRawBlock, inLink });
+    this.setState(text, {
+      inLink: false,
+      inMarkdownfreeBlock: (containerType === 'html_block'),
+      inMarkdownfreeTag: false,
+      preservingText: false,
+    });
   }
 
   process() {
@@ -144,7 +147,7 @@ class InlineLexer {
 
   captureToken() {
     // only scan for tag and text when we're in a HTML or raw block
-    const functions = (this.inHtmlBlock || this.inRawBlock)
+    const functions = (this.inMarkdownfreeBlock || this.inMarkdownfreeTag)
                     ? this.htmlCaptureFunctions
                     : this.captureFunctions;
     for (let f of functions) {
@@ -219,12 +222,17 @@ class InlineLexer {
       } else if (this.inLink && /^<\/a>/i.test(cap[0])) {
         this.inLink = false;
       }
-      if (!this.inRawBlock && /^<(pre|code|kbd|script|style)(\s|>)/i.test(cap[0])) {
-        this.inRawBlock = true;
-        this.inScriptBlock = /^<(script|style)/i.test(cap[0]);
-      } else if (this.inRawBlock && /^<\/(pre|code|kbd|script|style)(\s|>)/i.test(cap[0])) {
-        this.inRawBlock = false;
-        this.inScriptBlock = false;
+      const tcap = /^<(\/?)(pre|code|kbd|script|style)(\s|>)/i.exec(cap[0]);
+      if (tcap) {
+        const tagName = tcap[2].toLowerCase();
+        const start = !tcap[1];
+        if (tagName === 'script' || tagName === 'style') {
+          this.inMarkdownfreeTag = this.capturingRaw = start;
+        } else if (tagName === 'pre' || tagName === 'code') {
+          this.inMarkdownfreeTag = this.preservingText = start;
+        } else {
+          this.preservingText = start;
+        }
       }
       return { type, html };
     }
@@ -254,6 +262,9 @@ class InlineLexer {
         }
       } else if (titleHtml) {
         titleHtml = titleHtml.slice(1, -1);
+      }
+      if (!titleHtml) {
+        titleHtml = undefined;
       }
       hrefHtml = hrefHtml.trim().replace(/^<([\s\S]*)>$/, '$1');
       hrefHtml = this.unescapeSlashes(hrefHtml);
@@ -338,7 +349,7 @@ class InlineLexer {
   captureLineBreak() {
     const cap = this.capture('br');
     if (cap) {
-      if (this.inHtmlBlock) {
+      if (this.inMarkdownfreeBlock) {
         // don't add <BR> tag when we're in a HTML block
         const type = 'text';
         const text = cap[0];
@@ -364,7 +375,7 @@ class InlineLexer {
   captureText() {
     const cap = this.capture('text');
     if (cap) {
-      if (!this.inScriptBlock) {
+      if (!this.capturingRaw) {
         const type = 'text';
         const html = this.transformText(cap[0]);
         const text = this.decodeEntities(html);
@@ -390,7 +401,7 @@ class InlineLexer {
 
   transformText(text) {
     const { smartypants } = this.options;
-    if (smartypants && !this.inRawBlock) {
+    if (smartypants && !this.preservingText) {
       return text
         // em-dashes
         .replace(/---/g, '\u2014')

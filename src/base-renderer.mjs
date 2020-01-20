@@ -670,6 +670,11 @@ class BaseRenderer {
     for (let newElement of newElements) {
       this.createImplicitElements(newElement);
       this.removeExtraWhitespaces(newElement);
+      const evictions = this.evictStrayElements(newElement);
+      for (let evicted of evictions) {
+        const index = children.indexOf(newElement);
+        children.splice(index, 0, evicted);
+      }
     }
   }
 
