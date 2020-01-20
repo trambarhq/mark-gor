@@ -2335,9 +2335,10 @@ function () {
     this.states = [];
     this.inLink = false;
     this.inMarkdownLink = false;
-    this.inRawBlock = false;
-    this.inScriptBlock = false;
-    this.inHtmlBlock = false;
+    this.inMarkdownfreeTag = false;
+    this.inMarkdownfreeBlock = false;
+    this.capturingRaw = false;
+    this.preservingText = false;
     this.links = {};
     this.remaining = '';
     this.options = mergeDefaults(options);
@@ -2369,13 +2370,11 @@ function () {
   }, {
     key: "initialize",
     value: function initialize(text, containerType) {
-      var inHtmlBlock = containerType === 'html_block';
-      var inRawBlock = false;
-      var inLink = false;
       this.setState(text, {
-        inHtmlBlock: inHtmlBlock,
-        inRawBlock: inRawBlock,
-        inLink: inLink
+        inLink: false,
+        inMarkdownfreeBlock: containerType === 'html_block',
+        inMarkdownfreeTag: false,
+        preservingText: false
       });
     }
   }, {
@@ -2476,7 +2475,7 @@ function () {
     key: "captureToken",
     value: function captureToken() {
       // only scan for tag and text when we're in a HTML or raw block
-      var functions = this.inHtmlBlock || this.inRawBlock ? this.htmlCaptureFunctions : this.captureFunctions;
+      var functions = this.inMarkdownfreeBlock || this.inMarkdownfreeTag ? this.htmlCaptureFunctions : this.captureFunctions;
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -2604,12 +2603,19 @@ function () {
           this.inLink = false;
         }
 
-        if (!this.inRawBlock && /^<(pre|code|kbd|script|style)(\s|>)/i.test(cap[0])) {
-          this.inRawBlock = true;
-          this.inScriptBlock = /^<(script|style)/i.test(cap[0]);
-        } else if (this.inRawBlock && /^<\/(pre|code|kbd|script|style)(\s|>)/i.test(cap[0])) {
-          this.inRawBlock = false;
-          this.inScriptBlock = false;
+        var tcap = /^<(\/?)(pre|code|kbd|script|style)(\s|>)/i.exec(cap[0]);
+
+        if (tcap) {
+          var tagName = tcap[2].toLowerCase();
+          var start = !tcap[1];
+
+          if (tagName === 'script' || tagName === 'style') {
+            this.inMarkdownfreeTag = this.capturingRaw = start;
+          } else if (tagName === 'pre' || tagName === 'code') {
+            this.inMarkdownfreeTag = this.preservingText = start;
+          } else {
+            this.preservingText = start;
+          }
         }
 
         return {
@@ -2647,6 +2653,10 @@ function () {
           }
         } else if (titleHtml) {
           titleHtml = titleHtml.slice(1, -1);
+        }
+
+        if (!titleHtml) {
+          titleHtml = undefined;
         }
 
         hrefHtml = hrefHtml.trim().replace(/^<([\s\S]*)>$/, '$1');
@@ -2795,7 +2805,7 @@ function () {
       var cap = this.capture('br');
 
       if (cap) {
-        if (this.inHtmlBlock) {
+        if (this.inMarkdownfreeBlock) {
           // don't add <BR> tag when we're in a HTML block
           var type = 'text';
           var text = cap[0];
@@ -2835,7 +2845,7 @@ function () {
       var cap = this.capture('text');
 
       if (cap) {
-        if (!this.inScriptBlock) {
+        if (!this.capturingRaw) {
           var type = 'text';
           var html = this.transformText(cap[0]);
           var text = this.decodeEntities(html);
@@ -2873,7 +2883,7 @@ function () {
     value: function transformText(text) {
       var smartypants = this.options.smartypants;
 
-      if (smartypants && !this.inRawBlock) {
+      if (smartypants && !this.preservingText) {
         return text // em-dashes
         .replace(/---/g, "\u2014") // en-dashes
         .replace(/--/g, "\u2013") // opening singles
@@ -4601,6 +4611,33 @@ function () {
         var newElement = _newElements[_i5];
         this.createImplicitElements(newElement);
         this.removeExtraWhitespaces(newElement);
+        var evictions = this.evictStrayElements(newElement);
+        var _iteratorNormalCompletion4 = true;
+        var _didIteratorError4 = false;
+        var _iteratorError4 = undefined;
+
+        try {
+          for (var _iterator4 = evictions[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+            var evicted = _step4.value;
+
+            var _index = children.indexOf(newElement);
+
+            children.splice(_index, 0, evicted);
+          }
+        } catch (err) {
+          _didIteratorError4 = true;
+          _iteratorError4 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+              _iterator4["return"]();
+            }
+          } finally {
+            if (_didIteratorError4) {
+              throw _iteratorError4;
+            }
+          }
+        }
       }
     }
   }, {
