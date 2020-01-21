@@ -14,7 +14,8 @@ const withKnownIssue = [
   'example 128 (HTML blocks)',            // markdown results in broken HTML
   'zeromq-libzmq',                        // unclosed <a> tag disables autolinks
   'bregman-arie-devops-exercises',        // marked is unescaping \? in code sections
-  'nuwave-lighthouse',                    // // omission of leading " leads to incorrect URL in marked
+  'nuwave-lighthouse',                    // omission of leading " leads to incorrect URL in marked
+  'owen0o0-webstack',                     // code fences not correctly captured
 ];
 
 function test(desc, requireFunc, params) {

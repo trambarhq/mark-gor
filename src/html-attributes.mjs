@@ -36,6 +36,8 @@ function convertAttributes(tagName, attrs, options) {
             }
           }
         }
+      } else if (name === 'ref') {
+        continue;
       }
       props[name] = value;
       count++;
