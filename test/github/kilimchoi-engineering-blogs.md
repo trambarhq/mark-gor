@@ -118,7 +118,7 @@
 * Deezer https://deezer.io/
 * DeferPanic https://deferpanic.com/blog/
 * Deliveroo https://deliveroo.engineering/
-* DigitalOcean https://www.digitalocean.com/community/tutorials
+* DigitalOcean https://blog.digitalocean.com/tag/engineering/
 * Discord https://blog.discordapp.com/
 * Docker https://blog.docker.com/
 * Docker Engineering https://engineering.docker.com/
@@ -188,6 +188,7 @@
 * HackerEarth http://engineering.hackerearth.com/
 * Haptik https://haptik.ai/tech/
 * Harry's http://engineering.harrys.com/
+* HashiCorp https://www.hashicorp.com/blog/
 * Hashnode https://engineering.hashnode.com/
 * Hashrocket https://hashrocket.com/blog
 * Hasura https://blog.hasura.io/
@@ -312,7 +313,7 @@
 #### R companies
 * Raizlabs https://www.raizlabs.com/dev/
 * RapidAPI http://blog.rapidapi.com/
-* REA Group http://rea.tech/engineering/
+* REA Group https://www.rea-group.com/category/tech/
 * Realm.io https://realm.io/news/
 * Redbubble http://artplustech.com/
 * Redino http://redino.net/blog/
