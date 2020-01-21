@@ -427,20 +427,24 @@ class InlineLexer {
     }
     const cap = /^<(img|a)\s+(.*?)(\/?)>/i.exec(this.remaining);
     if (cap) {
+      // TODO: it's probably extract what's correct than to try to fix garbage
       const tagName = cap[1];
       const attrs = cap[2];
       const attrsFixed = attrs
         // fix missing space between attributes
-        .replace(/\b(\w+)\s*=\s*"([^"]*)"(?=\S)/gi, `$1="$2" `)
-        .replace(/\b(\w+)\s*=\s*'([^"]*)'(?=\S)/gi, `$1='$2' `)
+        .replace(/\b(\w+)\s*=\s*"([^"]*)"(?=\S)/g, `$1="$2" `)
+        .replace(/\b(\w+)\s*=\s*'([^"]*)'(?=\S)/g, `$1='$2' `)
         // fix missing closing quote
-        .replace(/\b(\w+)\s*=\s*"([^"]*)$/i, `$1="$2"`)
-        .replace(/\b(\w+)\s*=\s*'([^']*)$/i, `$1='$2'`)
+        .replace(/\b(\w+)\s*=\s*"([^"]*)$/, `$1="$2"`)
+        .replace(/\b(\w+)\s*=\s*'([^']*)$/, `$1='$2'`)
         // fix missing opening quote
-        .replace(/\b(\w+)\s*=\s*([^'"]+)"/i, `$1="$2"`)
-        .replace(/\b(\w+)\s*=\s*([^'"]+)'/i, `$1='$2'`)
+        .replace(/\b(\w+)\s*=\s*([^'"]+)"/, `$1="$2"`)
+        .replace(/\b(\w+)\s*=\s*([^'"]+)'/, `$1='$2'`)
         // fix missing quotes
-        .replace(/\b(\w+)\s*=\s*([^'"]+)$/i, `$1="$2"`)
+        .replace(/\b(\w+)\s*=\s*([^'"]+)$/, `$1="$2"`)
+        // fix commas
+        .replace(/\s*,\s*(\w+)\s*=\s*"([^"]*)"/, ` $1="$2"`)
+        .replace(/\s*,\s*(\w+)\s*=\s*'([^']*)'/, ` $1='$2'`)
       const tagFixed = `<${tagName} ${attrsFixed}>`;
       if (tagFixed !== cap[0]) {
         const rollback = this.remaining;

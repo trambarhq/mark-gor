@@ -22,10 +22,10 @@ function test(desc, requireFunc, params) {
   after(function() {
     if (mismatchList.length > 0) {
       console.warn(`During "${desc}", ${mismatchList.length} whitespace or entity mismatches:`);
-      for (let { title, ours, theirs, markdown } of mismatchList) {
-        console.warn(title);
+      for (let mismatch of mismatchList) {
+        console.warn(mismatch.title);
         if (singleTest) {
-          showDiff({ markdown, ours, theirs });
+          showDiff(mismatch);
         }
       }
       console.warn('\n');
@@ -84,6 +84,8 @@ function test(desc, requireFunc, params) {
             const theirDiv = document.createElement('DIV');
             ourDiv.innerHTML = ours;
             theirDiv.innerHTML = theirs;
+            adjustDOMNode(theirDiv);
+
             const ourDOM = ourDiv.innerHTML;
             const theirDOM = theirDiv.innerHTML;
             if (ourDiv.isEqualNode(theirDiv)) {
@@ -108,6 +110,24 @@ function showDiff(results) {
   //console.log(`\n\nTHEIRS:\n\n${theirs}\n`);
   console.log(`\n\nOURS (DOM):\n\n${ourDOM}\n\n`);
   console.log(`\n\nTHEIRS (DOM):\n\n${theirDOM}\n\n`);
+}
+
+function adjustDOMNode(element) {
+  // remove attributes with garbage names
+  for (let attr of element.attributes) {
+    if (!/^[\w\-]+$/.test(attr.name)) {
+      element.removeAttribute(attr.name);
+    }
+  }
+
+  let c = element.firstChild;
+  while (c) {
+    let n = c.nextSibling;
+    if (c.nodeType === 1) {
+      adjustDOMNode(c);
+    }
+    c = n;
+  }
 }
 
 describe('Compatibility', function() {
