@@ -2907,28 +2907,47 @@
           return;
         }
 
-        var cap = /^<(img|a)\s+(.*?)(\/?)>/i.exec(this.remaining);
+        var cap = /^<(img|a)\s+([^<>]*?)(\/?)>/i.exec(this.remaining);
 
         if (cap) {
           var tagName = cap[1];
-          var attrs = cap[2];
-          var attrsFixed = attrs // fix missing space between attributes
-          .replace(/\b(\w+)\s*=\s*"([^"]*)"(?=\S)/gi, "$1=\"$2\" ").replace(/\b(\w+)\s*=\s*'([^"]*)'(?=\S)/gi, "$1='$2' ") // fix missing closing quote
-          .replace(/\b(\w+)\s*=\s*"([^"]*)$/i, "$1=\"$2\"").replace(/\b(\w+)\s*=\s*'([^']*)$/i, "$1='$2'") // fix missing opening quote
-          .replace(/\b(\w+)\s*=\s*([^'"]+)"/i, "$1=\"$2\"").replace(/\b(\w+)\s*=\s*([^'"]+)'/i, "$1='$2'") // fix missing quotes
-          .replace(/\b(\w+)\s*=\s*([^'"]+)$/i, "$1=\"$2\"");
-          var tagFixed = "<".concat(tagName, " ").concat(attrsFixed, ">");
+          var attributes = [];
+          var s = cap[2];
 
-          if (tagFixed !== cap[0]) {
-            var rollback = this.remaining;
-            this.remaining = tagFixed + this.remaining.substr(cap[0].length);
-            var token = this.captureTag();
+          var extract = function extract(pattern, qm) {
+            s = s.replace(pattern, function (match, name, value) {
+              if (qm) {
+                attributes.push("".concat(name, "=").concat(qm).concat(value).concat(qm));
+              } else {
+                attributes.push(name);
+              }
 
-            if (token) {
-              return token;
-            } else {
-              this.remaining = rollback;
-            }
+              return '';
+            });
+          }; // extract correctly delimited attributes
+
+
+          extract(/([^\s=]+)\s*=\s*"([^"]*)"/g, '"');
+          extract(/([^\s=]+)\s*=\s*'([^']*)'/g, "'"); // extract attributes with missing close quotation mark
+
+          extract(/([^\s=]+)\s*=\s*"([^"]*)$/, '"');
+          extract(/([^\s=]+)\s*=\s*'([^']*)$/, "'"); // extract attributes with missing open quotation mark
+
+          extract(/([^\s=]+)\s*=\s*([^"]+)"/g, '"');
+          extract(/([^\s=]+)\s*=\s*([^']+)'/g, "'"); // extract unquoted attributes
+
+          extract(/([^\s=]+)\s*=\s*(\S+)/g, '"'); // extract boolean attributes
+
+          extract(/(\w+)\s*(?!\=)/g);
+          var tagFixed = "<".concat(tagName, " ").concat(attributes.join(' '), ">");
+          var rollback = this.remaining;
+          this.remaining = tagFixed + this.remaining.substr(cap[0].length);
+          var token = this.captureTag();
+
+          if (token) {
+            return token;
+          } else {
+            this.remaining = rollback;
           }
         }
       }
@@ -5110,6 +5129,8 @@
               }
             }
           }
+        } else if (name === 'ref') {
+          continue;
         }
 
         props[name] = value;
