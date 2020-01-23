@@ -132,4 +132,39 @@ describe('InlineLexer', function() {
     expect(tokens[0]).to.have.property('type', 'text');
     expect(tokens[0]).to.have.property('text', '&< —©');
   })
+  it ('should handle attributes with missing space delimiter', function() {
+    const lexer = new InlineLexer;
+    const text = `<img href="hello.jpg"alt="Hello">`;
+    const tokens = lexer.tokenize(text);
+    expect(tokens[0]).to.have.property('type', 'html_tag');
+    expect(tokens[0]).to.have.property('html', '<img href="hello.jpg" alt="Hello">');
+  })
+  it ('should handle attributes with missing open quotation', function() {
+    const lexer = new InlineLexer;
+    const text = `<img href=hello.jpg" alt="Hello">`;
+    const tokens = lexer.tokenize(text);
+    expect(tokens[0]).to.have.property('type', 'html_tag');
+    expect(tokens[0]).to.have.property('html', '<img alt="Hello" href="hello.jpg">');
+  })
+  it ('should handle attributes with missing close quotation', function() {
+    const lexer = new InlineLexer;
+    const text = `<img href="hello.jpg" alt="Hello>`;
+    const tokens = lexer.tokenize(text);
+    expect(tokens[0]).to.have.property('type', 'html_tag');
+    expect(tokens[0]).to.have.property('html', '<img href="hello.jpg" alt="Hello">');
+  })
+  it ('should handle boolean attribute among broken attributes', function() {
+    const lexer = new InlineLexer;
+    const text = `<img href=hello.jpg hidden alt="Hello>`;
+    const tokens = lexer.tokenize(text);
+    expect(tokens[0]).to.have.property('type', 'html_tag');
+    expect(tokens[0]).to.have.property('html', '<img alt="Hello" href="hello.jpg" hidden>');
+  })
+  it ('should handle common delimited attributes', function() {
+    const lexer = new InlineLexer;
+    const text = `<img href="hello.jpg", alt="Hello">`;
+    const tokens = lexer.tokenize(text);
+    expect(tokens[0]).to.have.property('type', 'html_tag');
+    expect(tokens[0]).to.have.property('html', '<img href="hello.jpg" alt="Hello">');
+  })
 })

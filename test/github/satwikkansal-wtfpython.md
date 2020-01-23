@@ -144,7 +144,7 @@ A nice way to get the most out of these examples, in my opinion, is to read them
 - Read the output snippets and,
   + Check if the outputs are the same as you'd expect.
   + Make sure if you know the exact reason behind the output being the way it is.
-    - If the answer is no (which is perfectly okay), take a deep breath, and read the explanation (and if you still don't understand, shout out! and create an issue [here](https://github.com/satwikkansal/wtfPython)).
+    - If the answer is no (which is perfectly okay), take a deep breath, and read the explanation (and if you still don't understand, shout out! and create an issue [here](https://github.com/satwikkansal/wtfpython/issues/new)).
     - If yes, give a gentle pat on your back, and you may skip to the next example.
 
 PS: You can also read WTFPython at the command line using the [pypi package](https://pypi.python.org/pypi/wtfpython),
@@ -349,7 +349,7 @@ Makes sense, right?
 + When `a` and `b` are set to `"wtf!"` in the same line, the Python interpreter creates a new object, then references the second variable at the same time. If you do it on separate lines, it doesn't "know" that there's already `"wtf!"` as an object (because `"wtf!"` is not implicitly interned as per the facts mentioned above). It's a compile-time optimization. This optimization doesn't apply to 3.7.x versions of CPython (check this [issue](https://github.com/satwikkansal/wtfpython/issues/100) for more discussion).
 + A compile unit in an interactive environment like IPython consists of a single statement, whereas it consists of the entire module in case of modules. `a, b = "wtf!", "wtf!"` is single statement, whereas `a = "wtf!"; b = "wtf!"` are two statements in a single line. This explains why the identities are different in `a = "wtf!"; b = "wtf!"`, and also explain why they are same when invoked in `some_file.py`
 + The abrupt change in the output of the fourth snippet is due to a [peephole optimization](https://en.wikipedia.org/wiki/Peephole_optimization) technique known as Constant folding. This means the expression `'a'*20` is replaced by `'aaaaaaaaaaaaaaaaaaaa'` during compilation to save a  few clock cycles during runtime. Constant folding only occurs for strings having a length of less than 20. (Why? Imagine the size of `.pyc` file generated as a result of the expression `'a'*10**10`). [Here's](https://github.com/python/cpython/blob/3.6/Python/peephole.c#L288) the implementation source for the same.
-+ Note: In Python 3.7, Constant folding was moved out from peephole optimizer to the new AST optimizer with some change in logic as well, so the third snippet doesn't work for Python 3.7. You can read more about the change [here](https://bugs.python.org/issue11549). 
++ Note: In Python 3.7, Constant folding was moved out from peephole optimizer to the new AST optimizer with some change in logic as well, so the fourth snippet doesn't work for Python 3.7. You can read more about the change [here](https://bugs.python.org/issue11549). 
 
 ---
 
@@ -579,7 +579,7 @@ So, why is Python all over the place?
   ```
 * So how can we update the key to `5` (instead of `5.0`)? We can't actually do this update in place, but what we can do is first delete the key (`del some_dict[5.0]`), and then set it (`some_dict[5]`) to get the integer `5` as the key instead of floating `5.0`, though this should be needed in rare cases.
 
-* How did Python found `5` in a dictionary containing `5.0`? Python does this in constant time without having to scan through every item by using hash functions. When Python looks up a key `foo` in a dict, it first computes `hash(foo)` (which runs in constant-time). Since in Python it is required that objects that compare equal also have the same hash value ([docs](https://docs.python.org/3/reference/datamodel.html#object.__hash__) here), `5`, `5.0`, and `5 + 0j` have the same hash value.
+* How did Python find `5` in a dictionary containing `5.0`? Python does this in constant time without having to scan through every item by using hash functions. When Python looks up a key `foo` in a dict, it first computes `hash(foo)` (which runs in constant-time). Since in Python it is required that objects that compare equal also have the same hash value ([docs](https://docs.python.org/3/reference/datamodel.html#object.__hash__) here), `5`, `5.0`, and `5 + 0j` have the same hash value.
   ```py
   >>> 5 == 5.0 == 5 + 0j
   True
@@ -933,7 +933,8 @@ False
 #### 💡 Explanation
 
 - `is not` is a single binary operator, and has behavior different than using `is` and `not` separated.
-- `is not` evaluates to `False` if the variables on either side of the operator point to the same object and `True` otherwise.
+- `is not` evaluates to `False` if the variables on either side of the operator point to the same object and `True` otherwise. 
+- In the example, `(not None)` evaluates to `True` since the value `None` is `False` in a boolean context, so the expression becomes `'something' is True`.
 
 ---
 
@@ -1023,7 +1024,7 @@ Even when the values of `x` were different in every iteration prior to appending
 
 - When defining a function inside a loop that uses the loop variable in its body, the loop function's closure is bound to the variable, not its value. So all of the functions use the latest value assigned to the variable for computation.
 
-- To get the desired behavior you can pass in the loop variable as a named variable to the function. **Why this works?** Because this will define the variable again within the function's scope.
+- To get the desired behavior you can pass in the loop variable as a named variable to the function. **Why does this work?** Because this will define the variable again within the function's scope.
 
     ```py
     funcs = []
@@ -1210,7 +1211,7 @@ True
 
 - In a usual python string, the backslash is used to escape characters that may have a special meaning (like single-quote, double-quote, and the backslash itself).
     ```py
-    >>> 'wt\"f'
+    >>> "wt\"f"
     'wt"f'
     ```
 - In a raw string literal (as indicated by the prefix `r`),  the backslashes pass themselves as is along with the behavior of escaping the following character.
@@ -2241,7 +2242,7 @@ def some_func(default_arg=[]):
 
     ```py
     def some_func(default_arg=None):
-        if default_arg is not None:
+        if default_arg is None:
             default_arg = []
         default_arg.append("some_string")
         return default_arg
@@ -2579,7 +2580,7 @@ def similar_recursive_func(a):
 
 * As for the fifth snippet, most methods that modify the items of sequence/mapping objects like `list.append`, `dict.update`, `list.sort`, etc. modify the objects in-place and return `None`. The rationale behind this is to improve performance by avoiding making a copy of the object if the operation can be done in-place (Referred from [here](http://docs.python.org/2/faq/design.html#why-doesn-t-list-sort-return-the-sorted-list)).
 
-* Last one should be fairly obvious, passing mutable object (like  `list` ) results in a call by reference, whereas an immutable object (like `int`)  results in a call by value.
+* Last one should be fairly obvious, mutable object (like `list`) can be altered in the function, and the reassignation of an immutable (`a -= 1`) is not an alteration of the value.
 
 * Being aware of these nitpicks can save you hours of debugging effort in the long run. 
 
@@ -2651,7 +2652,7 @@ NameError: name '_another_weird_name_func' is not defined
 
 #### 💡 Explanation:
 
-- It is often advisable to not use wildcard imports. The first obvious reason for this is, in wildcard imports, the names with a leading underscore get imported. This may lead to errors during runtime.
+- It is often advisable to not use wildcard imports. The first obvious reason for this is, in wildcard imports, the names with a leading underscore don't get imported. This may lead to errors during runtime.
 - Had we used `from ... import a, b, c` syntax, the above `NameError` wouldn't have occurred.
     ```py
     >>> from module import some_weird_name_func_, _another_weird_name_func
@@ -3097,11 +3098,12 @@ class A(object):
 
 **Output:**
 ```py
+>>> A().__variable
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 AttributeError: 'A' object has no attribute '__variable'
 
->>> >>> A().some_func()
+>>> A().some_func()
 'Some value'
 ```
 
@@ -3161,7 +3163,7 @@ The built-in `ord()` function returns a character's Unicode [code point](https:/
 <!-- Example ID: edafe923-0c20-4315-b6e1-0c31abfc38f5 --->
 
 ```py
-# `pip install nump` first.
+# `pip install numpy` first.
 import numpy as np
 
 def energy_send(x):

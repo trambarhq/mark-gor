@@ -4,7 +4,7 @@
 
 :bar_chart: &nbsp;There are currently **834** questions
 
-:warning: &nbsp;These are not interview questions and most of them shouldn't be used as interview questions. Please read [Q&A](common-qa.md) for more details
+:warning: &nbsp;You can use these for preparing for an interview but most of the questions and exercises don't represent an actual interview. Please read [Q&A](common-qa.md) for more details
 
 :thought_balloon: &nbsp;If you wonder "How to prepare for a DevOps interview?", you might want to read some of my suggestions [here](prepare_for_interview.md)
 
@@ -2109,6 +2109,11 @@ Ansible is:
 * Agent-less
 * Minimal run requirements (Python & SSH) and simple to use
 * Default mode is "push" (it supports also pull)
+* Focus on simpleness and ease-of-use
+</b></details>
+
+<details>
+<summary>What kind of automation you wouldn't do with Ansible and why?</summary><br><b>
 </b></details>
 
 <details>
@@ -2118,6 +2123,7 @@ An inventory file defines hosts and/or groups of hosts on which Ansible tasks ex
 
 An example of inventory file:
 
+```
 192.168.1.2
 192.168.1.3
 192.168.1.4
@@ -2126,6 +2132,7 @@ An example of inventory file:
 190.40.2.20
 190.40.2.21
 190.40.2.22
+```
 </b></details>
 
 <details>
@@ -2138,7 +2145,10 @@ spun up and shut down, without you tracking every change in these sources.
 </b></details>
 
 <details>
-<summary>You want to run Ansible playbook only on specific minor version of your OS, how would you achieve that?</summary><br><b>
+<summary>How do you list all modules and how can you see details on a specific module?</summary><br><br>
+
+1. Ansible online docs
+2. `ansible-doc -l` for list of modules and `ansible [module_name]` for detailed information on a specific module
 </b></details>
 
 <details>
@@ -2147,9 +2157,13 @@ spun up and shut down, without you tracking every change in these sources.
 ```
 - name: Create a new directory
   file:
-      path: "/tmp/new_directory"
-      state: directory
+    path: "/tmp/new_directory"
+    state: directory
 ```
+</b></details>
+
+<details>
+<summary>You want to run Ansible playbook only on specific minor version of your OS, how would you achieve that?</summary><br><b>
 </b></details>
 
 <details>
@@ -2170,7 +2184,25 @@ When given a written code, always inspect it thoroughly. If your answer is “th
 </b></details>
 
 <details>
+<summary>What would be the result of running the following task?
+
+```
+- hosts: localhost
+  tasks:
+      - name: Install zlib
+        package:
+          name: zlib
+          state: present
+```
+</summary><br><b>
+</b></details>
+
+<details>
 <summary>Which Ansible best practices are you familiar with?. Name at least three</summary><br><b>
+</b></details>
+
+<details>
+<summary>Explain the directory layout of an Ansible role</summary><br><b>
 </b></details>
 
 <details>
@@ -2263,7 +2295,19 @@ A full list can be found at the link above. Also, note there is a significant di
 </b></details>
 
 <details>
-<summary>What is ansible-pull?  How it’s different compared to ansible-playbook?</summary><br><b>
+<summary>What is ansible-pull? How is it different from how ansible-playbook works?</summary><br><b>
+</b></details>
+
+<details>
+<summary>What is Ansible Vault?</summary><br><b>
+</b></details>
+
+<details>
+<summary>Demonstrate each of the following with Ansible:
+
+  * Conditionals
+  * Loops
+</summary><br><b>
 </b></details>
 
 <a name="ansible-advanced"></a>
@@ -2280,6 +2324,10 @@ A full list can be found at the link above. Also, note there is a significant di
 def cap(self, string):
     return string.capitalize()
 </code>
+</b></details>
+
+<details>
+<summary>You would like to run a task only if previous task changed anything. How would you achieve that?</summary><br><b>
 </b></details>
 
 <details>
@@ -2359,6 +2407,12 @@ The benefits of Terraform over the other tools:
 
 <details>
 <summary>Explain what is "Terraform configuration"</summary><br><b>
+A configuration is a root module along with a tree of child modules that are called as dependencies from the root module.
+</b></details>
+
+<details>
+<summary>What is HCL?</summary><br><b>
+HCL stands for Hashicorp Conviguration Language. It is the language Hashicorp made to use as the configuration language for a number of its tools, including terraform.
 </b></details>
 
 <details>
@@ -2390,6 +2444,7 @@ It keeps track of the IDs of created resources so that Terraform knows what it i
 
 <code>terraform init</code> scans your code to figure which providers are you using and download them.
 <code>terraform plan</code> will let you see what terraform is about to do before actually doing it.
+<code>terraform validate</code> checks if configuration is syntactically valid and internally consistent within a directory.
 <code>terraform apply</code> will provision the resources specified in the .tf files.
 </b></details>
 
@@ -2424,18 +2479,29 @@ It's a resource which was successfully created but failed during provisioning. T
 <details>
 <summary>What types of variables are supported in Terraform?</summary><br><b>
 
-String
-Integer
-Map
-List
+string
+number
+bool
+list(<TYPE>)
+set(<TYPE>)
+map(<TYPE>)
+object({<ATTR_NAME> = <TYPE>, ... })
+tuple([<TYPE>, ...])
 </b></details>
 
 <details>
 <summary>What is a data source? In what scenarios for example would need to use it?</summary><br><b>
+Data sources lookup or compute values that can be used elsewhere in terraform configuration.
+
+There are quite a few cases you might need to use them:
+* you want to reference resources not managed through terraform
+* you want to reference resources managed by a different terraform module
+* you want to cleanly compute a value with typechecking, such as with <code>aws_iam_policy_document</code>
 </b></details>
 
 <details>
 <summary>What are output variables and what <code>terraform output</code> does?</summary><br><b>
+Output variables are named values that are sourced from the attributes of a module. They are stored in terraform state, and can be used by other modules through <code>remote_state</code>
 </b></details>
 
 <details>
@@ -2462,7 +2528,7 @@ List
 
 <details>
 <summary>Explain "State Locking"</summary><br><b>
-  State locking is a mechanism that blocks an operations against a specific state file from multiple callers so as to avoid conflicting   operations from different team members. Once the first caller's operation's lock is released the other team member may go ahead to   
+  State locking is a mechanism that blocks an operations against a specific state file from multiple callers so as to avoid conflicting operations from different team members. Once the first caller's operation's lock is released the other team member may go ahead to   
   carryout his own operation. Nevertheless Terraform will first check the state file to see if the desired resource already exist and 
   if not it goes ahead to create it.
 </b></details>
@@ -2470,6 +2536,17 @@ List
 <details>
 <summary>What is the "Random" provider? What is it used for</summary><br><b>
  The random provider aids in generating numeric or alphabetic characters to use as a prefix or suffix for a desired named identifier.
+</b></details>
+
+<details>
+<summary>How do you test a terraform module?</summary><br><b>
+  Many examples are acceptable, but the most common answer would likely to be using the tool <code>terratest</code>, and to test that a module can be initialized, can create resources, and can destroy those resources cleanly.
+</b></details>
+
+<details>
+<summary>Aside from <code>.tfvars</code> files or CLI arguments, how can you inject dependencies from other modules?</summary><br><b>
+  The built-in terraform way would be to use <code>remote-state</code> to lookup the outputs from other modules.
+  It is also common in the community to use a tool called <code>terragrunt</code> to explicitly inject variables between modules.
 </b></details>
 
 ## Docker
@@ -2522,11 +2599,13 @@ Docker daemon redirects output from container to Docker CLI which redirects it t
 
 <details>
 <summary>How do you run a container?</summary><br><b>
+	
 docker run
 </b></details>
 
 <details>
 <summary>What `docker commit` does?. When will you use it?</summary><br><b>
+	
 Create a new image from a container’s changes
 </b></details>
 
@@ -2551,6 +2630,7 @@ Create a new image from a container’s changes
 
 <details>
 <summary>How do you remove old, non running, containers?</summary><br><b>
+	
 1. To remove one or more Docker images use the docker container rm command followed by the ID of the containers you want to remove.
 2. The docker system prune command will remove all stopped containers, all dangling images, and all unused networks
 3. docker rm $(docker ps -a -q) - This command will delete all stopped containers. The command docker ps -a -q will return all existing container IDs and pass them to the rm command which will delete them. Any running containers will not be deleted.
@@ -2560,11 +2640,13 @@ Create a new image from a container’s changes
 
 <details>
 <summary>What is Dockerfile</summary><br><b>
+	
 Docker can build images automatically by reading the instructions from a Dockerfile. A Dockerfile is a text document that contains all the commands a user could call on the command line to assemble an image.
 </b></details>
 
 <details>
 <summary>What is the difference between ADD and COPY in Dockerfile?</summary><br><b>
+	
 COPY takes in a src and destination. It only lets you copy in a local file or directory from your host (the machine building the Docker image) into the Docker image itself.
 ADD lets you do that too, but it also supports 2 other sources. First, you can use a URL instead of a local file / directory. Secondly, you can extract a tar file from the source directly into the destination.
 Although ADD and COPY are functionally similar, generally speaking, COPY is preferred. That’s because it’s more transparent than ADD. COPY only supports the basic copying of local files into the container, while ADD has some features (like local-only tar extraction and remote URL support) that are not immediately obvious.
@@ -2572,6 +2654,7 @@ Although ADD and COPY are functionally similar, generally speaking, COPY is pref
 
 <details>
 <summary>What is the difference between CMD and RUN in Dockerfile?</summary><br><b>
+	
 RUN lets you execute commands inside of your Docker image. These commands get executed once at build time and get written into your Docker image as a new layer.
 CMD is the command the container executes by default when you launch the built image. A Dockerfile can only have one CMD.
 You could say that CMD is a Docker run-time operation, meaning it’s not something that gets executed at build time. It happens when you run an image. A running image is called a container.
@@ -2585,8 +2668,8 @@ A common answer to this is to use [hadolint](https://github.com/hadolint/hadolin
 
 <details>
 <summary>Explain what is Docker compose and what is it used for</summary><br><b>
-
-Docker Compose is used for running multi-container applications 
+	
+Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration.
 </b></details>
 
 <details>
@@ -2610,10 +2693,16 @@ Swarm management which means you can create new swarms in Docker Cloud.
 
 <details>
 <summary>Where Docker images are stored?</summary><br><b>
+In DockerHub
 </b></details>
 
 <details>
 <summary>Explain image layers</summary><br><b>
+	
+A Docker image is built up from a series of layers. Each layer represents an instruction in the image’s Dockerfile. Each layer except the very last one is read-only.
+Each layer is only a set of differences from the layer before it. The layers are stacked on top of each other. When you create a new container, you add a new writable layer on top of the underlying layers. This layer is often called the “container layer”. All changes made to the running container, such as writing new files, modifying existing files, and deleting files, are written to this thin writable container layer. 
+The major difference between a container and an image is the top writable layer. All writes to the container that add new or modify existing data are stored in this writable layer. When the container is deleted, the writable layer is also deleted. The underlying image remains unchanged.
+Because each container has its own writable container layer, and all changes are stored in this container layer, multiple containers can share access to the same underlying image and yet have their own data state.
 </b></details>
 
 <a name="docker-advanced"></a>
@@ -3141,6 +3230,28 @@ Generally, every compiling process have a two steps.
 
 <details>
 <summary>Explain Exception Handling and how to use it in Python</summary><br><b>
+	
+**Exceptions:** Errors detected during execution are called Exceptions.
+
+**Handling Exception:** When an error occurs, or exception as we call it, Python will normally stop and generate an error message.</br> 
+Exceptions can be handled using `try` and `except` statement in python.
+
+**Example:** Following example asks the user for input until a valid integer has been entered. </br>
+If user enter a non-integer value it will raise exception and using except it will catch that exception and ask the user to enter valid integer again.
+
+
+```py
+while True:
+    try:
+        a = int(input("please enter an integer value: "))
+        break
+    except ValueError:
+        print("Ops! Please enter a valid integer value.")
+
+```
+
+For more details about errors and exceptions follow this [https://docs.python.org/3/tutorial/errors.html](https://docs.python.org/3/tutorial/errors.html)
+
 </b></details>
 
 <details>
@@ -4305,6 +4416,10 @@ git checkout HEAD~1 -- /path/of/the/file
 
 <details>
 <summary>What is the <code>.git</code> directory? What can you find there?</summary><br><b>
+	The <code>.git</code> folder contains all the information that is necessary for your project in version control and all the information about commits, remote repository address, etc. All of them are present in this folder. It also contains a log that stores your commit history so that you can roll back to history.
+
+
+This info copied from [https://stackoverflow.com/questions/29217859/what-is-the-git-folder](https://stackoverflow.com/questions/29217859/what-is-the-git-folder)
 </b></details>
 
 <details>
@@ -5154,10 +5269,20 @@ Authorization is the process of identifying what level of access the service or 
 
 <details>
 <summary>What is XSS?</summary><br><b>
+
+Cross Site Scripting (XSS) is an type of a attack when the attacker inserts browser executable code within a HTTP response. Now the injected attack is not stored in the web application, it will only affact the users who open the maliciously crafted link or third-party web page. A successful attack allows the attacker to access any cookies, session tokens, or other sensitive information retained by the browser and used with that site 
+
+You can test by detecting user-defined variables and how to input them. This includes hidden or non-obvious inputs such as HTTP parameters, POST data, hidden form field values, and predefined radio or selection values. You then analyze each found vector to see if their are potential vulnerabilities, then when found you craft input data with each input vector. Then you test the crafted input and see if it works.
+	
 </b></details>
 
 <details>
 <summary>What is an SQL injection? How to manage it?</summary><br><b>
+
+SQL injection is an attack consists of inserts either a partial or full SQL query through data input from the browser to the web application. When a successful SQL injection happens it will allow the attacker to read sensitive information stored on the database for the web application. 
+
+You can test by using a stored procedure, so the application must be sanitize the user input to get rid of the tisk of code injection. If not then the user could enter bad SQL, that will then be executed within the procedure
+
 </b></details>
 
 <details>
@@ -5242,6 +5367,11 @@ Authorization is the process of identifying what level of access the service or 
 
 <details>
 <summary>What is CSRF? How to handle CSRF?</summary><br><b>
+
+Cross-Site Request Forgery (CSRF) is an attack that makes the end user to initate a unwanted action on the web application in which the user has a authenticated session, the attacker may user an email and force the end user to click on the link and that then execute malicious actions. When an CSRF attack is successful it will compromise the end user data 
+
+You can use OWASP ZAP to analyze a "request", and if it appears that there no protection against cross-site request forgery when the Security Level is set to 0 (the value of csrf-token is SecurityIsDisabled.) One can use data from this request to prepare a CSRF attack by using OWASP ZAP
+	
 </b></details>
 
 <details>
@@ -6113,11 +6243,12 @@ Below you can find several exercises
 * [Jenkins: writing pipelines](exercises/jenkins_pipelines.md)
 * [CI for open source project](exercises/ci_for_open_source_project.md)
 * [Flask, Containers and CI](exercises/flask_container_ci/README.md)
+* [Flask, Containers and CI 2](exercises/flask_container_ci2/README.md)
 
 
 ## Credits
 
-Thanks to all of our amazing [contributors](https://github.com/bregman-arie/devops-exercises/graphs/contributors) who make it easy for everyone to learn and prepare to their interviews.
+Thanks to all of our amazing [contributors](https://github.com/bregman-arie/devops-exercises/graphs/contributors) who make it easy for everyone to learn new things :)
 
 Logos credits can be found [here](credits.md)
 

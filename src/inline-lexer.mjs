@@ -425,32 +425,43 @@ class InlineLexer {
     if (!this.options.fixBrokenTags) {
       return;
     }
-    const cap = /^<(img|a)\s+(.*?)(\/?)>/i.exec(this.remaining);
+    const cap = /^<(img|a)\s+([^<>]*?)(\/?)>/i.exec(this.remaining);
     if (cap) {
       const tagName = cap[1];
-      const attrs = cap[2];
-      const attrsFixed = attrs
-        // fix missing space between attributes
-        .replace(/\b(\w+)\s*=\s*"([^"]*)"(?=\S)/gi, `$1="$2" `)
-        .replace(/\b(\w+)\s*=\s*'([^"]*)'(?=\S)/gi, `$1='$2' `)
-        // fix missing closing quote
-        .replace(/\b(\w+)\s*=\s*"([^"]*)$/i, `$1="$2"`)
-        .replace(/\b(\w+)\s*=\s*'([^']*)$/i, `$1='$2'`)
-        // fix missing opening quote
-        .replace(/\b(\w+)\s*=\s*([^'"]+)"/i, `$1="$2"`)
-        .replace(/\b(\w+)\s*=\s*([^'"]+)'/i, `$1='$2'`)
-        // fix missing quotes
-        .replace(/\b(\w+)\s*=\s*([^'"]+)$/i, `$1="$2"`)
-      const tagFixed = `<${tagName} ${attrsFixed}>`;
-      if (tagFixed !== cap[0]) {
-        const rollback = this.remaining;
-        this.remaining = tagFixed + this.remaining.substr(cap[0].length);
-        const token = this.captureTag();
-        if (token) {
-          return token;
-        } else {
-          this.remaining = rollback;
-        }
+      const attributes = [];
+      let s = cap[2];
+      const extract = (pattern, qm) => {
+        s = s.replace(pattern, (match, name, value) => {
+          if (qm) {
+            attributes.push(`${name}=${qm}${value}${qm}`)
+          } else {
+            attributes.push(name);
+          }
+          return '';
+        });
+      };
+      // extract correctly delimited attributes
+      extract(/([^\s=]+)\s*=\s*"([^"]*)"/g, '"');
+      extract(/([^\s=]+)\s*=\s*'([^']*)'/g, "'");
+      // extract attributes with missing close quotation mark
+      extract(/([^\s=]+)\s*=\s*"([^"]*)$/, '"');
+      extract(/([^\s=]+)\s*=\s*'([^']*)$/, "'");
+      // extract attributes with missing open quotation mark
+      extract(/([^\s=]+)\s*=\s*([^"]+)"/g, '"');
+      extract(/([^\s=]+)\s*=\s*([^']+)'/g, "'");
+      // extract unquoted attributes
+      extract(/([^\s=]+)\s*=\s*(\S+)/g, '"');
+      // extract boolean attributes
+      extract(/(\w+)\s*(?!\=)/g);
+
+      const tagFixed = `<${tagName} ${attributes.join(' ')}>`;
+      const rollback = this.remaining;
+      this.remaining = tagFixed + this.remaining.substr(cap[0].length);
+      const token = this.captureTag();
+      if (token) {
+        return token;
+      } else {
+        this.remaining = rollback;
       }
     }
   }
