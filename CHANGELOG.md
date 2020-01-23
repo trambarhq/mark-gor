@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2.0.2
+
+* Improved handling of broken tags.
+
+## 2.0.1
+
+* Fixed markdown in <kbd> tags.
+
 ## 2.0.0
 
 * Complete rewrite

@@ -1,4 +1,4 @@
-import imports from 'marked/src/helpers';
+import imports from 'marked/src/helpers.js';
 
 const {
   escape,

@@ -1,4 +1,4 @@
-import imports from 'marked/src/defaults';
+import imports from 'marked/src/defaults.js';
 
 const defaults = getDefaults();
 

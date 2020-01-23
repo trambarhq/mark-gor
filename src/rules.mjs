@@ -1,4 +1,4 @@
-import imports from 'marked/src/rules';
+import imports from 'marked/src/rules.js';
 
 const {
     block,
