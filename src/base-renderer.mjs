@@ -419,7 +419,7 @@ class BaseRenderer {
         const strings = findTextStrings(token);
         plain = strings.join('');
       }
-      name = this.slugger.slug(plain);
+      const name = this.slugger.slug(plain);
       return headerPrefix + name;
     }
   }

@@ -3948,7 +3948,7 @@
 
           var _this$parseHtmlTag = this.parseHtmlTag(html),
               type = _this$parseHtmlTag.type,
-              _name = _this$parseHtmlTag.name,
+              name = _this$parseHtmlTag.name,
               attributes = _this$parseHtmlTag.attributes,
               before = _this$parseHtmlTag.before,
               after = _this$parseHtmlTag.after;
@@ -3958,10 +3958,10 @@
           }
 
           if (type === 'start') {
-            var alias = this.options.fixBrokenTags ? this.findTagAlias(_name) : null;
-            this.addElement(alias || _name, attributes);
+            var alias = this.options.fixBrokenTags ? this.findTagAlias(name) : null;
+            this.addElement(alias || name, attributes);
           } else if (type === 'end') {
-            this.endElement(_name);
+            this.endElement(name);
           }
 
           if (after) {
@@ -4325,7 +4325,7 @@
             plain = _strings.join('');
           }
 
-          name = this.slugger.slug(plain);
+          var name = this.slugger.slug(plain);
           return headerPrefix + name;
         }
       }
@@ -4742,9 +4742,7 @@
         if (scap) {
           var attribute = /\s*([a-zA-Z:_][\w.:-]*)(?:\s*=\s*"([^"]*)"|\s*=\s*'([^']*)'|\s*=\s*([^\s"'=<>`]+))?/g;
           var type = 'start';
-
-          var _name2 = scap[2].toLowerCase();
-
+          var name = scap[2].toLowerCase();
           var before = scap[1];
           var after = scap[4];
           var attributes = {};
@@ -4758,7 +4756,7 @@
 
           return {
             type: type,
-            name: _name2,
+            name: name,
             attributes: attributes,
             before: before,
             after: after
@@ -4770,13 +4768,13 @@
         if (ecap) {
           var _type = 'end';
 
-          var _name3 = ecap[2].toLowerCase();
+          var _name = ecap[2].toLowerCase();
 
           var _before = ecap[1];
           var _after = ecap[3];
           return {
             type: _type,
-            name: _name3,
+            name: _name,
             before: _before,
             after: _after
           };
