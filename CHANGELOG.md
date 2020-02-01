@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.6
+
+* Fixed Babel runtime dependency.
+
 ## 2.0.2
 
 * Improved handling of broken tags.

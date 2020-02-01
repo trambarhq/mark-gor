@@ -26,7 +26,9 @@ module.exports = [
           '@babel/env',
         ],
         plugins: [
-        ]
+          '@babel/transform-runtime',
+        ],
+        runtimeHelpers: true,
       }),
       Resolve({
         only: [ 'marked' ],

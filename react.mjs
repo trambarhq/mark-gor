@@ -1,250 +1,15 @@
+import _regeneratorRuntime from '@babel/runtime/regenerator';
+import _asyncToGenerator from '@babel/runtime/helpers/asyncToGenerator';
+import _classCallCheck from '@babel/runtime/helpers/classCallCheck';
+import _createClass from '@babel/runtime/helpers/createClass';
+import _slicedToArray from '@babel/runtime/helpers/slicedToArray';
+import _toConsumableArray from '@babel/runtime/helpers/toConsumableArray';
+import _defineProperty from '@babel/runtime/helpers/defineProperty';
+import _possibleConstructorReturn from '@babel/runtime/helpers/possibleConstructorReturn';
+import _getPrototypeOf from '@babel/runtime/helpers/getPrototypeOf';
+import _inherits from '@babel/runtime/helpers/inherits';
 import React from 'react';
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
-
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly) symbols = symbols.filter(function (sym) {
-      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-    });
-    keys.push.apply(keys, symbols);
-  }
-
-  return keys;
-}
-
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-  }
-
-  return target;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function");
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) _setPrototypeOf(subClass, superClass);
-}
-
-function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-    return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  return _getPrototypeOf(o);
-}
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (call && (typeof call === "object" || typeof call === "function")) {
-    return call;
-  }
-
-  return _assertThisInitialized(self);
-}
-
-function _superPropBase(object, property) {
-  while (!Object.prototype.hasOwnProperty.call(object, property)) {
-    object = _getPrototypeOf(object);
-    if (object === null) break;
-  }
-
-  return object;
-}
-
-function _get(target, property, receiver) {
-  if (typeof Reflect !== "undefined" && Reflect.get) {
-    _get = Reflect.get;
-  } else {
-    _get = function _get(target, property, receiver) {
-      var base = _superPropBase(target, property);
-
-      if (!base) return;
-      var desc = Object.getOwnPropertyDescriptor(base, property);
-
-      if (desc.get) {
-        return desc.get.call(receiver);
-      }
-
-      return desc.value;
-    };
-  }
-
-  return _get(target, property, receiver || target);
-}
-
-function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
-}
-
-function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
-}
-
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  }
-}
-
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
-}
-
-function _iterableToArray(iter) {
-  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-}
-
-function _iterableToArrayLimit(arr, i) {
-  if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
-    return;
-  }
-
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
-
-  try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-      _arr.push(_s.value);
-
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
-    try {
-      if (!_n && _i["return"] != null) _i["return"]();
-    } finally {
-      if (_d) throw _e;
-    }
-  }
-
-  return _arr;
-}
-
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance");
-}
-
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance");
-}
+import _get from '@babel/runtime/helpers/get';
 
 /**
  * Helpers
@@ -944,10 +709,13 @@ var defaults_1 = defaults.defaults;
 var defaults_2 = defaults.getDefaults;
 var defaults_3 = defaults.changeDefaults;
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var defaults$1 = getDefaults();
 
 function getDefaults() {
-  return _objectSpread2({
+  return _objectSpread({
     htmlOnly: false,
     headerFormat: 'github',
     decodeEntities: true,
@@ -3063,8 +2831,8 @@ function (_InlineLexer) {
     value: function () {
       var _tokenize = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee(text, containerType) {
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+      _regeneratorRuntime.mark(function _callee(text, containerType) {
+        return _regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
@@ -3094,9 +2862,9 @@ function (_InlineLexer) {
     value: function () {
       var _process = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee2() {
+      _regeneratorRuntime.mark(function _callee2() {
         var token;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return _regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
@@ -3149,8 +2917,8 @@ function (_BlockLexer) {
     value: function () {
       var _tokenize = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee(text) {
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+      _regeneratorRuntime.mark(function _callee(text) {
+        return _regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
@@ -3180,9 +2948,9 @@ function (_BlockLexer) {
     value: function () {
       var _process = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee2() {
+      _regeneratorRuntime.mark(function _callee2() {
         var token;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return _regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
@@ -3219,6 +2987,10 @@ function (_BlockLexer) {
   return AsyncBlockLexer;
 }(BlockLexer);
 
+function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 var AsyncParser =
 /*#__PURE__*/
 function (_Parser) {
@@ -3227,7 +2999,7 @@ function (_Parser) {
   function AsyncParser(options, props) {
     _classCallCheck(this, AsyncParser);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(AsyncParser).call(this, options, _objectSpread2({
+    return _possibleConstructorReturn(this, _getPrototypeOf(AsyncParser).call(this, options, _objectSpread$1({
       blockLexerClass: AsyncBlockLexer,
       inlineLexerClass: AsyncInlineLexer
     }, props)));
@@ -3238,8 +3010,8 @@ function (_Parser) {
     value: function () {
       var _parse = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee(text) {
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+      _regeneratorRuntime.mark(function _callee(text) {
+        return _regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
@@ -3273,8 +3045,8 @@ function (_Parser) {
     value: function () {
       var _processBlocks = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee2() {
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      _regeneratorRuntime.mark(function _callee2() {
+        return _regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
@@ -3303,8 +3075,8 @@ function (_Parser) {
     value: function () {
       var _processInline = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee3(tokens) {
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      _regeneratorRuntime.mark(function _callee3(tokens) {
+        return _regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
@@ -3330,10 +3102,10 @@ function (_Parser) {
     value: function () {
       var _tokenizeInline = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee4(tokens) {
+      _regeneratorRuntime.mark(function _callee4(tokens) {
         var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, token, children, markdown, type;
 
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return _regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
@@ -3722,6 +3494,10 @@ var tagAliases = {
 function findTagAlias(tagName) {
   return tagAliases[tagName];
 }
+
+function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 var BaseRenderer =
 /*#__PURE__*/
@@ -4476,7 +4252,7 @@ function () {
                   var closingTag = this.getTagProperties(closingElement.tagName);
 
                   if (closingTag.styles) {
-                    styleElements.push(_objectSpread2({}, closingElement));
+                    styleElements.push(_objectSpread$2({}, closingElement));
                   }
                 }
               }
@@ -4933,6 +4709,10 @@ function parseStyle(styleText) {
   return style;
 }
 
+function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 var ReactRenderer =
 /*#__PURE__*/
 function (_BaseRenderer) {
@@ -5027,7 +4807,7 @@ function (_BaseRenderer) {
           children = token.children;
       var props = this.convertAttributes(tagName, attributes);
       var elements = this.outputTokens(children);
-      return React.createElement(tagName, _objectSpread2({
+      return React.createElement(tagName, _objectSpread$3({
         key: key
       }, props), elements);
     }
@@ -5522,10 +5302,10 @@ function parseAsync(_x, _x2) {
 function _parseAsync() {
   _parseAsync = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee(text, options) {
+  _regeneratorRuntime.mark(function _callee(text, options) {
     var parser, renderer, tokens, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, token, highlighted, fragment;
 
-    return regeneratorRuntime.wrap(function _callee$(_context) {
+    return _regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:

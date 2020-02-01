@@ -42,7 +42,6 @@ module.exports = function(config) {
                 '@babel/react',
               ],
               plugins: [
-                '@babel/transform-regenerator',
                 '@babel/transform-runtime',
               ]
             }
