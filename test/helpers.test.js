@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 
-import { Parser } from '../src/parser.mjs';
-import { findTextStrings, findCodeSections } from '../src/helpers.mjs';
+import { findTextStrings, findCodeSections, Parser } from '../react.mjs';
 
 describe('Helpers', function() {
   describe('#findTextStrings', function() {

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { InlineLexer } from '../src/inline-lexer.mjs';
+import { InlineLexer } from '../preact.mjs';
 
 describe('InlineLexer', function() {
   it ('should correctly handle normal text', function() {

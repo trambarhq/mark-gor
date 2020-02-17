@@ -1,7 +1,7 @@
 import { cleanUrl, escape, unescape, findTextStrings, findMarkedStrings } from './helpers.mjs';
 import { mergeDefaults } from './defaults.mjs';
 import { Slugger, MarkedSlugger } from './slugger.mjs';
-import { decodeHtmlEntities } from './html-entities.mjs';
+import { decodeHTMLEntities } from './html-entities.mjs';
 import { getTagProperties, findTagAlias } from './html-tags.mjs';
 
 class BaseRenderer {
@@ -27,11 +27,11 @@ class BaseRenderer {
       autolink: this.renderAutolink,
       url: this.renderUrl,
       image: this.renderImage,
-      html_block: this.renderHtmlBlock,
+      html_block: this.renderHTMLBlock,
       paragraph: this.renderParagraph,
       code: this.renderCode,
       blockquote: this.renderBlockquote,
-      html_tag: this.renderHtmlTag,
+      html_tag: this.renderHTMLTag,
       heading: this.renderHeading,
       hr: this.renderHorizontalRule,
       list: this.renderList,
@@ -122,13 +122,13 @@ class BaseRenderer {
   }
 
   renderCode(token) {
-    const { text, lang, highlighted } = token;
+    const { text, lang, children } = token;
     const { langPrefix } = this.options;
     const className = (lang) ? langPrefix + lang : undefined;
     this.addElement('pre', null);
     this.addElement('code', { class: className });
-    if (highlighted) {
-      this.addHighlighted(highlighted)
+    if (children) {
+      this.renderTokens(children);
     } else {
       this.addText(text);
     }
@@ -147,11 +147,11 @@ class BaseRenderer {
     this.addLinefeed();
   }
 
-  renderHtmlTag(token) {
+  renderHTMLTag(token) {
     const { normalizeTags } = this.options;
     if (normalizeTags) {
       const { html } = token;
-      const { type, name, attributes, before, after } = this.parseHtmlTag(html);
+      const { type, name, attributes, before, after } = this.parseHTMLTag(html);
       if (before) {
         this.addText(before);
       }
@@ -350,8 +350,8 @@ class BaseRenderer {
   }
 
   renderLink(token) {
-    const { hrefHtml, title } = token;
-    const href = this.cleanUrl(hrefHtml, true, true);
+    const { hrefHTML, title } = token;
+    const href = this.cleanUrl(hrefHTML, true, true);
     if (href !== null) {
       this.addElement('a', { href, title });
     }
@@ -362,8 +362,8 @@ class BaseRenderer {
   }
 
   renderImage(token) {
-    const { hrefHtml, title, text: alt } = token;
-    const src = this.cleanUrl(hrefHtml, true, true);
+    const { hrefHTML, title, text: alt } = token;
+    const src = this.cleanUrl(hrefHTML, true, true);
     if (src !== null) {
       this.addElement('img', { src, alt, title });
     } else {
@@ -375,7 +375,7 @@ class BaseRenderer {
     this.addToken(token);
   }
 
-  renderHtmlBlock(token) {
+  renderHTMLBlock(token) {
     this.renderTokens(token.children);
   }
 
@@ -731,7 +731,7 @@ class BaseRenderer {
     return evictions;
   }
 
-  parseHtmlTag(html) {
+  parseHTMLTag(html) {
     const startTag = /^(\s*)<([a-zA-Z][\w.:-]*)([^>]*)>([\s\S]*)/;
     const endTag = /^(\s*)<\/([a-zA-Z][\w.:-]*)[^>]*>([\s\S]*)/;
     let scap = startTag.exec(html);
@@ -762,7 +762,7 @@ class BaseRenderer {
   }
 
   decodeEntities(html) {
-    return decodeHtmlEntities(html);
+    return decodeHTMLEntities(html);
   }
 
   getTagProperties(tagName) {
@@ -776,5 +776,4 @@ class BaseRenderer {
 
 export {
   BaseRenderer,
-  BaseRenderer as default,
 };

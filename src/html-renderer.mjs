@@ -1,14 +1,14 @@
 import { escape } from './helpers.mjs';
 import { BaseRenderer } from './base-renderer.mjs';
 
-class HtmlRenderer extends BaseRenderer {
+class HTMLRenderer extends BaseRenderer {
   constructor(options, props) {
     super(options, props);
 
     this.outputFunctions = {
-      html_tag: this.outputHtmlTag,
-      html_element: this.outputHtmlElement,
-      html_element_end: this.outputHtmlElementEnd,
+      html_tag: this.outputHTMLTag,
+      html_element: this.outputHTMLElement,
+      html_element_end: this.outputHTMLElementEnd,
       text: this.outputText,
       raw: this.outputRaw,
     };
@@ -42,7 +42,7 @@ class HtmlRenderer extends BaseRenderer {
     }
   }
 
-  outputHtmlTag(token) {
+  outputHTMLTag(token) {
     const { html } = token;
     if (this.options.omitDeclarations) {
       if (/^\s*<!/.test(html)) {
@@ -57,7 +57,7 @@ class HtmlRenderer extends BaseRenderer {
     return this.sanitize(html);
   }
 
-  outputHtmlElement(token) {
+  outputHTMLElement(token) {
     if (this.shouldOmit(token)) {
       return;
     }
@@ -88,7 +88,7 @@ class HtmlRenderer extends BaseRenderer {
     return html;
   }
 
-  outputHtmlElementEnd(token) {
+  outputHTMLElementEnd(token) {
     const { tagName } = token;
     return `</${tagName}>`;
   }
@@ -113,11 +113,11 @@ class HtmlRenderer extends BaseRenderer {
 
   renderLink(token) {
     if (!this.options.decodeEntities) {
-      const { hrefHtml, titleHtml } = token;
-      const hrefCleaned = this.cleanUrl(hrefHtml, true, false);
+      const { hrefHTML, titleHTML } = token;
+      const hrefCleaned = this.cleanUrl(hrefHTML, true, false);
       if (hrefCleaned !== null) {
         const href = this.boxAttribute(hrefCleaned, true);
-        const title = this.boxAttribute(titleHtml, true);
+        const title = this.boxAttribute(titleHTML, true);
         this.addElement('a', { href, title });
       }
       this.renderTokens(token.children);
@@ -131,11 +131,11 @@ class HtmlRenderer extends BaseRenderer {
 
   renderImage(token) {
     if (!this.options.decodeEntities) {
-      const { hrefHtml, titleHtml, text: alt } = token;
-      const srcHtml = this.cleanUrl(hrefHtml, true, false);
-      if (srcHtml !== null) {
-        const title = this.boxAttribute(titleHtml, true);
-        const src = this.boxAttribute(srcHtml, false);
+      const { hrefHTML, titleHTML, text: alt } = token;
+      const srcHTML = this.cleanUrl(hrefHTML, true, false);
+      if (srcHTML !== null) {
+        const title = this.boxAttribute(titleHTML, true);
+        const src = this.boxAttribute(srcHTML, false);
         this.addElement('img', { src, alt, title });
       } else {
         this.addText(alt);
@@ -150,7 +150,7 @@ class HtmlRenderer extends BaseRenderer {
       if (url.startsWith('mailto:')) {
         const address = url.substr(7);
         const mangled = this.mangle(address);
-        return this.boxRawHtml(`mailto:${mangled}`);
+        return this.boxRawHTML(`mailto:${mangled}`);
       }
     }
     return super.cleanUrl(url, escaped, unescapeAfter);
@@ -189,6 +189,6 @@ class HtmlRenderer extends BaseRenderer {
 }
 
 export {
-  HtmlRenderer,
-  HtmlRenderer as default,
+  HTMLRenderer,
+  HTMLRenderer as HtmlRenderer,
 };

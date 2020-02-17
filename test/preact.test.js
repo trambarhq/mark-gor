@@ -3,8 +3,8 @@ import { render } from 'preact';
 import { render as renderToStaticMarkup } from 'preact-render-to-string';
 import FrontMatter from 'front-matter';
 
-import { parse as parseHtml } from '../src/html.mjs';
-import { parse as parsePreact } from '../src/preact.mjs';
+import { parse as parseHTML } from '../html.mjs';
+import { parse as parsePreact } from '../preact.mjs';
 import { getTagProperties } from '../src/html-tags.mjs';
 
 const singleTest = '';
@@ -76,7 +76,7 @@ function test(desc, requireFunc, params) {
             decodeEntities: false,
             omitLinefeed: true,
           };
-          const theirs = parseHtml(markdown, theirOptions);
+          const theirs = parseHTML(markdown, theirOptions);
           const theirDiv = document.createElement('DIV');
           theirDiv.innerHTML = theirs;
           adjustDOMNode(theirDiv);

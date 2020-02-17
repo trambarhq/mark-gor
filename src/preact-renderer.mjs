@@ -8,8 +8,8 @@ class PreactRenderer extends BaseRenderer {
     super(options, props);
 
     this.outputFunctions = {
-      html_tag: this.outputHtmlTag,
-      html_element: this.outputHtmlElement,
+      html_tag: this.outputHTMLTag,
+      html_element: this.outputHTMLElement,
       text: this.outputText,
       raw: this.outputRaw,
     };
@@ -44,10 +44,10 @@ class PreactRenderer extends BaseRenderer {
     }
   }
 
-  outputHtmlTag(token) {
+  outputHTMLTag(token) {
   }
 
-  outputHtmlElement(token, key) {
+  outputHTMLElement(token, key) {
     if (this.shouldOmit(token)) {
       return;
     }
@@ -76,5 +76,4 @@ class PreactRenderer extends BaseRenderer {
 
 export {
   PreactRenderer,
-  PreactRenderer as default,
 };

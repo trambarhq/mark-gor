@@ -99,6 +99,34 @@ function nextTick() {
   });
 }
 
+function loopAsync(f) {
+  return new Promise((resolve, reject) => {
+    const next = () => {
+      try {
+        const ret = f();
+        if (ret && ret.then instanceof Function) {
+          ret.then(next, reject);
+        } else {
+          resolve(ret);
+        }
+      } catch (err) {
+        reject(err);
+      }
+    };
+    next();
+  });
+}
+
+function eachAsync(array, f) {
+  let index = 0;
+  return loopAsync(() => {
+    if (index >= array.length) {
+      return;
+    }
+    return f(array[index++]);
+  });
+}
+
 export {
   escape,
   unescape,
@@ -117,4 +145,6 @@ export {
   findMarkedStrings,
   mergeStrings,
   nextTick,
+  loopAsync,
+  eachAsync,
 };

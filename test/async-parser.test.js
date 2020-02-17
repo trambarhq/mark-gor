@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { parse, parseAsync } from '../src/react.mjs';
+import { parse, parseAsync } from '../react.mjs';
 
 const file1 = require('./github/awesome-selfhosted.md');
 const file2 = require('./github/request.md');
@@ -41,5 +41,18 @@ describe('AsyncParser', function() {
     running = false;
     expect(count).to.be.above(1000);
     expect(maxDuration).to.be.below(100);
+  })
+  it ('should highlight code using provided function', async function() {
+    const highlight = async (code, language) => {
+      return Prism.highlight(code, Prism.languages[language], language);
+    };
+    const text = `
+\`\`\`javascript
+const hello = "world";
+\`\`\`
+    `;
+    const element = await parseAsync(text, { highlight });
+    const html = renderToStaticMarkup(element);
+    expect(html).to.equal('<pre><code class="language-javascript"><span class="token keyword">const</span> hello <span class="token operator">=</span> <span class="token string">&quot;world&quot;</span><span class="token punctuation">;</span></code></pre>');
   })
 })

@@ -1,7 +1,7 @@
 import { inline } from './rules.mjs';
 import { escape, findClosingBracket } from './helpers.mjs';
 import { mergeDefaults } from './defaults.mjs';
-import { decodeHtmlEntities } from './html-entities.mjs';
+import { decodeHTMLEntities } from './html-entities.mjs';
 
 class InlineLexer {
   constructor(options, props) {
@@ -242,42 +242,42 @@ class InlineLexer {
     const cap = this.capture('link');
     if (cap) {
       const type = (cap[0].charAt(0) === '!') ? 'image' : 'link';
-      let hrefHtml = cap[2];
-      let titleHtml = cap[3];
-      const lastParenIndex = findClosingBracket(hrefHtml, '()');
+      let hrefHTML = cap[2];
+      let titleHTML = cap[3];
+      const lastParenIndex = findClosingBracket(hrefHTML, '()');
       if (lastParenIndex > -1) {
         const start = (type === 'image') ? 5 : 4;
         const linkLen = start + cap[1].length + lastParenIndex;
-        hrefHtml = hrefHtml.substring(0, lastParenIndex);
-        titleHtml = undefined;
+        hrefHTML = hrefHTML.substring(0, lastParenIndex);
+        titleHTML = undefined;
         const capZero = cap[0].substring(0, linkLen).trim();
         this.backpedal(cap[0].substr(capZero.length));
       }
       if (this.options.pedantic) {
-        const link = /^([^'"]*[^\s])\s+(['"])(.*)\2/.exec(hrefHtml);
+        const link = /^([^'"]*[^\s])\s+(['"])(.*)\2/.exec(hrefHTML);
 
         if (link) {
-          hrefHtml = link[1];
-          titleHtml = link[3];
+          hrefHTML = link[1];
+          titleHTML = link[3];
         }
-      } else if (titleHtml) {
-        titleHtml = titleHtml.slice(1, -1);
+      } else if (titleHTML) {
+        titleHTML = titleHTML.slice(1, -1);
       }
-      if (!titleHtml) {
-        titleHtml = undefined;
+      if (!titleHTML) {
+        titleHTML = undefined;
       }
-      hrefHtml = hrefHtml.trim().replace(/^<([\s\S]*)>$/, '$1');
-      hrefHtml = this.unescapeSlashes(hrefHtml);
-      titleHtml = this.unescapeSlashes(titleHtml);
-      const title = this.decodeEntities(titleHtml);
-      const href = this.decodeEntities(hrefHtml);
+      hrefHTML = hrefHTML.trim().replace(/^<([\s\S]*)>$/, '$1');
+      hrefHTML = this.unescapeSlashes(hrefHTML);
+      titleHTML = this.unescapeSlashes(titleHTML);
+      const title = this.decodeEntities(titleHTML);
+      const href = this.decodeEntities(hrefHTML);
       if (type === 'image') {
         const text = cap[1];
-        return { type, href, hrefHtml, title, titleHtml, text };
+        return { type, href, hrefHTML, title, titleHTML, text };
       } else {
         const markdown = cap[1];
         const children = null;
-        return { type, href, hrefHtml, title, titleHtml, markdown, children };
+        return { type, href, hrefHTML, title, titleHTML, markdown, children };
       }
     }
   }
@@ -295,14 +295,14 @@ class InlineLexer {
                   .toLowerCase();
       const link = this.findRefLink(ref);
       if (link) {
-        const { href, hrefHtml, title, titleHtml } = link;
+        const { href, hrefHTML, title, titleHTML } = link;
         if (type === 'image') {
           const text = cap[1];
-          return { type, ref, href, hrefHtml, title, titleHtml, text };
+          return { type, ref, href, hrefHTML, title, titleHTML, text };
         } else {
           const markdown = cap[1];
           const children = null;
-          return { type, ref, href, hrefHtml, title, titleHtml, markdown, children };
+          return { type, ref, href, hrefHTML, title, titleHTML, markdown, children };
         }
       } else {
         this.backpedal(cap[0].substr(1));
@@ -396,7 +396,7 @@ class InlineLexer {
   }
 
   decodeEntities(html) {
-    return decodeHtmlEntities(html);
+    return decodeHTMLEntities(html);
   }
 
   transformText(text) {
@@ -469,5 +469,4 @@ class InlineLexer {
 
 export {
   InlineLexer,
-  InlineLexer as default,
 };

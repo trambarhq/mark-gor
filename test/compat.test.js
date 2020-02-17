@@ -5,7 +5,7 @@ import {
 } from 'marked';
 import FrontMatter from 'front-matter';
 
-import { parse } from '../src/html.mjs';
+import { parse } from '../html.mjs';
 
 const singleTest = '';
 

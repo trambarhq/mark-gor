@@ -1,6 +1,7 @@
 import { BlockLexer } from './block-lexer.mjs';
 import { InlineLexer } from './inline-lexer.mjs';
 import { mergeDefaults } from './defaults.mjs';
+import { findCodeSections } from './helpers.mjs';
 
 class Parser {
   constructor(options, props) {
@@ -28,6 +29,7 @@ class Parser {
     this.initialize(text);
     this.processBlocks();
     this.processInline();
+    this.processCode();
     return this.tokens;
   }
 
@@ -56,9 +58,23 @@ class Parser {
       }
     }
   }
+
+  processCode() {
+    const { highlight } = this.options;
+    if (highlight) {
+      const sections = findCodeSections(this.tokens);
+      for (let section of sections) {
+        const html = highlight(section.text, section.lang);
+        if (typeof(html) === 'string') {
+          const parser = new this.constructor({ htmlOnly: true });
+          const tokens = parser.parse(html);
+          section.children = tokens;
+        }
+      }
+    }
+  }
 }
 
 export {
   Parser,
-  Parser as default,
 };

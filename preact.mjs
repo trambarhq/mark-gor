@@ -1,15 +1,214 @@
-import _regeneratorRuntime from '@babel/runtime/regenerator';
-import _asyncToGenerator from '@babel/runtime/helpers/asyncToGenerator';
-import _classCallCheck from '@babel/runtime/helpers/classCallCheck';
-import _createClass from '@babel/runtime/helpers/createClass';
-import _slicedToArray from '@babel/runtime/helpers/slicedToArray';
-import _toConsumableArray from '@babel/runtime/helpers/toConsumableArray';
-import _defineProperty from '@babel/runtime/helpers/defineProperty';
-import _possibleConstructorReturn from '@babel/runtime/helpers/possibleConstructorReturn';
-import _getPrototypeOf from '@babel/runtime/helpers/getPrototypeOf';
-import _inherits from '@babel/runtime/helpers/inherits';
 import Preact from 'preact';
-import _get from '@babel/runtime/helpers/get';
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _superPropBase(object, property) {
+  while (!Object.prototype.hasOwnProperty.call(object, property)) {
+    object = _getPrototypeOf(object);
+    if (object === null) break;
+  }
+
+  return object;
+}
+
+function _get(target, property, receiver) {
+  if (typeof Reflect !== "undefined" && Reflect.get) {
+    _get = Reflect.get;
+  } else {
+    _get = function _get(target, property, receiver) {
+      var base = _superPropBase(target, property);
+
+      if (!base) return;
+      var desc = Object.getOwnPropertyDescriptor(base, property);
+
+      if (desc.get) {
+        return desc.get.call(receiver);
+      }
+
+      return desc.value;
+    };
+  }
+
+  return _get(target, property, receiver || target);
+}
+
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+}
+
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _iterableToArrayLimit(arr, i) {
+  if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
+    return;
+  }
+
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
 
 /**
  * Helpers
@@ -669,6 +868,37 @@ function nextTick() {
   });
 }
 
+function loopAsync(f) {
+  return new Promise(function (resolve, reject) {
+    var next = function next() {
+      try {
+        var ret = f();
+
+        if (ret && ret.then instanceof Function) {
+          ret.then(next, reject);
+        } else {
+          resolve(ret);
+        }
+      } catch (err) {
+        reject(err);
+      }
+    };
+
+    next();
+  });
+}
+
+function eachAsync(array, f) {
+  var index = 0;
+  return loopAsync(function () {
+    if (index >= array.length) {
+      return;
+    }
+
+    return f(array[index++]);
+  });
+}
+
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
@@ -709,13 +939,10 @@ var defaults_1 = defaults.defaults;
 var defaults_2 = defaults.getDefaults;
 var defaults_3 = defaults.changeDefaults;
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var defaults$1 = getDefaults();
 
 function getDefaults() {
-  return _objectSpread({
+  return _objectSpread2({
     htmlOnly: false,
     headerFormat: 'github',
     decodeEntities: true,
@@ -737,57 +964,632 @@ function changeDefaults(options) {
   Object.assign(defaults$1, options);
 }
 
-var _htmlEntityTable;
-
-var htmlEntityTable = (_htmlEntityTable = {
+var htmlEntityTable = {
+  AElig: 'Æ',
+  AMP: '&',
   Aacute: 'Á',
-  Aacut: 'Á',
-  aacute: 'á',
-  aacut: 'á',
   Abreve: 'Ă',
+  Acirc: 'Â',
+  Acy: 'А',
+  Afr: '𝔄',
+  Agrave: 'À',
+  Alpha: 'Α',
+  Amacr: 'Ā',
+  And: '⩓',
+  Aogon: 'Ą',
+  Aopf: '𝔸',
+  ApplyFunction: '⁡',
+  Aring: 'Å',
+  Ascr: '𝒜',
+  Assign: '≔',
+  Atilde: 'Ã',
+  Auml: 'Ä',
+  Backslash: '∖',
+  Barv: '⫧',
+  Barwed: '⌆',
+  Bcy: 'Б',
+  Because: '∵',
+  Bernoullis: 'ℬ',
+  Beta: 'Β',
+  Bfr: '𝔅',
+  Bopf: '𝔹',
+  Breve: '˘',
+  Bscr: 'ℬ',
+  Bumpeq: '≎',
+  CHcy: 'Ч',
+  COPY: '©',
+  Cacute: 'Ć',
+  Cap: '⋒',
+  CapitalDifferentialD: 'ⅅ',
+  Cayleys: 'ℭ',
+  Ccaron: 'Č',
+  Ccedil: 'Ç',
+  Ccirc: 'Ĉ',
+  Cconint: '∰',
+  Cdot: 'Ċ',
+  Cedilla: '¸',
+  CenterDot: '·',
+  Cfr: 'ℭ',
+  Chi: 'Χ',
+  CircleDot: '⊙',
+  CircleMinus: '⊖',
+  CirclePlus: '⊕',
+  CircleTimes: '⊗',
+  ClockwiseContourIntegral: '∲',
+  CloseCurlyDoubleQuote: '”',
+  CloseCurlyQuote: '’',
+  Colon: '∷',
+  Colone: '⩴',
+  Congruent: '≡',
+  Conint: '∯',
+  ContourIntegral: '∮',
+  Copf: 'ℂ',
+  Coproduct: '∐',
+  CounterClockwiseContourIntegral: '∳',
+  Cross: '⨯',
+  Cscr: '𝒞',
+  Cup: '⋓',
+  CupCap: '≍',
+  DD: 'ⅅ',
+  DDotrahd: '⤑',
+  DJcy: 'Ђ',
+  DScy: 'Ѕ',
+  DZcy: 'Џ',
+  Dagger: '‡',
+  Darr: '↡',
+  Dashv: '⫤',
+  Dcaron: 'Ď',
+  Dcy: 'Д',
+  Del: '∇',
+  Delta: 'Δ',
+  Dfr: '𝔇',
+  DiacriticalAcute: '´',
+  DiacriticalDot: '˙',
+  DiacriticalDoubleAcute: '˝',
+  DiacriticalGrave: '`',
+  DiacriticalTilde: '˜',
+  Diamond: '⋄',
+  DifferentialD: 'ⅆ',
+  Dopf: '𝔻',
+  Dot: '¨',
+  DotDot: '⃜',
+  DotEqual: '≐',
+  DoubleContourIntegral: '∯',
+  DoubleDot: '¨',
+  DoubleDownArrow: '⇓',
+  DoubleLeftArrow: '⇐',
+  DoubleLeftRightArrow: '⇔',
+  DoubleLeftTee: '⫤',
+  DoubleLongLeftArrow: '⟸',
+  DoubleLongLeftRightArrow: '⟺',
+  DoubleLongRightArrow: '⟹',
+  DoubleRightArrow: '⇒',
+  DoubleRightTee: '⊨',
+  DoubleUpArrow: '⇑',
+  DoubleUpDownArrow: '⇕',
+  DoubleVerticalBar: '∥',
+  DownArrow: '↓',
+  DownArrowBar: '⤓',
+  DownArrowUpArrow: '⇵',
+  DownBreve: '̑',
+  DownLeftRightVector: '⥐',
+  DownLeftTeeVector: '⥞',
+  DownLeftVector: '↽',
+  DownLeftVectorBar: '⥖',
+  DownRightTeeVector: '⥟',
+  DownRightVector: '⇁',
+  DownRightVectorBar: '⥗',
+  DownTee: '⊤',
+  DownTeeArrow: '↧',
+  Downarrow: '⇓',
+  Dscr: '𝒟',
+  Dstrok: 'Đ',
+  ENG: 'Ŋ',
+  ETH: 'Ð',
+  Eacute: 'É',
+  Ecaron: 'Ě',
+  Ecirc: 'Ê',
+  Ecy: 'Э',
+  Edot: 'Ė',
+  Efr: '𝔈',
+  Egrave: 'È',
+  Element: '∈',
+  Emacr: 'Ē',
+  EmptySmallSquare: '◻',
+  EmptyVerySmallSquare: '▫',
+  Eogon: 'Ę',
+  Eopf: '𝔼',
+  Epsilon: 'Ε',
+  Equal: '⩵',
+  EqualTilde: '≂',
+  Equilibrium: '⇌',
+  Escr: 'ℰ',
+  Esim: '⩳',
+  Eta: 'Η',
+  Euml: 'Ë',
+  Exists: '∃',
+  ExponentialE: 'ⅇ',
+  Fcy: 'Ф',
+  Ffr: '𝔉',
+  FilledSmallSquare: '◼',
+  FilledVerySmallSquare: '▪',
+  Fopf: '𝔽',
+  ForAll: '∀',
+  Fouriertrf: 'ℱ',
+  Fscr: 'ℱ',
+  GJcy: 'Ѓ',
+  GT: '>',
+  Gamma: 'Γ',
+  Gammad: 'Ϝ',
+  Gbreve: 'Ğ',
+  Gcedil: 'Ģ',
+  Gcirc: 'Ĝ',
+  Gcy: 'Г',
+  Gdot: 'Ġ',
+  Gfr: '𝔊',
+  Gg: '⋙',
+  Gopf: '𝔾',
+  GreaterEqual: '≥',
+  GreaterEqualLess: '⋛',
+  GreaterFullEqual: '≧',
+  GreaterGreater: '⪢',
+  GreaterLess: '≷',
+  GreaterSlantEqual: '⩾',
+  GreaterTilde: '≳',
+  Gscr: '𝒢',
+  Gt: '≫',
+  HARDcy: 'Ъ',
+  Hacek: 'ˇ',
+  Hat: '^',
+  Hcirc: 'Ĥ',
+  Hfr: 'ℌ',
+  HilbertSpace: 'ℋ',
+  Hopf: 'ℍ',
+  HorizontalLine: '─',
+  Hscr: 'ℋ',
+  Hstrok: 'Ħ',
+  HumpDownHump: '≎',
+  HumpEqual: '≏',
+  IEcy: 'Е',
+  IJlig: 'Ĳ',
+  IOcy: 'Ё',
+  Iacute: 'Í',
+  Icirc: 'Î',
+  Icy: 'И',
+  Idot: 'İ',
+  Ifr: 'ℑ',
+  Igrave: 'Ì',
+  Im: 'ℑ',
+  Imacr: 'Ī',
+  ImaginaryI: 'ⅈ',
+  Implies: '⇒',
+  Int: '∬',
+  Integral: '∫',
+  Intersection: '⋂',
+  InvisibleComma: '⁣',
+  InvisibleTimes: '⁢',
+  Iogon: 'Į',
+  Iopf: '𝕀',
+  Iota: 'Ι',
+  Iscr: 'ℐ',
+  Itilde: 'Ĩ',
+  Iukcy: 'І',
+  Iuml: 'Ï',
+  Jcirc: 'Ĵ',
+  Jcy: 'Й',
+  Jfr: '𝔍',
+  Jopf: '𝕁',
+  Jscr: '𝒥',
+  Jsercy: 'Ј',
+  Jukcy: 'Є',
+  KHcy: 'Х',
+  KJcy: 'Ќ',
+  Kappa: 'Κ',
+  Kcedil: 'Ķ',
+  Kcy: 'К',
+  Kfr: '𝔎',
+  Kopf: '𝕂',
+  Kscr: '𝒦',
+  LJcy: 'Љ',
+  LT: '<',
+  Lacute: 'Ĺ',
+  Lambda: 'Λ',
+  Lang: '⟪',
+  Laplacetrf: 'ℒ',
+  Larr: '↞',
+  Lcaron: 'Ľ',
+  Lcedil: 'Ļ',
+  Lcy: 'Л',
+  LeftAngleBracket: '⟨',
+  LeftArrow: '←',
+  LeftArrowBar: '⇤',
+  LeftArrowRightArrow: '⇆',
+  LeftCeiling: '⌈',
+  LeftDoubleBracket: '⟦',
+  LeftDownTeeVector: '⥡',
+  LeftDownVector: '⇃',
+  LeftDownVectorBar: '⥙',
+  LeftFloor: '⌊',
+  LeftRightArrow: '↔',
+  LeftRightVector: '⥎',
+  LeftTee: '⊣',
+  LeftTeeArrow: '↤',
+  LeftTeeVector: '⥚',
+  LeftTriangle: '⊲',
+  LeftTriangleBar: '⧏',
+  LeftTriangleEqual: '⊴',
+  LeftUpDownVector: '⥑',
+  LeftUpTeeVector: '⥠',
+  LeftUpVector: '↿',
+  LeftUpVectorBar: '⥘',
+  LeftVector: '↼',
+  LeftVectorBar: '⥒',
+  Leftarrow: '⇐',
+  Leftrightarrow: '⇔',
+  LessEqualGreater: '⋚',
+  LessFullEqual: '≦',
+  LessGreater: '≶',
+  LessLess: '⪡',
+  LessSlantEqual: '⩽',
+  LessTilde: '≲',
+  Lfr: '𝔏',
+  Ll: '⋘',
+  Lleftarrow: '⇚',
+  Lmidot: 'Ŀ',
+  LongLeftArrow: '⟵',
+  LongLeftRightArrow: '⟷',
+  LongRightArrow: '⟶',
+  Longleftarrow: '⟸',
+  Longleftrightarrow: '⟺',
+  Longrightarrow: '⟹',
+  Lopf: '𝕃',
+  LowerLeftArrow: '↙',
+  LowerRightArrow: '↘',
+  Lscr: 'ℒ',
+  Lsh: '↰',
+  Lstrok: 'Ł',
+  Lt: '≪',
+  Map: '⤅',
+  Mcy: 'М',
+  MediumSpace: ' ',
+  Mellintrf: 'ℳ',
+  Mfr: '𝔐',
+  MinusPlus: '∓',
+  Mopf: '𝕄',
+  Mscr: 'ℳ',
+  Mu: 'Μ',
+  NJcy: 'Њ',
+  Nacute: 'Ń',
+  Ncaron: 'Ň',
+  Ncedil: 'Ņ',
+  Ncy: 'Н',
+  NegativeMediumSpace: '​',
+  NegativeThickSpace: '​',
+  NegativeThinSpace: '​',
+  NegativeVeryThinSpace: '​',
+  NestedGreaterGreater: '≫',
+  NestedLessLess: '≪',
+  NewLine: '\n',
+  Nfr: '𝔑',
+  NoBreak: '⁠',
+  NonBreakingSpace: ' ',
+  Nopf: 'ℕ',
+  Not: '⫬',
+  NotCongruent: '≢',
+  NotCupCap: '≭',
+  NotDoubleVerticalBar: '∦',
+  NotElement: '∉',
+  NotEqual: '≠',
+  NotEqualTilde: '≂̸',
+  NotExists: '∄',
+  NotGreater: '≯',
+  NotGreaterEqual: '≱',
+  NotGreaterFullEqual: '≧̸',
+  NotGreaterGreater: '≫̸',
+  NotGreaterLess: '≹',
+  NotGreaterSlantEqual: '⩾̸',
+  NotGreaterTilde: '≵',
+  NotHumpDownHump: '≎̸',
+  NotHumpEqual: '≏̸',
+  NotLeftTriangle: '⋪',
+  NotLeftTriangleBar: '⧏̸',
+  NotLeftTriangleEqual: '⋬',
+  NotLess: '≮',
+  NotLessEqual: '≰',
+  NotLessGreater: '≸',
+  NotLessLess: '≪̸',
+  NotLessSlantEqual: '⩽̸',
+  NotLessTilde: '≴',
+  NotNestedGreaterGreater: '⪢̸',
+  NotNestedLessLess: '⪡̸',
+  NotPrecedes: '⊀',
+  NotPrecedesEqual: '⪯̸',
+  NotPrecedesSlantEqual: '⋠',
+  NotReverseElement: '∌',
+  NotRightTriangle: '⋫',
+  NotRightTriangleBar: '⧐̸',
+  NotRightTriangleEqual: '⋭',
+  NotSquareSubset: '⊏̸',
+  NotSquareSubsetEqual: '⋢',
+  NotSquareSuperset: '⊐̸',
+  NotSquareSupersetEqual: '⋣',
+  NotSubset: '⊂⃒',
+  NotSubsetEqual: '⊈',
+  NotSucceeds: '⊁',
+  NotSucceedsEqual: '⪰̸',
+  NotSucceedsSlantEqual: '⋡',
+  NotSucceedsTilde: '≿̸',
+  NotSuperset: '⊃⃒',
+  NotSupersetEqual: '⊉',
+  NotTilde: '≁',
+  NotTildeEqual: '≄',
+  NotTildeFullEqual: '≇',
+  NotTildeTilde: '≉',
+  NotVerticalBar: '∤',
+  Nscr: '𝒩',
+  Ntilde: 'Ñ',
+  Nu: 'Ν',
+  OElig: 'Œ',
+  Oacute: 'Ó',
+  Ocirc: 'Ô',
+  Ocy: 'О',
+  Odblac: 'Ő',
+  Ofr: '𝔒',
+  Ograve: 'Ò',
+  Omacr: 'Ō',
+  Omega: 'Ω',
+  Omicron: 'Ο',
+  Oopf: '𝕆',
+  OpenCurlyDoubleQuote: '“',
+  OpenCurlyQuote: '‘',
+  Or: '⩔',
+  Oscr: '𝒪',
+  Oslash: 'Ø',
+  Otilde: 'Õ',
+  Otimes: '⨷',
+  Ouml: 'Ö',
+  OverBar: '‾',
+  OverBrace: '⏞',
+  OverBracket: '⎴',
+  OverParenthesis: '⏜',
+  PartialD: '∂',
+  Pcy: 'П',
+  Pfr: '𝔓',
+  Phi: 'Φ',
+  Pi: 'Π',
+  PlusMinus: '±',
+  Poincareplane: 'ℌ',
+  Popf: 'ℙ',
+  Pr: '⪻',
+  Precedes: '≺',
+  PrecedesEqual: '⪯',
+  PrecedesSlantEqual: '≼',
+  PrecedesTilde: '≾',
+  Prime: '″',
+  Product: '∏',
+  Proportion: '∷',
+  Proportional: '∝',
+  Pscr: '𝒫',
+  Psi: 'Ψ',
+  QUOT: '"',
+  Qfr: '𝔔',
+  Qopf: 'ℚ',
+  Qscr: '𝒬',
+  RBarr: '⤐',
+  REG: '®',
+  Racute: 'Ŕ',
+  Rang: '⟫',
+  Rarr: '↠',
+  Rarrtl: '⤖',
+  Rcaron: 'Ř',
+  Rcedil: 'Ŗ',
+  Rcy: 'Р',
+  Re: 'ℜ',
+  ReverseElement: '∋',
+  ReverseEquilibrium: '⇋',
+  ReverseUpEquilibrium: '⥯',
+  Rfr: 'ℜ',
+  Rho: 'Ρ',
+  RightAngleBracket: '⟩',
+  RightArrow: '→',
+  RightArrowBar: '⇥',
+  RightArrowLeftArrow: '⇄',
+  RightCeiling: '⌉',
+  RightDoubleBracket: '⟧',
+  RightDownTeeVector: '⥝',
+  RightDownVector: '⇂',
+  RightDownVectorBar: '⥕',
+  RightFloor: '⌋',
+  RightTee: '⊢',
+  RightTeeArrow: '↦',
+  RightTeeVector: '⥛',
+  RightTriangle: '⊳',
+  RightTriangleBar: '⧐',
+  RightTriangleEqual: '⊵',
+  RightUpDownVector: '⥏',
+  RightUpTeeVector: '⥜',
+  RightUpVector: '↾',
+  RightUpVectorBar: '⥔',
+  RightVector: '⇀',
+  RightVectorBar: '⥓',
+  Rightarrow: '⇒',
+  Ropf: 'ℝ',
+  RoundImplies: '⥰',
+  Rrightarrow: '⇛',
+  Rscr: 'ℛ',
+  Rsh: '↱',
+  RuleDelayed: '⧴',
+  SHCHcy: 'Щ',
+  SHcy: 'Ш',
+  SOFTcy: 'Ь',
+  Sacute: 'Ś',
+  Sc: '⪼',
+  Scaron: 'Š',
+  Scedil: 'Ş',
+  Scirc: 'Ŝ',
+  Scy: 'С',
+  Sfr: '𝔖',
+  ShortDownArrow: '↓',
+  ShortLeftArrow: '←',
+  ShortRightArrow: '→',
+  ShortUpArrow: '↑',
+  Sigma: 'Σ',
+  SmallCircle: '∘',
+  Sopf: '𝕊',
+  Sqrt: '√',
+  Square: '□',
+  SquareIntersection: '⊓',
+  SquareSubset: '⊏',
+  SquareSubsetEqual: '⊑',
+  SquareSuperset: '⊐',
+  SquareSupersetEqual: '⊒',
+  SquareUnion: '⊔',
+  Sscr: '𝒮',
+  Star: '⋆',
+  Sub: '⋐',
+  Subset: '⋐',
+  SubsetEqual: '⊆',
+  Succeeds: '≻',
+  SucceedsEqual: '⪰',
+  SucceedsSlantEqual: '≽',
+  SucceedsTilde: '≿',
+  SuchThat: '∋',
+  Sum: '∑',
+  Sup: '⋑',
+  Superset: '⊃',
+  SupersetEqual: '⊇',
+  Supset: '⋑',
+  THORN: 'Þ',
+  TRADE: '™',
+  TSHcy: 'Ћ',
+  TScy: 'Ц',
+  Tab: '	',
+  Tau: 'Τ',
+  Tcaron: 'Ť',
+  Tcedil: 'Ţ',
+  Tcy: 'Т',
+  Tfr: '𝔗',
+  Therefore: '∴',
+  Theta: 'Θ',
+  ThickSpace: '  ',
+  ThinSpace: ' ',
+  Tilde: '∼',
+  TildeEqual: '≃',
+  TildeFullEqual: '≅',
+  TildeTilde: '≈',
+  Topf: '𝕋',
+  TripleDot: '⃛',
+  Tscr: '𝒯',
+  Tstrok: 'Ŧ',
+  Uacute: 'Ú',
+  Uarr: '↟',
+  Uarrocir: '⥉',
+  Ubrcy: 'Ў',
+  Ubreve: 'Ŭ',
+  Ucirc: 'Û',
+  Ucy: 'У',
+  Udblac: 'Ű',
+  Ufr: '𝔘',
+  Ugrave: 'Ù',
+  Umacr: 'Ū',
+  UnderBar: '_',
+  UnderBrace: '⏟',
+  UnderBracket: '⎵',
+  UnderParenthesis: '⏝',
+  Union: '⋃',
+  UnionPlus: '⊎',
+  Uogon: 'Ų',
+  Uopf: '𝕌',
+  UpArrow: '↑',
+  UpArrowBar: '⤒',
+  UpArrowDownArrow: '⇅',
+  UpDownArrow: '↕',
+  UpEquilibrium: '⥮',
+  UpTee: '⊥',
+  UpTeeArrow: '↥',
+  Uparrow: '⇑',
+  Updownarrow: '⇕',
+  UpperLeftArrow: '↖',
+  UpperRightArrow: '↗',
+  Upsi: 'ϒ',
+  Upsilon: 'Υ',
+  Uring: 'Ů',
+  Uscr: '𝒰',
+  Utilde: 'Ũ',
+  Uuml: 'Ü',
+  VDash: '⊫',
+  Vbar: '⫫',
+  Vcy: 'В',
+  Vdash: '⊩',
+  Vdashl: '⫦',
+  Vee: '⋁',
+  Verbar: '‖',
+  Vert: '‖',
+  VerticalBar: '∣',
+  VerticalLine: '|',
+  VerticalSeparator: '❘',
+  VerticalTilde: '≀',
+  VeryThinSpace: ' ',
+  Vfr: '𝔙',
+  Vopf: '𝕍',
+  Vscr: '𝒱',
+  Vvdash: '⊪',
+  Wcirc: 'Ŵ',
+  Wedge: '⋀',
+  Wfr: '𝔚',
+  Wopf: '𝕎',
+  Wscr: '𝒲',
+  Xfr: '𝔛',
+  Xi: 'Ξ',
+  Xopf: '𝕏',
+  Xscr: '𝒳',
+  YAcy: 'Я',
+  YIcy: 'Ї',
+  YUcy: 'Ю',
+  Yacute: 'Ý',
+  Ycirc: 'Ŷ',
+  Ycy: 'Ы',
+  Yfr: '𝔜',
+  Yopf: '𝕐',
+  Yscr: '𝒴',
+  Yuml: 'Ÿ',
+  ZHcy: 'Ж',
+  Zacute: 'Ź',
+  Zcaron: 'Ž',
+  Zcy: 'З',
+  Zdot: 'Ż',
+  ZeroWidthSpace: '​',
+  Zeta: 'Ζ',
+  Zfr: 'ℨ',
+  Zopf: 'ℤ',
+  Zscr: '𝒵',
+  aacute: 'á',
   abreve: 'ă',
   ac: '∾',
-  acd: '∿',
   acE: '∾̳',
-  Acirc: 'Â',
-  Acir: 'Â',
+  acd: '∿',
   acirc: 'â',
-  acir: 'â',
   acute: '´',
-  acut: '´',
-  Acy: 'А',
   acy: 'а',
-  AElig: 'Æ',
-  AEli: 'Æ',
   aelig: 'æ',
-  aeli: 'æ',
   af: '⁡',
-  Afr: '𝔄',
   afr: '𝔞',
-  Agrave: 'À',
-  Agrav: 'À',
   agrave: 'à',
-  agrav: 'à',
   alefsym: 'ℵ',
   aleph: 'ℵ',
-  Alpha: 'Α',
   alpha: 'α',
-  Amacr: 'Ā',
   amacr: 'ā',
   amalg: '⨿',
   amp: '&',
-  am: '&',
-  AMP: '&',
-  AM: '&',
-  andand: '⩕',
-  And: '⩓',
   and: '∧',
+  andand: '⩕',
   andd: '⩜',
   andslope: '⩘',
   andv: '⩚',
   ang: '∠',
   ange: '⦤',
   angle: '∠',
+  angmsd: '∡',
   angmsdaa: '⦨',
   angmsdab: '⦩',
   angmsdac: '⦪',
@@ -796,75 +1598,53 @@ var htmlEntityTable = (_htmlEntityTable = {
   angmsdaf: '⦭',
   angmsdag: '⦮',
   angmsdah: '⦯',
-  angmsd: '∡',
   angrt: '∟',
   angrtvb: '⊾',
   angrtvbd: '⦝',
   angsph: '∢',
   angst: 'Å',
   angzarr: '⍼',
-  Aogon: 'Ą',
   aogon: 'ą',
-  Aopf: '𝔸',
   aopf: '𝕒',
-  apacir: '⩯',
   ap: '≈',
   apE: '⩰',
+  apacir: '⩯',
   ape: '≊',
   apid: '≋',
-  apos: '\'',
-  ApplyFunction: '⁡',
+  apos: "'",
   approx: '≈',
   approxeq: '≊',
-  Aring: 'Å',
-  Arin: 'Å',
   aring: 'å',
-  arin: 'å',
-  Ascr: '𝒜',
   ascr: '𝒶',
-  Assign: '≔',
   ast: '*',
   asymp: '≈',
   asympeq: '≍',
-  Atilde: 'Ã',
-  Atild: 'Ã',
   atilde: 'ã',
-  atild: 'ã',
-  Auml: 'Ä',
-  Aum: 'Ä',
   auml: 'ä',
-  aum: 'ä',
   awconint: '∳',
   awint: '⨑',
+  bNot: '⫭',
   backcong: '≌',
   backepsilon: '϶',
   backprime: '‵',
   backsim: '∽',
   backsimeq: '⋍',
-  Backslash: '∖',
-  Barv: '⫧',
   barvee: '⊽',
   barwed: '⌅',
-  Barwed: '⌆',
   barwedge: '⌅',
   bbrk: '⎵',
   bbrktbrk: '⎶',
   bcong: '≌',
-  Bcy: 'Б',
   bcy: 'б',
   bdquo: '„',
   becaus: '∵',
   because: '∵',
-  Because: '∵',
   bemptyv: '⦰',
   bepsi: '϶',
   bernou: 'ℬ',
-  Bernoullis: 'ℬ',
-  Beta: 'Β',
   beta: 'β',
   beth: 'ℶ',
   between: '≬',
-  Bfr: '𝔅',
   bfr: '𝔟',
   bigcap: '⋂',
   bigcirc: '◯',
@@ -893,148 +1673,115 @@ var htmlEntityTable = (_htmlEntityTable = {
   block: '█',
   bne: '=⃥',
   bnequiv: '≡⃥',
-  bNot: '⫭',
   bnot: '⌐',
-  Bopf: '𝔹',
   bopf: '𝕓',
   bot: '⊥',
   bottom: '⊥',
   bowtie: '⋈',
-  boxbox: '⧉',
-  boxdl: '┐',
-  boxdL: '╕',
-  boxDl: '╖',
   boxDL: '╗',
-  boxdr: '┌',
-  boxdR: '╒',
-  boxDr: '╓',
   boxDR: '╔',
-  boxh: '─',
+  boxDl: '╖',
+  boxDr: '╓',
   boxH: '═',
-  boxhd: '┬',
-  boxHd: '╤',
-  boxhD: '╥',
   boxHD: '╦',
-  boxhu: '┴',
-  boxHu: '╧',
-  boxhU: '╨',
   boxHU: '╩',
+  boxHd: '╤',
+  boxHu: '╧',
+  boxUL: '╝',
+  boxUR: '╚',
+  boxUl: '╜',
+  boxUr: '╙',
+  boxV: '║',
+  boxVH: '╬',
+  boxVL: '╣',
+  boxVR: '╠',
+  boxVh: '╫',
+  boxVl: '╢',
+  boxVr: '╟',
+  boxbox: '⧉',
+  boxdL: '╕',
+  boxdR: '╒',
+  boxdl: '┐',
+  boxdr: '┌',
+  boxh: '─',
+  boxhD: '╥',
+  boxhU: '╨',
+  boxhd: '┬',
+  boxhu: '┴',
   boxminus: '⊟',
   boxplus: '⊞',
   boxtimes: '⊠',
-  boxul: '┘',
   boxuL: '╛',
-  boxUl: '╜',
-  boxUL: '╝',
-  boxur: '└',
   boxuR: '╘',
-  boxUr: '╙',
-  boxUR: '╚',
+  boxul: '┘',
+  boxur: '└',
   boxv: '│',
-  boxV: '║',
-  boxvh: '┼',
   boxvH: '╪',
-  boxVh: '╫',
-  boxVH: '╬',
-  boxvl: '┤',
   boxvL: '╡',
-  boxVl: '╢',
-  boxVL: '╣',
-  boxvr: '├',
   boxvR: '╞',
-  boxVr: '╟',
-  boxVR: '╠',
+  boxvh: '┼',
+  boxvl: '┤',
+  boxvr: '├',
   bprime: '‵',
   breve: '˘',
-  Breve: '˘',
   brvbar: '¦',
-  brvba: '¦',
   bscr: '𝒷',
-  Bscr: 'ℬ',
   bsemi: '⁏',
   bsim: '∽',
   bsime: '⋍',
-  bsolb: '⧅',
   bsol: '\\',
+  bsolb: '⧅',
   bsolhsub: '⟈',
   bull: '•',
   bullet: '•',
   bump: '≎',
   bumpE: '⪮',
   bumpe: '≏',
-  Bumpeq: '≎',
   bumpeq: '≏',
-  Cacute: 'Ć',
   cacute: 'ć',
+  cap: '∩',
   capand: '⩄',
   capbrcup: '⩉',
   capcap: '⩋',
-  cap: '∩',
-  Cap: '⋒',
   capcup: '⩇',
   capdot: '⩀',
-  CapitalDifferentialD: 'ⅅ',
   caps: '∩︀',
   caret: '⁁',
   caron: 'ˇ',
-  Cayleys: 'ℭ',
   ccaps: '⩍',
-  Ccaron: 'Č',
   ccaron: 'č',
-  Ccedil: 'Ç',
-  Ccedi: 'Ç',
   ccedil: 'ç',
-  ccedi: 'ç',
-  Ccirc: 'Ĉ',
   ccirc: 'ĉ',
-  Cconint: '∰',
   ccups: '⩌',
   ccupssm: '⩐',
-  Cdot: 'Ċ',
   cdot: 'ċ',
   cedil: '¸',
-  cedi: '¸',
-  Cedilla: '¸',
   cemptyv: '⦲',
   cent: '¢',
-  cen: '¢',
   centerdot: '·',
-  CenterDot: '·',
   cfr: '𝔠',
-  Cfr: 'ℭ',
-  CHcy: 'Ч',
   chcy: 'ч',
   check: '✓',
   checkmark: '✓',
-  Chi: 'Χ',
   chi: 'χ',
+  cir: '○',
+  cirE: '⧃',
   circ: 'ˆ',
   circeq: '≗',
   circlearrowleft: '↺',
   circlearrowright: '↻',
+  circledR: '®',
+  circledS: 'Ⓢ',
   circledast: '⊛',
   circledcirc: '⊚',
   circleddash: '⊝',
-  CircleDot: '⊙',
-  circledR: '®',
-  circledS: 'Ⓢ',
-  CircleMinus: '⊖',
-  CirclePlus: '⊕',
-  CircleTimes: '⊗',
-  cir: '○',
-  cirE: '⧃',
   cire: '≗',
   cirfnint: '⨐',
   cirmid: '⫯',
   cirscir: '⧂',
-  ClockwiseContourIntegral: '∲',
-  CloseCurlyDoubleQuote: '”',
-  CloseCurlyQuote: '’',
   clubs: '♣',
   clubsuit: '♣',
   colon: ':',
-  Colon: '∷',
-  Colone: '⩴',
   colone: '≔',
   coloneq: '≔',
   comma: ',',
@@ -1045,24 +1792,13 @@ var htmlEntityTable = (_htmlEntityTable = {
   complexes: 'ℂ',
   cong: '≅',
   congdot: '⩭',
-  Congruent: '≡',
   conint: '∮',
-  Conint: '∯',
-  ContourIntegral: '∮',
   copf: '𝕔',
-  Copf: 'ℂ',
   coprod: '∐',
-  Coproduct: '∐',
   copy: '©',
-  cop: '©',
-  COPY: '©',
-  COP: '©',
   copysr: '℗',
-  CounterClockwiseContourIntegral: '∳',
   crarr: '↵',
   cross: '✗',
-  Cross: '⨯',
-  Cscr: '𝒞',
   cscr: '𝒸',
   csub: '⫏',
   csube: '⫑',
@@ -1075,11 +1811,9 @@ var htmlEntityTable = (_htmlEntityTable = {
   cuesc: '⋟',
   cularr: '↶',
   cularrp: '⤽',
+  cup: '∪',
   cupbrcap: '⩈',
   cupcap: '⩆',
-  CupCap: '≍',
-  cup: '∪',
-  Cup: '⋓',
   cupcup: '⩊',
   cupdot: '⊍',
   cupor: '⩅',
@@ -1091,7 +1825,6 @@ var htmlEntityTable = (_htmlEntityTable = {
   curlyvee: '⋎',
   curlywedge: '⋏',
   curren: '¤',
-  curre: '¤',
   curvearrowleft: '↶',
   curvearrowright: '↷',
   cuvee: '⋎',
@@ -1099,116 +1832,61 @@ var htmlEntityTable = (_htmlEntityTable = {
   cwconint: '∲',
   cwint: '∱',
   cylcty: '⌭',
+  dArr: '⇓',
+  dHar: '⥥',
   dagger: '†',
-  Dagger: '‡',
   daleth: 'ℸ',
   darr: '↓',
-  Darr: '↡',
-  dArr: '⇓',
   dash: '‐',
-  Dashv: '⫤',
   dashv: '⊣',
   dbkarow: '⤏',
   dblac: '˝',
-  Dcaron: 'Ď',
   dcaron: 'ď',
-  Dcy: 'Д',
   dcy: 'д',
+  dd: 'ⅆ',
   ddagger: '‡',
   ddarr: '⇊',
-  DD: 'ⅅ',
-  dd: 'ⅆ',
-  DDotrahd: '⤑',
   ddotseq: '⩷',
   deg: '°',
-  de: '°',
-  Del: '∇',
-  Delta: 'Δ',
   delta: 'δ',
   demptyv: '⦱',
   dfisht: '⥿',
-  Dfr: '𝔇',
   dfr: '𝔡',
-  dHar: '⥥',
   dharl: '⇃',
   dharr: '⇂',
-  DiacriticalAcute: '´',
-  DiacriticalDot: '˙',
-  DiacriticalDoubleAcute: '˝',
-  DiacriticalGrave: '`',
-  DiacriticalTilde: '˜',
   diam: '⋄',
   diamond: '⋄',
-  Diamond: '⋄',
   diamondsuit: '♦',
   diams: '♦',
   die: '¨',
-  DifferentialD: 'ⅆ',
   digamma: 'ϝ',
   disin: '⋲',
   div: '÷',
   divide: '÷',
-  divid: '÷',
   divideontimes: '⋇',
   divonx: '⋇',
-  DJcy: 'Ђ',
   djcy: 'ђ',
   dlcorn: '⌞',
   dlcrop: '⌍',
   dollar: '$',
-  Dopf: '𝔻',
   dopf: '𝕕',
-  Dot: '¨',
   dot: '˙',
-  DotDot: '⃜',
   doteq: '≐',
   doteqdot: '≑',
-  DotEqual: '≐',
   dotminus: '∸',
   dotplus: '∔',
   dotsquare: '⊡',
   doublebarwedge: '⌆',
-  DoubleContourIntegral: '∯',
-  DoubleDot: '¨',
-  DoubleDownArrow: '⇓',
-  DoubleLeftArrow: '⇐',
-  DoubleLeftRightArrow: '⇔',
-  DoubleLeftTee: '⫤',
-  DoubleLongLeftArrow: '⟸',
-  DoubleLongLeftRightArrow: '⟺',
-  DoubleLongRightArrow: '⟹',
-  DoubleRightArrow: '⇒',
-  DoubleRightTee: '⊨',
-  DoubleUpArrow: '⇑',
-  DoubleUpDownArrow: '⇕',
-  DoubleVerticalBar: '∥',
-  DownArrowBar: '⤓',
   downarrow: '↓',
-  DownArrow: '↓',
-  Downarrow: '⇓',
-  DownArrowUpArrow: '⇵',
-  DownBreve: '̑',
   downdownarrows: '⇊',
   downharpoonleft: '⇃',
   downharpoonright: '⇂',
-  DownLeftRightVector: '⥐',
-  DownLeftTeeVector: '⥞',
-  DownLeftVectorBar: '⥖',
-  DownLeftVector: '↽',
-  DownRightTeeVector: '⥟',
-  DownRightVectorBar: '⥗',
-  DownRightVector: '⇁',
-  DownTeeArrow: '↧',
-  DownTee: '⊤',
   drbkarow: '⤐',
   drcorn: '⌟',
   drcrop: '⌌',
-  Dscr: '𝒟',
   dscr: '𝒹',
-  DScy: 'Ѕ',
   dscy: 'ѕ',
   dsol: '⧶',
-  Dstrok: 'Đ',
   dstrok: 'đ',
   dtdot: '⋱',
   dtri: '▿',
@@ -1216,23 +1894,1205 @@ var htmlEntityTable = (_htmlEntityTable = {
   duarr: '⇵',
   duhar: '⥯',
   dwangle: '⦦',
-  DZcy: 'Џ',
   dzcy: 'џ',
   dzigrarr: '⟿',
-  Eacute: 'É',
-  Eacut: 'É',
+  eDDot: '⩷',
+  eDot: '≑',
   eacute: 'é',
-  eacut: 'é',
   easter: '⩮',
-  Ecaron: 'Ě',
   ecaron: 'ě',
-  Ecirc: 'Ê',
-  Ecir: 'Ê',
+  ecir: '≖',
   ecirc: 'ê',
-  ecir: 'ê'
-}, _defineProperty(_htmlEntityTable, "ecir", '≖'), _defineProperty(_htmlEntityTable, "ecolon", '≕'), _defineProperty(_htmlEntityTable, "Ecy", 'Э'), _defineProperty(_htmlEntityTable, "ecy", 'э'), _defineProperty(_htmlEntityTable, "eDDot", '⩷'), _defineProperty(_htmlEntityTable, "Edot", 'Ė'), _defineProperty(_htmlEntityTable, "edot", 'ė'), _defineProperty(_htmlEntityTable, "eDot", '≑'), _defineProperty(_htmlEntityTable, "ee", 'ⅇ'), _defineProperty(_htmlEntityTable, "efDot", '≒'), _defineProperty(_htmlEntityTable, "Efr", '𝔈'), _defineProperty(_htmlEntityTable, "efr", '𝔢'), _defineProperty(_htmlEntityTable, "eg", '⪚'), _defineProperty(_htmlEntityTable, "Egrave", 'È'), _defineProperty(_htmlEntityTable, "Egrav", 'È'), _defineProperty(_htmlEntityTable, "egrave", 'è'), _defineProperty(_htmlEntityTable, "egrav", 'è'), _defineProperty(_htmlEntityTable, "egs", '⪖'), _defineProperty(_htmlEntityTable, "egsdot", '⪘'), _defineProperty(_htmlEntityTable, "el", '⪙'), _defineProperty(_htmlEntityTable, "Element", '∈'), _defineProperty(_htmlEntityTable, "elinters", '⏧'), _defineProperty(_htmlEntityTable, "ell", 'ℓ'), _defineProperty(_htmlEntityTable, "els", '⪕'), _defineProperty(_htmlEntityTable, "elsdot", '⪗'), _defineProperty(_htmlEntityTable, "Emacr", 'Ē'), _defineProperty(_htmlEntityTable, "emacr", 'ē'), _defineProperty(_htmlEntityTable, "empty", '∅'), _defineProperty(_htmlEntityTable, "emptyset", '∅'), _defineProperty(_htmlEntityTable, "EmptySmallSquare", '◻'), _defineProperty(_htmlEntityTable, "emptyv", '∅'), _defineProperty(_htmlEntityTable, "EmptyVerySmallSquare", '▫'), _defineProperty(_htmlEntityTable, "emsp13", ' '), _defineProperty(_htmlEntityTable, "emsp14", ' '), _defineProperty(_htmlEntityTable, "emsp", ' '), _defineProperty(_htmlEntityTable, "ENG", 'Ŋ'), _defineProperty(_htmlEntityTable, "eng", 'ŋ'), _defineProperty(_htmlEntityTable, "ensp", ' '), _defineProperty(_htmlEntityTable, "Eogon", 'Ę'), _defineProperty(_htmlEntityTable, "eogon", 'ę'), _defineProperty(_htmlEntityTable, "Eopf", '𝔼'), _defineProperty(_htmlEntityTable, "eopf", '𝕖'), _defineProperty(_htmlEntityTable, "epar", '⋕'), _defineProperty(_htmlEntityTable, "eparsl", '⧣'), _defineProperty(_htmlEntityTable, "eplus", '⩱'), _defineProperty(_htmlEntityTable, "epsi", 'ε'), _defineProperty(_htmlEntityTable, "Epsilon", 'Ε'), _defineProperty(_htmlEntityTable, "epsilon", 'ε'), _defineProperty(_htmlEntityTable, "epsiv", 'ϵ'), _defineProperty(_htmlEntityTable, "eqcirc", '≖'), _defineProperty(_htmlEntityTable, "eqcolon", '≕'), _defineProperty(_htmlEntityTable, "eqsim", '≂'), _defineProperty(_htmlEntityTable, "eqslantgtr", '⪖'), _defineProperty(_htmlEntityTable, "eqslantless", '⪕'), _defineProperty(_htmlEntityTable, "Equal", '⩵'), _defineProperty(_htmlEntityTable, "equals", '='), _defineProperty(_htmlEntityTable, "EqualTilde", '≂'), _defineProperty(_htmlEntityTable, "equest", '≟'), _defineProperty(_htmlEntityTable, "Equilibrium", '⇌'), _defineProperty(_htmlEntityTable, "equiv", '≡'), _defineProperty(_htmlEntityTable, "equivDD", '⩸'), _defineProperty(_htmlEntityTable, "eqvparsl", '⧥'), _defineProperty(_htmlEntityTable, "erarr", '⥱'), _defineProperty(_htmlEntityTable, "erDot", '≓'), _defineProperty(_htmlEntityTable, "escr", 'ℯ'), _defineProperty(_htmlEntityTable, "Escr", 'ℰ'), _defineProperty(_htmlEntityTable, "esdot", '≐'), _defineProperty(_htmlEntityTable, "Esim", '⩳'), _defineProperty(_htmlEntityTable, "esim", '≂'), _defineProperty(_htmlEntityTable, "Eta", 'Η'), _defineProperty(_htmlEntityTable, "eta", 'η'), _defineProperty(_htmlEntityTable, "ETH", 'Ð'), _defineProperty(_htmlEntityTable, "ET", 'Ð'), _defineProperty(_htmlEntityTable, "eth", 'ð'), _defineProperty(_htmlEntityTable, "et", 'ð'), _defineProperty(_htmlEntityTable, "Euml", 'Ë'), _defineProperty(_htmlEntityTable, "Eum", 'Ë'), _defineProperty(_htmlEntityTable, "euml", 'ë'), _defineProperty(_htmlEntityTable, "eum", 'ë'), _defineProperty(_htmlEntityTable, "euro", '€'), _defineProperty(_htmlEntityTable, "excl", '!'), _defineProperty(_htmlEntityTable, "exist", '∃'), _defineProperty(_htmlEntityTable, "Exists", '∃'), _defineProperty(_htmlEntityTable, "expectation", 'ℰ'), _defineProperty(_htmlEntityTable, "exponentiale", 'ⅇ'), _defineProperty(_htmlEntityTable, "ExponentialE", 'ⅇ'), _defineProperty(_htmlEntityTable, "fallingdotseq", '≒'), _defineProperty(_htmlEntityTable, "Fcy", 'Ф'), _defineProperty(_htmlEntityTable, "fcy", 'ф'), _defineProperty(_htmlEntityTable, "female", '♀'), _defineProperty(_htmlEntityTable, "ffilig", 'ﬃ'), _defineProperty(_htmlEntityTable, "fflig", 'ﬀ'), _defineProperty(_htmlEntityTable, "ffllig", 'ﬄ'), _defineProperty(_htmlEntityTable, "Ffr", '𝔉'), _defineProperty(_htmlEntityTable, "ffr", '𝔣'), _defineProperty(_htmlEntityTable, "filig", 'ﬁ'), _defineProperty(_htmlEntityTable, "FilledSmallSquare", '◼'), _defineProperty(_htmlEntityTable, "FilledVerySmallSquare", '▪'), _defineProperty(_htmlEntityTable, "fjlig", 'fj'), _defineProperty(_htmlEntityTable, "flat", '♭'), _defineProperty(_htmlEntityTable, "fllig", 'ﬂ'), _defineProperty(_htmlEntityTable, "fltns", '▱'), _defineProperty(_htmlEntityTable, "fnof", 'ƒ'), _defineProperty(_htmlEntityTable, "Fopf", '𝔽'), _defineProperty(_htmlEntityTable, "fopf", '𝕗'), _defineProperty(_htmlEntityTable, "forall", '∀'), _defineProperty(_htmlEntityTable, "ForAll", '∀'), _defineProperty(_htmlEntityTable, "fork", '⋔'), _defineProperty(_htmlEntityTable, "forkv", '⫙'), _defineProperty(_htmlEntityTable, "Fouriertrf", 'ℱ'), _defineProperty(_htmlEntityTable, "fpartint", '⨍'), _defineProperty(_htmlEntityTable, "frac12", '½'), _defineProperty(_htmlEntityTable, "frac1", '½'), _defineProperty(_htmlEntityTable, "frac13", '⅓'), _defineProperty(_htmlEntityTable, "frac14", '¼'), _defineProperty(_htmlEntityTable, "frac1", '¼'), _defineProperty(_htmlEntityTable, "frac15", '⅕'), _defineProperty(_htmlEntityTable, "frac16", '⅙'), _defineProperty(_htmlEntityTable, "frac18", '⅛'), _defineProperty(_htmlEntityTable, "frac23", '⅔'), _defineProperty(_htmlEntityTable, "frac25", '⅖'), _defineProperty(_htmlEntityTable, "frac34", '¾'), _defineProperty(_htmlEntityTable, "frac3", '¾'), _defineProperty(_htmlEntityTable, "frac35", '⅗'), _defineProperty(_htmlEntityTable, "frac38", '⅜'), _defineProperty(_htmlEntityTable, "frac45", '⅘'), _defineProperty(_htmlEntityTable, "frac56", '⅚'), _defineProperty(_htmlEntityTable, "frac58", '⅝'), _defineProperty(_htmlEntityTable, "frac78", '⅞'), _defineProperty(_htmlEntityTable, "frasl", '⁄'), _defineProperty(_htmlEntityTable, "frown", '⌢'), _defineProperty(_htmlEntityTable, "fscr", '𝒻'), _defineProperty(_htmlEntityTable, "Fscr", 'ℱ'), _defineProperty(_htmlEntityTable, "gacute", 'ǵ'), _defineProperty(_htmlEntityTable, "Gamma", 'Γ'), _defineProperty(_htmlEntityTable, "gamma", 'γ'), _defineProperty(_htmlEntityTable, "Gammad", 'Ϝ'), _defineProperty(_htmlEntityTable, "gammad", 'ϝ'), _defineProperty(_htmlEntityTable, "gap", '⪆'), _defineProperty(_htmlEntityTable, "Gbreve", 'Ğ'), _defineProperty(_htmlEntityTable, "gbreve", 'ğ'), _defineProperty(_htmlEntityTable, "Gcedil", 'Ģ'), _defineProperty(_htmlEntityTable, "Gcirc", 'Ĝ'), _defineProperty(_htmlEntityTable, "gcirc", 'ĝ'), _defineProperty(_htmlEntityTable, "Gcy", 'Г'), _defineProperty(_htmlEntityTable, "gcy", 'г'), _defineProperty(_htmlEntityTable, "Gdot", 'Ġ'), _defineProperty(_htmlEntityTable, "gdot", 'ġ'), _defineProperty(_htmlEntityTable, "ge", '≥'), _defineProperty(_htmlEntityTable, "gE", '≧'), _defineProperty(_htmlEntityTable, "gEl", '⪌'), _defineProperty(_htmlEntityTable, "gel", '⋛'), _defineProperty(_htmlEntityTable, "geq", '≥'), _defineProperty(_htmlEntityTable, "geqq", '≧'), _defineProperty(_htmlEntityTable, "geqslant", '⩾'), _defineProperty(_htmlEntityTable, "gescc", '⪩'), _defineProperty(_htmlEntityTable, "ges", '⩾'), _defineProperty(_htmlEntityTable, "gesdot", '⪀'), _defineProperty(_htmlEntityTable, "gesdoto", '⪂'), _defineProperty(_htmlEntityTable, "gesdotol", '⪄'), _defineProperty(_htmlEntityTable, "gesl", '⋛︀'), _defineProperty(_htmlEntityTable, "gesles", '⪔'), _defineProperty(_htmlEntityTable, "Gfr", '𝔊'), _defineProperty(_htmlEntityTable, "gfr", '𝔤'), _defineProperty(_htmlEntityTable, "gg", '≫'), _defineProperty(_htmlEntityTable, "Gg", '⋙'), _defineProperty(_htmlEntityTable, "ggg", '⋙'), _defineProperty(_htmlEntityTable, "gimel", 'ℷ'), _defineProperty(_htmlEntityTable, "GJcy", 'Ѓ'), _defineProperty(_htmlEntityTable, "gjcy", 'ѓ'), _defineProperty(_htmlEntityTable, "gla", '⪥'), _defineProperty(_htmlEntityTable, "gl", '≷'), _defineProperty(_htmlEntityTable, "glE", '⪒'), _defineProperty(_htmlEntityTable, "glj", '⪤'), _defineProperty(_htmlEntityTable, "gnap", '⪊'), _defineProperty(_htmlEntityTable, "gnapprox", '⪊'), _defineProperty(_htmlEntityTable, "gne", '⪈'), _defineProperty(_htmlEntityTable, "gnE", '≩'), _defineProperty(_htmlEntityTable, "gneq", '⪈'), _defineProperty(_htmlEntityTable, "gneqq", '≩'), _defineProperty(_htmlEntityTable, "gnsim", '⋧'), _defineProperty(_htmlEntityTable, "Gopf", '𝔾'), _defineProperty(_htmlEntityTable, "gopf", '𝕘'), _defineProperty(_htmlEntityTable, "grave", '`'), _defineProperty(_htmlEntityTable, "GreaterEqual", '≥'), _defineProperty(_htmlEntityTable, "GreaterEqualLess", '⋛'), _defineProperty(_htmlEntityTable, "GreaterFullEqual", '≧'), _defineProperty(_htmlEntityTable, "GreaterGreater", '⪢'), _defineProperty(_htmlEntityTable, "GreaterLess", '≷'), _defineProperty(_htmlEntityTable, "GreaterSlantEqual", '⩾'), _defineProperty(_htmlEntityTable, "GreaterTilde", '≳'), _defineProperty(_htmlEntityTable, "Gscr", '𝒢'), _defineProperty(_htmlEntityTable, "gscr", 'ℊ'), _defineProperty(_htmlEntityTable, "gsim", '≳'), _defineProperty(_htmlEntityTable, "gsime", '⪎'), _defineProperty(_htmlEntityTable, "gsiml", '⪐'), _defineProperty(_htmlEntityTable, "gtcc", '⪧'), _defineProperty(_htmlEntityTable, "gtcir", '⩺'), _defineProperty(_htmlEntityTable, "gt", '>'), _defineProperty(_htmlEntityTable, "g", '>'), _defineProperty(_htmlEntityTable, "GT", '>'), _defineProperty(_htmlEntityTable, "G", '>'), _defineProperty(_htmlEntityTable, "Gt", '≫'), _defineProperty(_htmlEntityTable, "gtdot", '⋗'), _defineProperty(_htmlEntityTable, "gtlPar", '⦕'), _defineProperty(_htmlEntityTable, "gtquest", '⩼'), _defineProperty(_htmlEntityTable, "gtrapprox", '⪆'), _defineProperty(_htmlEntityTable, "gtrarr", '⥸'), _defineProperty(_htmlEntityTable, "gtrdot", '⋗'), _defineProperty(_htmlEntityTable, "gtreqless", '⋛'), _defineProperty(_htmlEntityTable, "gtreqqless", '⪌'), _defineProperty(_htmlEntityTable, "gtrless", '≷'), _defineProperty(_htmlEntityTable, "gtrsim", '≳'), _defineProperty(_htmlEntityTable, "gvertneqq", '≩︀'), _defineProperty(_htmlEntityTable, "gvnE", '≩︀'), _defineProperty(_htmlEntityTable, "Hacek", 'ˇ'), _defineProperty(_htmlEntityTable, "hairsp", ' '), _defineProperty(_htmlEntityTable, "half", '½'), _defineProperty(_htmlEntityTable, "hamilt", 'ℋ'), _defineProperty(_htmlEntityTable, "HARDcy", 'Ъ'), _defineProperty(_htmlEntityTable, "hardcy", 'ъ'), _defineProperty(_htmlEntityTable, "harrcir", '⥈'), _defineProperty(_htmlEntityTable, "harr", '↔'), _defineProperty(_htmlEntityTable, "hArr", '⇔'), _defineProperty(_htmlEntityTable, "harrw", '↭'), _defineProperty(_htmlEntityTable, "Hat", '^'), _defineProperty(_htmlEntityTable, "hbar", 'ℏ'), _defineProperty(_htmlEntityTable, "Hcirc", 'Ĥ'), _defineProperty(_htmlEntityTable, "hcirc", 'ĥ'), _defineProperty(_htmlEntityTable, "hearts", '♥'), _defineProperty(_htmlEntityTable, "heartsuit", '♥'), _defineProperty(_htmlEntityTable, "hellip", '…'), _defineProperty(_htmlEntityTable, "hercon", '⊹'), _defineProperty(_htmlEntityTable, "hfr", '𝔥'), _defineProperty(_htmlEntityTable, "Hfr", 'ℌ'), _defineProperty(_htmlEntityTable, "HilbertSpace", 'ℋ'), _defineProperty(_htmlEntityTable, "hksearow", '⤥'), _defineProperty(_htmlEntityTable, "hkswarow", '⤦'), _defineProperty(_htmlEntityTable, "hoarr", '⇿'), _defineProperty(_htmlEntityTable, "homtht", '∻'), _defineProperty(_htmlEntityTable, "hookleftarrow", '↩'), _defineProperty(_htmlEntityTable, "hookrightarrow", '↪'), _defineProperty(_htmlEntityTable, "hopf", '𝕙'), _defineProperty(_htmlEntityTable, "Hopf", 'ℍ'), _defineProperty(_htmlEntityTable, "horbar", '―'), _defineProperty(_htmlEntityTable, "HorizontalLine", '─'), _defineProperty(_htmlEntityTable, "hscr", '𝒽'), _defineProperty(_htmlEntityTable, "Hscr", 'ℋ'), _defineProperty(_htmlEntityTable, "hslash", 'ℏ'), _defineProperty(_htmlEntityTable, "Hstrok", 'Ħ'), _defineProperty(_htmlEntityTable, "hstrok", 'ħ'), _defineProperty(_htmlEntityTable, "HumpDownHump", '≎'), _defineProperty(_htmlEntityTable, "HumpEqual", '≏'), _defineProperty(_htmlEntityTable, "hybull", '⁃'), _defineProperty(_htmlEntityTable, "hyphen", '‐'), _defineProperty(_htmlEntityTable, "Iacute", 'Í'), _defineProperty(_htmlEntityTable, "Iacut", 'Í'), _defineProperty(_htmlEntityTable, "iacute", 'í'), _defineProperty(_htmlEntityTable, "iacut", 'í'), _defineProperty(_htmlEntityTable, "ic", '⁣'), _defineProperty(_htmlEntityTable, "Icirc", 'Î'), _defineProperty(_htmlEntityTable, "Icir", 'Î'), _defineProperty(_htmlEntityTable, "icirc", 'î'), _defineProperty(_htmlEntityTable, "icir", 'î'), _defineProperty(_htmlEntityTable, "Icy", 'И'), _defineProperty(_htmlEntityTable, "icy", 'и'), _defineProperty(_htmlEntityTable, "Idot", 'İ'), _defineProperty(_htmlEntityTable, "IEcy", 'Е'), _defineProperty(_htmlEntityTable, "iecy", 'е'), _defineProperty(_htmlEntityTable, "iexcl", '¡'), _defineProperty(_htmlEntityTable, "iexc", '¡'), _defineProperty(_htmlEntityTable, "iff", '⇔'), _defineProperty(_htmlEntityTable, "ifr", '𝔦'), _defineProperty(_htmlEntityTable, "Ifr", 'ℑ'), _defineProperty(_htmlEntityTable, "Igrave", 'Ì'), _defineProperty(_htmlEntityTable, "Igrav", 'Ì'), _defineProperty(_htmlEntityTable, "igrave", 'ì'), _defineProperty(_htmlEntityTable, "igrav", 'ì'), _defineProperty(_htmlEntityTable, "ii", 'ⅈ'), _defineProperty(_htmlEntityTable, "iiiint", '⨌'), _defineProperty(_htmlEntityTable, "iiint", '∭'), _defineProperty(_htmlEntityTable, "iinfin", '⧜'), _defineProperty(_htmlEntityTable, "iiota", '℩'), _defineProperty(_htmlEntityTable, "IJlig", 'Ĳ'), _defineProperty(_htmlEntityTable, "ijlig", 'ĳ'), _defineProperty(_htmlEntityTable, "Imacr", 'Ī'), _defineProperty(_htmlEntityTable, "imacr", 'ī'), _defineProperty(_htmlEntityTable, "image", 'ℑ'), _defineProperty(_htmlEntityTable, "ImaginaryI", 'ⅈ'), _defineProperty(_htmlEntityTable, "imagline", 'ℐ'), _defineProperty(_htmlEntityTable, "imagpart", 'ℑ'), _defineProperty(_htmlEntityTable, "imath", 'ı'), _defineProperty(_htmlEntityTable, "Im", 'ℑ'), _defineProperty(_htmlEntityTable, "imof", '⊷'), _defineProperty(_htmlEntityTable, "imped", 'Ƶ'), _defineProperty(_htmlEntityTable, "Implies", '⇒'), _defineProperty(_htmlEntityTable, "incare", '℅'), _defineProperty(_htmlEntityTable, "in", '∈'), _defineProperty(_htmlEntityTable, "infin", '∞'), _defineProperty(_htmlEntityTable, "infintie", '⧝'), _defineProperty(_htmlEntityTable, "inodot", 'ı'), _defineProperty(_htmlEntityTable, "intcal", '⊺'), _defineProperty(_htmlEntityTable, "int", '∫'), _defineProperty(_htmlEntityTable, "Int", '∬'), _defineProperty(_htmlEntityTable, "integers", 'ℤ'), _defineProperty(_htmlEntityTable, "Integral", '∫'), _defineProperty(_htmlEntityTable, "intercal", '⊺'), _defineProperty(_htmlEntityTable, "Intersection", '⋂'), _defineProperty(_htmlEntityTable, "intlarhk", '⨗'), _defineProperty(_htmlEntityTable, "intprod", '⨼'), _defineProperty(_htmlEntityTable, "InvisibleComma", '⁣'), _defineProperty(_htmlEntityTable, "InvisibleTimes", '⁢'), _defineProperty(_htmlEntityTable, "IOcy", 'Ё'), _defineProperty(_htmlEntityTable, "iocy", 'ё'), _defineProperty(_htmlEntityTable, "Iogon", 'Į'), _defineProperty(_htmlEntityTable, "iogon", 'į'), _defineProperty(_htmlEntityTable, "Iopf", '𝕀'), _defineProperty(_htmlEntityTable, "iopf", '𝕚'), _defineProperty(_htmlEntityTable, "Iota", 'Ι'), _defineProperty(_htmlEntityTable, "iota", 'ι'), _defineProperty(_htmlEntityTable, "iprod", '⨼'), _defineProperty(_htmlEntityTable, "iquest", '¿'), _defineProperty(_htmlEntityTable, "iques", '¿'), _defineProperty(_htmlEntityTable, "iscr", '𝒾'), _defineProperty(_htmlEntityTable, "Iscr", 'ℐ'), _defineProperty(_htmlEntityTable, "isin", '∈'), _defineProperty(_htmlEntityTable, "isindot", '⋵'), _defineProperty(_htmlEntityTable, "isinE", '⋹'), _defineProperty(_htmlEntityTable, "isins", '⋴'), _defineProperty(_htmlEntityTable, "isinsv", '⋳'), _defineProperty(_htmlEntityTable, "isinv", '∈'), _defineProperty(_htmlEntityTable, "it", '⁢'), _defineProperty(_htmlEntityTable, "Itilde", 'Ĩ'), _defineProperty(_htmlEntityTable, "itilde", 'ĩ'), _defineProperty(_htmlEntityTable, "Iukcy", 'І'), _defineProperty(_htmlEntityTable, "iukcy", 'і'), _defineProperty(_htmlEntityTable, "Iuml", 'Ï'), _defineProperty(_htmlEntityTable, "Ium", 'Ï'), _defineProperty(_htmlEntityTable, "iuml", 'ï'), _defineProperty(_htmlEntityTable, "ium", 'ï'), _defineProperty(_htmlEntityTable, "Jcirc", 'Ĵ'), _defineProperty(_htmlEntityTable, "jcirc", 'ĵ'), _defineProperty(_htmlEntityTable, "Jcy", 'Й'), _defineProperty(_htmlEntityTable, "jcy", 'й'), _defineProperty(_htmlEntityTable, "Jfr", '𝔍'), _defineProperty(_htmlEntityTable, "jfr", '𝔧'), _defineProperty(_htmlEntityTable, "jmath", 'ȷ'), _defineProperty(_htmlEntityTable, "Jopf", '𝕁'), _defineProperty(_htmlEntityTable, "jopf", '𝕛'), _defineProperty(_htmlEntityTable, "Jscr", '𝒥'), _defineProperty(_htmlEntityTable, "jscr", '𝒿'), _defineProperty(_htmlEntityTable, "Jsercy", 'Ј'), _defineProperty(_htmlEntityTable, "jsercy", 'ј'), _defineProperty(_htmlEntityTable, "Jukcy", 'Є'), _defineProperty(_htmlEntityTable, "jukcy", 'є'), _defineProperty(_htmlEntityTable, "Kappa", 'Κ'), _defineProperty(_htmlEntityTable, "kappa", 'κ'), _defineProperty(_htmlEntityTable, "kappav", 'ϰ'), _defineProperty(_htmlEntityTable, "Kcedil", 'Ķ'), _defineProperty(_htmlEntityTable, "kcedil", 'ķ'), _defineProperty(_htmlEntityTable, "Kcy", 'К'), _defineProperty(_htmlEntityTable, "kcy", 'к'), _defineProperty(_htmlEntityTable, "Kfr", '𝔎'), _defineProperty(_htmlEntityTable, "kfr", '𝔨'), _defineProperty(_htmlEntityTable, "kgreen", 'ĸ'), _defineProperty(_htmlEntityTable, "KHcy", 'Х'), _defineProperty(_htmlEntityTable, "khcy", 'х'), _defineProperty(_htmlEntityTable, "KJcy", 'Ќ'), _defineProperty(_htmlEntityTable, "kjcy", 'ќ'), _defineProperty(_htmlEntityTable, "Kopf", '𝕂'), _defineProperty(_htmlEntityTable, "kopf", '𝕜'), _defineProperty(_htmlEntityTable, "Kscr", '𝒦'), _defineProperty(_htmlEntityTable, "kscr", '𝓀'), _defineProperty(_htmlEntityTable, "lAarr", '⇚'), _defineProperty(_htmlEntityTable, "Lacute", 'Ĺ'), _defineProperty(_htmlEntityTable, "lacute", 'ĺ'), _defineProperty(_htmlEntityTable, "laemptyv", '⦴'), _defineProperty(_htmlEntityTable, "lagran", 'ℒ'), _defineProperty(_htmlEntityTable, "Lambda", 'Λ'), _defineProperty(_htmlEntityTable, "lambda", 'λ'), _defineProperty(_htmlEntityTable, "lang", '⟨'), _defineProperty(_htmlEntityTable, "Lang", '⟪'), _defineProperty(_htmlEntityTable, "langd", '⦑'), _defineProperty(_htmlEntityTable, "langle", '⟨'), _defineProperty(_htmlEntityTable, "lap", '⪅'), _defineProperty(_htmlEntityTable, "Laplacetrf", 'ℒ'), _defineProperty(_htmlEntityTable, "laquo", '«'), _defineProperty(_htmlEntityTable, "laqu", '«'), _defineProperty(_htmlEntityTable, "larrb", '⇤'), _defineProperty(_htmlEntityTable, "larrbfs", '⤟'), _defineProperty(_htmlEntityTable, "larr", '←'), _defineProperty(_htmlEntityTable, "Larr", '↞'), _defineProperty(_htmlEntityTable, "lArr", '⇐'), _defineProperty(_htmlEntityTable, "larrfs", '⤝'), _defineProperty(_htmlEntityTable, "larrhk", '↩'), _defineProperty(_htmlEntityTable, "larrlp", '↫'), _defineProperty(_htmlEntityTable, "larrpl", '⤹'), _defineProperty(_htmlEntityTable, "larrsim", '⥳'), _defineProperty(_htmlEntityTable, "larrtl", '↢'), _defineProperty(_htmlEntityTable, "latail", '⤙'), _defineProperty(_htmlEntityTable, "lAtail", '⤛'), _defineProperty(_htmlEntityTable, "lat", '⪫'), _defineProperty(_htmlEntityTable, "late", '⪭'), _defineProperty(_htmlEntityTable, "lates", '⪭︀'), _defineProperty(_htmlEntityTable, "lbarr", '⤌'), _defineProperty(_htmlEntityTable, "lBarr", '⤎'), _defineProperty(_htmlEntityTable, "lbbrk", '❲'), _defineProperty(_htmlEntityTable, "lbrace", '{'), _defineProperty(_htmlEntityTable, "lbrack", '['), _defineProperty(_htmlEntityTable, "lbrke", '⦋'), _defineProperty(_htmlEntityTable, "lbrksld", '⦏'), _defineProperty(_htmlEntityTable, "lbrkslu", '⦍'), _defineProperty(_htmlEntityTable, "Lcaron", 'Ľ'), _defineProperty(_htmlEntityTable, "lcaron", 'ľ'), _defineProperty(_htmlEntityTable, "Lcedil", 'Ļ'), _defineProperty(_htmlEntityTable, "lcedil", 'ļ'), _defineProperty(_htmlEntityTable, "lceil", '⌈'), _defineProperty(_htmlEntityTable, "lcub", '{'), _defineProperty(_htmlEntityTable, "Lcy", 'Л'), _defineProperty(_htmlEntityTable, "lcy", 'л'), _defineProperty(_htmlEntityTable, "ldca", '⤶'), _defineProperty(_htmlEntityTable, "ldquo", '“'), _defineProperty(_htmlEntityTable, "ldquor", '„'), _defineProperty(_htmlEntityTable, "ldrdhar", '⥧'), _defineProperty(_htmlEntityTable, "ldrushar", '⥋'), _defineProperty(_htmlEntityTable, "ldsh", '↲'), _defineProperty(_htmlEntityTable, "le", '≤'), _defineProperty(_htmlEntityTable, "lE", '≦'), _defineProperty(_htmlEntityTable, "LeftAngleBracket", '⟨'), _defineProperty(_htmlEntityTable, "LeftArrowBar", '⇤'), _defineProperty(_htmlEntityTable, "leftarrow", '←'), _defineProperty(_htmlEntityTable, "LeftArrow", '←'), _defineProperty(_htmlEntityTable, "Leftarrow", '⇐'), _defineProperty(_htmlEntityTable, "LeftArrowRightArrow", '⇆'), _defineProperty(_htmlEntityTable, "leftarrowtail", '↢'), _defineProperty(_htmlEntityTable, "LeftCeiling", '⌈'), _defineProperty(_htmlEntityTable, "LeftDoubleBracket", '⟦'), _defineProperty(_htmlEntityTable, "LeftDownTeeVector", '⥡'), _defineProperty(_htmlEntityTable, "LeftDownVectorBar", '⥙'), _defineProperty(_htmlEntityTable, "LeftDownVector", '⇃'), _defineProperty(_htmlEntityTable, "LeftFloor", '⌊'), _defineProperty(_htmlEntityTable, "leftharpoondown", '↽'), _defineProperty(_htmlEntityTable, "leftharpoonup", '↼'), _defineProperty(_htmlEntityTable, "leftleftarrows", '⇇'), _defineProperty(_htmlEntityTable, "leftrightarrow", '↔'), _defineProperty(_htmlEntityTable, "LeftRightArrow", '↔'), _defineProperty(_htmlEntityTable, "Leftrightarrow", '⇔'), _defineProperty(_htmlEntityTable, "leftrightarrows", '⇆'), _defineProperty(_htmlEntityTable, "leftrightharpoons", '⇋'), _defineProperty(_htmlEntityTable, "leftrightsquigarrow", '↭'), _defineProperty(_htmlEntityTable, "LeftRightVector", '⥎'), _defineProperty(_htmlEntityTable, "LeftTeeArrow", '↤'), _defineProperty(_htmlEntityTable, "LeftTee", '⊣'), _defineProperty(_htmlEntityTable, "LeftTeeVector", '⥚'), _defineProperty(_htmlEntityTable, "leftthreetimes", '⋋'), _defineProperty(_htmlEntityTable, "LeftTriangleBar", '⧏'), _defineProperty(_htmlEntityTable, "LeftTriangle", '⊲'), _defineProperty(_htmlEntityTable, "LeftTriangleEqual", '⊴'), _defineProperty(_htmlEntityTable, "LeftUpDownVector", '⥑'), _defineProperty(_htmlEntityTable, "LeftUpTeeVector", '⥠'), _defineProperty(_htmlEntityTable, "LeftUpVectorBar", '⥘'), _defineProperty(_htmlEntityTable, "LeftUpVector", '↿'), _defineProperty(_htmlEntityTable, "LeftVectorBar", '⥒'), _defineProperty(_htmlEntityTable, "LeftVector", '↼'), _defineProperty(_htmlEntityTable, "lEg", '⪋'), _defineProperty(_htmlEntityTable, "leg", '⋚'), _defineProperty(_htmlEntityTable, "leq", '≤'), _defineProperty(_htmlEntityTable, "leqq", '≦'), _defineProperty(_htmlEntityTable, "leqslant", '⩽'), _defineProperty(_htmlEntityTable, "lescc", '⪨'), _defineProperty(_htmlEntityTable, "les", '⩽'), _defineProperty(_htmlEntityTable, "lesdot", '⩿'), _defineProperty(_htmlEntityTable, "lesdoto", '⪁'), _defineProperty(_htmlEntityTable, "lesdotor", '⪃'), _defineProperty(_htmlEntityTable, "lesg", '⋚︀'), _defineProperty(_htmlEntityTable, "lesges", '⪓'), _defineProperty(_htmlEntityTable, "lessapprox", '⪅'), _defineProperty(_htmlEntityTable, "lessdot", '⋖'), _defineProperty(_htmlEntityTable, "lesseqgtr", '⋚'), _defineProperty(_htmlEntityTable, "lesseqqgtr", '⪋'), _defineProperty(_htmlEntityTable, "LessEqualGreater", '⋚'), _defineProperty(_htmlEntityTable, "LessFullEqual", '≦'), _defineProperty(_htmlEntityTable, "LessGreater", '≶'), _defineProperty(_htmlEntityTable, "lessgtr", '≶'), _defineProperty(_htmlEntityTable, "LessLess", '⪡'), _defineProperty(_htmlEntityTable, "lesssim", '≲'), _defineProperty(_htmlEntityTable, "LessSlantEqual", '⩽'), _defineProperty(_htmlEntityTable, "LessTilde", '≲'), _defineProperty(_htmlEntityTable, "lfisht", '⥼'), _defineProperty(_htmlEntityTable, "lfloor", '⌊'), _defineProperty(_htmlEntityTable, "Lfr", '𝔏'), _defineProperty(_htmlEntityTable, "lfr", '𝔩'), _defineProperty(_htmlEntityTable, "lg", '≶'), _defineProperty(_htmlEntityTable, "lgE", '⪑'), _defineProperty(_htmlEntityTable, "lHar", '⥢'), _defineProperty(_htmlEntityTable, "lhard", '↽'), _defineProperty(_htmlEntityTable, "lharu", '↼'), _defineProperty(_htmlEntityTable, "lharul", '⥪'), _defineProperty(_htmlEntityTable, "lhblk", '▄'), _defineProperty(_htmlEntityTable, "LJcy", 'Љ'), _defineProperty(_htmlEntityTable, "ljcy", 'љ'), _defineProperty(_htmlEntityTable, "llarr", '⇇'), _defineProperty(_htmlEntityTable, "ll", '≪'), _defineProperty(_htmlEntityTable, "Ll", '⋘'), _defineProperty(_htmlEntityTable, "llcorner", '⌞'), _defineProperty(_htmlEntityTable, "Lleftarrow", '⇚'), _defineProperty(_htmlEntityTable, "llhard", '⥫'), _defineProperty(_htmlEntityTable, "lltri", '◺'), _defineProperty(_htmlEntityTable, "Lmidot", 'Ŀ'), _defineProperty(_htmlEntityTable, "lmidot", 'ŀ'), _defineProperty(_htmlEntityTable, "lmoustache", '⎰'), _defineProperty(_htmlEntityTable, "lmoust", '⎰'), _defineProperty(_htmlEntityTable, "lnap", '⪉'), _defineProperty(_htmlEntityTable, "lnapprox", '⪉'), _defineProperty(_htmlEntityTable, "lne", '⪇'), _defineProperty(_htmlEntityTable, "lnE", '≨'), _defineProperty(_htmlEntityTable, "lneq", '⪇'), _defineProperty(_htmlEntityTable, "lneqq", '≨'), _defineProperty(_htmlEntityTable, "lnsim", '⋦'), _defineProperty(_htmlEntityTable, "loang", '⟬'), _defineProperty(_htmlEntityTable, "loarr", '⇽'), _defineProperty(_htmlEntityTable, "lobrk", '⟦'), _defineProperty(_htmlEntityTable, "longleftarrow", '⟵'), _defineProperty(_htmlEntityTable, "LongLeftArrow", '⟵'), _defineProperty(_htmlEntityTable, "Longleftarrow", '⟸'), _defineProperty(_htmlEntityTable, "longleftrightarrow", '⟷'), _defineProperty(_htmlEntityTable, "LongLeftRightArrow", '⟷'), _defineProperty(_htmlEntityTable, "Longleftrightarrow", '⟺'), _defineProperty(_htmlEntityTable, "longmapsto", '⟼'), _defineProperty(_htmlEntityTable, "longrightarrow", '⟶'), _defineProperty(_htmlEntityTable, "LongRightArrow", '⟶'), _defineProperty(_htmlEntityTable, "Longrightarrow", '⟹'), _defineProperty(_htmlEntityTable, "looparrowleft", '↫'), _defineProperty(_htmlEntityTable, "looparrowright", '↬'), _defineProperty(_htmlEntityTable, "lopar", '⦅'), _defineProperty(_htmlEntityTable, "Lopf", '𝕃'), _defineProperty(_htmlEntityTable, "lopf", '𝕝'), _defineProperty(_htmlEntityTable, "loplus", '⨭'), _defineProperty(_htmlEntityTable, "lotimes", '⨴'), _defineProperty(_htmlEntityTable, "lowast", '∗'), _defineProperty(_htmlEntityTable, "lowbar", '_'), _defineProperty(_htmlEntityTable, "LowerLeftArrow", '↙'), _defineProperty(_htmlEntityTable, "LowerRightArrow", '↘'), _defineProperty(_htmlEntityTable, "loz", '◊'), _defineProperty(_htmlEntityTable, "lozenge", '◊'), _defineProperty(_htmlEntityTable, "lozf", '⧫'), _defineProperty(_htmlEntityTable, "lpar", '('), _defineProperty(_htmlEntityTable, "lparlt", '⦓'), _defineProperty(_htmlEntityTable, "lrarr", '⇆'), _defineProperty(_htmlEntityTable, "lrcorner", '⌟'), _defineProperty(_htmlEntityTable, "lrhar", '⇋'), _defineProperty(_htmlEntityTable, "lrhard", '⥭'), _defineProperty(_htmlEntityTable, "lrm", '‎'), _defineProperty(_htmlEntityTable, "lrtri", '⊿'), _defineProperty(_htmlEntityTable, "lsaquo", '‹'), _defineProperty(_htmlEntityTable, "lscr", '𝓁'), _defineProperty(_htmlEntityTable, "Lscr", 'ℒ'), _defineProperty(_htmlEntityTable, "lsh", '↰'), _defineProperty(_htmlEntityTable, "Lsh", '↰'), _defineProperty(_htmlEntityTable, "lsim", '≲'), _defineProperty(_htmlEntityTable, "lsime", '⪍'), _defineProperty(_htmlEntityTable, "lsimg", '⪏'), _defineProperty(_htmlEntityTable, "lsqb", '['), _defineProperty(_htmlEntityTable, "lsquo", '‘'), _defineProperty(_htmlEntityTable, "lsquor", '‚'), _defineProperty(_htmlEntityTable, "Lstrok", 'Ł'), _defineProperty(_htmlEntityTable, "lstrok", 'ł'), _defineProperty(_htmlEntityTable, "ltcc", '⪦'), _defineProperty(_htmlEntityTable, "ltcir", '⩹'), _defineProperty(_htmlEntityTable, "lt", '<'), _defineProperty(_htmlEntityTable, "l", '<'), _defineProperty(_htmlEntityTable, "LT", '<'), _defineProperty(_htmlEntityTable, "L", '<'), _defineProperty(_htmlEntityTable, "Lt", '≪'), _defineProperty(_htmlEntityTable, "ltdot", '⋖'), _defineProperty(_htmlEntityTable, "lthree", '⋋'), _defineProperty(_htmlEntityTable, "ltimes", '⋉'), _defineProperty(_htmlEntityTable, "ltlarr", '⥶'), _defineProperty(_htmlEntityTable, "ltquest", '⩻'), _defineProperty(_htmlEntityTable, "ltri", '◃'), _defineProperty(_htmlEntityTable, "ltrie", '⊴'), _defineProperty(_htmlEntityTable, "ltrif", '◂'), _defineProperty(_htmlEntityTable, "ltrPar", '⦖'), _defineProperty(_htmlEntityTable, "lurdshar", '⥊'), _defineProperty(_htmlEntityTable, "luruhar", '⥦'), _defineProperty(_htmlEntityTable, "lvertneqq", '≨︀'), _defineProperty(_htmlEntityTable, "lvnE", '≨︀'), _defineProperty(_htmlEntityTable, "macr", '¯'), _defineProperty(_htmlEntityTable, "mac", '¯'), _defineProperty(_htmlEntityTable, "male", '♂'), _defineProperty(_htmlEntityTable, "malt", '✠'), _defineProperty(_htmlEntityTable, "maltese", '✠'), _defineProperty(_htmlEntityTable, "Map", '⤅'), _defineProperty(_htmlEntityTable, "map", '↦'), _defineProperty(_htmlEntityTable, "mapsto", '↦'), _defineProperty(_htmlEntityTable, "mapstodown", '↧'), _defineProperty(_htmlEntityTable, "mapstoleft", '↤'), _defineProperty(_htmlEntityTable, "mapstoup", '↥'), _defineProperty(_htmlEntityTable, "marker", '▮'), _defineProperty(_htmlEntityTable, "mcomma", '⨩'), _defineProperty(_htmlEntityTable, "Mcy", 'М'), _defineProperty(_htmlEntityTable, "mcy", 'м'), _defineProperty(_htmlEntityTable, "mdash", '—'), _defineProperty(_htmlEntityTable, "mDDot", '∺'), _defineProperty(_htmlEntityTable, "measuredangle", '∡'), _defineProperty(_htmlEntityTable, "MediumSpace", ' '), _defineProperty(_htmlEntityTable, "Mellintrf", 'ℳ'), _defineProperty(_htmlEntityTable, "Mfr", '𝔐'), _defineProperty(_htmlEntityTable, "mfr", '𝔪'), _defineProperty(_htmlEntityTable, "mho", '℧'), _defineProperty(_htmlEntityTable, "micro", 'µ'), _defineProperty(_htmlEntityTable, "micr", 'µ'), _defineProperty(_htmlEntityTable, "midast", '*'), _defineProperty(_htmlEntityTable, "midcir", '⫰'), _defineProperty(_htmlEntityTable, "mid", '∣'), _defineProperty(_htmlEntityTable, "middot", '·'), _defineProperty(_htmlEntityTable, "middo", '·'), _defineProperty(_htmlEntityTable, "minusb", '⊟'), _defineProperty(_htmlEntityTable, "minus", '−'), _defineProperty(_htmlEntityTable, "minusd", '∸'), _defineProperty(_htmlEntityTable, "minusdu", '⨪'), _defineProperty(_htmlEntityTable, "MinusPlus", '∓'), _defineProperty(_htmlEntityTable, "mlcp", '⫛'), _defineProperty(_htmlEntityTable, "mldr", '…'), _defineProperty(_htmlEntityTable, "mnplus", '∓'), _defineProperty(_htmlEntityTable, "models", '⊧'), _defineProperty(_htmlEntityTable, "Mopf", '𝕄'), _defineProperty(_htmlEntityTable, "mopf", '𝕞'), _defineProperty(_htmlEntityTable, "mp", '∓'), _defineProperty(_htmlEntityTable, "mscr", '𝓂'), _defineProperty(_htmlEntityTable, "Mscr", 'ℳ'), _defineProperty(_htmlEntityTable, "mstpos", '∾'), _defineProperty(_htmlEntityTable, "Mu", 'Μ'), _defineProperty(_htmlEntityTable, "mu", 'μ'), _defineProperty(_htmlEntityTable, "multimap", '⊸'), _defineProperty(_htmlEntityTable, "mumap", '⊸'), _defineProperty(_htmlEntityTable, "nabla", '∇'), _defineProperty(_htmlEntityTable, "Nacute", 'Ń'), _defineProperty(_htmlEntityTable, "nacute", 'ń'), _defineProperty(_htmlEntityTable, "nang", '∠⃒'), _defineProperty(_htmlEntityTable, "nap", '≉'), _defineProperty(_htmlEntityTable, "napE", '⩰̸'), _defineProperty(_htmlEntityTable, "napid", '≋̸'), _defineProperty(_htmlEntityTable, "napos", 'ŉ'), _defineProperty(_htmlEntityTable, "napprox", '≉'), _defineProperty(_htmlEntityTable, "natural", '♮'), _defineProperty(_htmlEntityTable, "naturals", 'ℕ'), _defineProperty(_htmlEntityTable, "natur", '♮'), _defineProperty(_htmlEntityTable, "nbsp", ' '), _defineProperty(_htmlEntityTable, "nbs", ' '), _defineProperty(_htmlEntityTable, "nbump", '≎̸'), _defineProperty(_htmlEntityTable, "nbumpe", '≏̸'), _defineProperty(_htmlEntityTable, "ncap", '⩃'), _defineProperty(_htmlEntityTable, "Ncaron", 'Ň'), _defineProperty(_htmlEntityTable, "ncaron", 'ň'), _defineProperty(_htmlEntityTable, "Ncedil", 'Ņ'), _defineProperty(_htmlEntityTable, "ncedil", 'ņ'), _defineProperty(_htmlEntityTable, "ncong", '≇'), _defineProperty(_htmlEntityTable, "ncongdot", '⩭̸'), _defineProperty(_htmlEntityTable, "ncup", '⩂'), _defineProperty(_htmlEntityTable, "Ncy", 'Н'), _defineProperty(_htmlEntityTable, "ncy", 'н'), _defineProperty(_htmlEntityTable, "ndash", '–'), _defineProperty(_htmlEntityTable, "nearhk", '⤤'), _defineProperty(_htmlEntityTable, "nearr", '↗'), _defineProperty(_htmlEntityTable, "neArr", '⇗'), _defineProperty(_htmlEntityTable, "nearrow", '↗'), _defineProperty(_htmlEntityTable, "ne", '≠'), _defineProperty(_htmlEntityTable, "nedot", '≐̸'), _defineProperty(_htmlEntityTable, "NegativeMediumSpace", '​'), _defineProperty(_htmlEntityTable, "NegativeThickSpace", '​'), _defineProperty(_htmlEntityTable, "NegativeThinSpace", '​'), _defineProperty(_htmlEntityTable, "NegativeVeryThinSpace", '​'), _defineProperty(_htmlEntityTable, "nequiv", '≢'), _defineProperty(_htmlEntityTable, "nesear", '⤨'), _defineProperty(_htmlEntityTable, "nesim", '≂̸'), _defineProperty(_htmlEntityTable, "NestedGreaterGreater", '≫'), _defineProperty(_htmlEntityTable, "NestedLessLess", '≪'), _defineProperty(_htmlEntityTable, "NewLine", '\n'), _defineProperty(_htmlEntityTable, "nexist", '∄'), _defineProperty(_htmlEntityTable, "nexists", '∄'), _defineProperty(_htmlEntityTable, "Nfr", '𝔑'), _defineProperty(_htmlEntityTable, "nfr", '𝔫'), _defineProperty(_htmlEntityTable, "ngE", '≧̸'), _defineProperty(_htmlEntityTable, "nge", '≱'), _defineProperty(_htmlEntityTable, "ngeq", '≱'), _defineProperty(_htmlEntityTable, "ngeqq", '≧̸'), _defineProperty(_htmlEntityTable, "ngeqslant", '⩾̸'), _defineProperty(_htmlEntityTable, "nges", '⩾̸'), _defineProperty(_htmlEntityTable, "nGg", '⋙̸'), _defineProperty(_htmlEntityTable, "ngsim", '≵'), _defineProperty(_htmlEntityTable, "nGt", '≫⃒'), _defineProperty(_htmlEntityTable, "ngt", '≯'), _defineProperty(_htmlEntityTable, "ngtr", '≯'), _defineProperty(_htmlEntityTable, "nGtv", '≫̸'), _defineProperty(_htmlEntityTable, "nharr", '↮'), _defineProperty(_htmlEntityTable, "nhArr", '⇎'), _defineProperty(_htmlEntityTable, "nhpar", '⫲'), _defineProperty(_htmlEntityTable, "ni", '∋'), _defineProperty(_htmlEntityTable, "nis", '⋼'), _defineProperty(_htmlEntityTable, "nisd", '⋺'), _defineProperty(_htmlEntityTable, "niv", '∋'), _defineProperty(_htmlEntityTable, "NJcy", 'Њ'), _defineProperty(_htmlEntityTable, "njcy", 'њ'), _defineProperty(_htmlEntityTable, "nlarr", '↚'), _defineProperty(_htmlEntityTable, "nlArr", '⇍'), _defineProperty(_htmlEntityTable, "nldr", '‥'), _defineProperty(_htmlEntityTable, "nlE", '≦̸'), _defineProperty(_htmlEntityTable, "nle", '≰'), _defineProperty(_htmlEntityTable, "nleftarrow", '↚'), _defineProperty(_htmlEntityTable, "nLeftarrow", '⇍'), _defineProperty(_htmlEntityTable, "nleftrightarrow", '↮'), _defineProperty(_htmlEntityTable, "nLeftrightarrow", '⇎'), _defineProperty(_htmlEntityTable, "nleq", '≰'), _defineProperty(_htmlEntityTable, "nleqq", '≦̸'), _defineProperty(_htmlEntityTable, "nleqslant", '⩽̸'), _defineProperty(_htmlEntityTable, "nles", '⩽̸'), _defineProperty(_htmlEntityTable, "nless", '≮'), _defineProperty(_htmlEntityTable, "nLl", '⋘̸'), _defineProperty(_htmlEntityTable, "nlsim", '≴'), _defineProperty(_htmlEntityTable, "nLt", '≪⃒'), _defineProperty(_htmlEntityTable, "nlt", '≮'), _defineProperty(_htmlEntityTable, "nltri", '⋪'), _defineProperty(_htmlEntityTable, "nltrie", '⋬'), _defineProperty(_htmlEntityTable, "nLtv", '≪̸'), _defineProperty(_htmlEntityTable, "nmid", '∤'), _defineProperty(_htmlEntityTable, "NoBreak", '⁠'), _defineProperty(_htmlEntityTable, "NonBreakingSpace", ' '), _defineProperty(_htmlEntityTable, "nopf", '𝕟'), _defineProperty(_htmlEntityTable, "Nopf", 'ℕ'), _defineProperty(_htmlEntityTable, "Not", '⫬'), _defineProperty(_htmlEntityTable, "not", '¬'), _defineProperty(_htmlEntityTable, "no", '¬'), _defineProperty(_htmlEntityTable, "NotCongruent", '≢'), _defineProperty(_htmlEntityTable, "NotCupCap", '≭'), _defineProperty(_htmlEntityTable, "NotDoubleVerticalBar", '∦'), _defineProperty(_htmlEntityTable, "NotElement", '∉'), _defineProperty(_htmlEntityTable, "NotEqual", '≠'), _defineProperty(_htmlEntityTable, "NotEqualTilde", '≂̸'), _defineProperty(_htmlEntityTable, "NotExists", '∄'), _defineProperty(_htmlEntityTable, "NotGreater", '≯'), _defineProperty(_htmlEntityTable, "NotGreaterEqual", '≱'), _defineProperty(_htmlEntityTable, "NotGreaterFullEqual", '≧̸'), _defineProperty(_htmlEntityTable, "NotGreaterGreater", '≫̸'), _defineProperty(_htmlEntityTable, "NotGreaterLess", '≹'), _defineProperty(_htmlEntityTable, "NotGreaterSlantEqual", '⩾̸'), _defineProperty(_htmlEntityTable, "NotGreaterTilde", '≵'), _defineProperty(_htmlEntityTable, "NotHumpDownHump", '≎̸'), _defineProperty(_htmlEntityTable, "NotHumpEqual", '≏̸'), _defineProperty(_htmlEntityTable, "notin", '∉'), _defineProperty(_htmlEntityTable, "notindot", '⋵̸'), _defineProperty(_htmlEntityTable, "notinE", '⋹̸'), _defineProperty(_htmlEntityTable, "notinva", '∉'), _defineProperty(_htmlEntityTable, "notinvb", '⋷'), _defineProperty(_htmlEntityTable, "notinvc", '⋶'), _defineProperty(_htmlEntityTable, "NotLeftTriangleBar", '⧏̸'), _defineProperty(_htmlEntityTable, "NotLeftTriangle", '⋪'), _defineProperty(_htmlEntityTable, "NotLeftTriangleEqual", '⋬'), _defineProperty(_htmlEntityTable, "NotLess", '≮'), _defineProperty(_htmlEntityTable, "NotLessEqual", '≰'), _defineProperty(_htmlEntityTable, "NotLessGreater", '≸'), _defineProperty(_htmlEntityTable, "NotLessLess", '≪̸'), _defineProperty(_htmlEntityTable, "NotLessSlantEqual", '⩽̸'), _defineProperty(_htmlEntityTable, "NotLessTilde", '≴'), _defineProperty(_htmlEntityTable, "NotNestedGreaterGreater", '⪢̸'), _defineProperty(_htmlEntityTable, "NotNestedLessLess", '⪡̸'), _defineProperty(_htmlEntityTable, "notni", '∌'), _defineProperty(_htmlEntityTable, "notniva", '∌'), _defineProperty(_htmlEntityTable, "notnivb", '⋾'), _defineProperty(_htmlEntityTable, "notnivc", '⋽'), _defineProperty(_htmlEntityTable, "NotPrecedes", '⊀'), _defineProperty(_htmlEntityTable, "NotPrecedesEqual", '⪯̸'), _defineProperty(_htmlEntityTable, "NotPrecedesSlantEqual", '⋠'), _defineProperty(_htmlEntityTable, "NotReverseElement", '∌'), _defineProperty(_htmlEntityTable, "NotRightTriangleBar", '⧐̸'), _defineProperty(_htmlEntityTable, "NotRightTriangle", '⋫'), _defineProperty(_htmlEntityTable, "NotRightTriangleEqual", '⋭'), _defineProperty(_htmlEntityTable, "NotSquareSubset", '⊏̸'), _defineProperty(_htmlEntityTable, "NotSquareSubsetEqual", '⋢'), _defineProperty(_htmlEntityTable, "NotSquareSuperset", '⊐̸'), _defineProperty(_htmlEntityTable, "NotSquareSupersetEqual", '⋣'), _defineProperty(_htmlEntityTable, "NotSubset", '⊂⃒'), _defineProperty(_htmlEntityTable, "NotSubsetEqual", '⊈'), _defineProperty(_htmlEntityTable, "NotSucceeds", '⊁'), _defineProperty(_htmlEntityTable, "NotSucceedsEqual", '⪰̸'), _defineProperty(_htmlEntityTable, "NotSucceedsSlantEqual", '⋡'), _defineProperty(_htmlEntityTable, "NotSucceedsTilde", '≿̸'), _defineProperty(_htmlEntityTable, "NotSuperset", '⊃⃒'), _defineProperty(_htmlEntityTable, "NotSupersetEqual", '⊉'), _defineProperty(_htmlEntityTable, "NotTilde", '≁'), _defineProperty(_htmlEntityTable, "NotTildeEqual", '≄'), _defineProperty(_htmlEntityTable, "NotTildeFullEqual", '≇'), _defineProperty(_htmlEntityTable, "NotTildeTilde", '≉'), _defineProperty(_htmlEntityTable, "NotVerticalBar", '∤'), _defineProperty(_htmlEntityTable, "nparallel", '∦'), _defineProperty(_htmlEntityTable, "npar", '∦'), _defineProperty(_htmlEntityTable, "nparsl", '⫽⃥'), _defineProperty(_htmlEntityTable, "npart", '∂̸'), _defineProperty(_htmlEntityTable, "npolint", '⨔'), _defineProperty(_htmlEntityTable, "npr", '⊀'), _defineProperty(_htmlEntityTable, "nprcue", '⋠'), _defineProperty(_htmlEntityTable, "nprec", '⊀'), _defineProperty(_htmlEntityTable, "npreceq", '⪯̸'), _defineProperty(_htmlEntityTable, "npre", '⪯̸'), _defineProperty(_htmlEntityTable, "nrarrc", '⤳̸'), _defineProperty(_htmlEntityTable, "nrarr", '↛'), _defineProperty(_htmlEntityTable, "nrArr", '⇏'), _defineProperty(_htmlEntityTable, "nrarrw", '↝̸'), _defineProperty(_htmlEntityTable, "nrightarrow", '↛'), _defineProperty(_htmlEntityTable, "nRightarrow", '⇏'), _defineProperty(_htmlEntityTable, "nrtri", '⋫'), _defineProperty(_htmlEntityTable, "nrtrie", '⋭'), _defineProperty(_htmlEntityTable, "nsc", '⊁'), _defineProperty(_htmlEntityTable, "nsccue", '⋡'), _defineProperty(_htmlEntityTable, "nsce", '⪰̸'), _defineProperty(_htmlEntityTable, "Nscr", '𝒩'), _defineProperty(_htmlEntityTable, "nscr", '𝓃'), _defineProperty(_htmlEntityTable, "nshortmid", '∤'), _defineProperty(_htmlEntityTable, "nshortparallel", '∦'), _defineProperty(_htmlEntityTable, "nsim", '≁'), _defineProperty(_htmlEntityTable, "nsime", '≄'), _defineProperty(_htmlEntityTable, "nsimeq", '≄'), _defineProperty(_htmlEntityTable, "nsmid", '∤'), _defineProperty(_htmlEntityTable, "nspar", '∦'), _defineProperty(_htmlEntityTable, "nsqsube", '⋢'), _defineProperty(_htmlEntityTable, "nsqsupe", '⋣'), _defineProperty(_htmlEntityTable, "nsub", '⊄'), _defineProperty(_htmlEntityTable, "nsubE", '⫅̸'), _defineProperty(_htmlEntityTable, "nsube", '⊈'), _defineProperty(_htmlEntityTable, "nsubset", '⊂⃒'), _defineProperty(_htmlEntityTable, "nsubseteq", '⊈'), _defineProperty(_htmlEntityTable, "nsubseteqq", '⫅̸'), _defineProperty(_htmlEntityTable, "nsucc", '⊁'), _defineProperty(_htmlEntityTable, "nsucceq", '⪰̸'), _defineProperty(_htmlEntityTable, "nsup", '⊅'), _defineProperty(_htmlEntityTable, "nsupE", '⫆̸'), _defineProperty(_htmlEntityTable, "nsupe", '⊉'), _defineProperty(_htmlEntityTable, "nsupset", '⊃⃒'), _defineProperty(_htmlEntityTable, "nsupseteq", '⊉'), _defineProperty(_htmlEntityTable, "nsupseteqq", '⫆̸'), _defineProperty(_htmlEntityTable, "ntgl", '≹'), _defineProperty(_htmlEntityTable, "Ntilde", 'Ñ'), _defineProperty(_htmlEntityTable, "Ntild", 'Ñ'), _defineProperty(_htmlEntityTable, "ntilde", 'ñ'), _defineProperty(_htmlEntityTable, "ntild", 'ñ'), _defineProperty(_htmlEntityTable, "ntlg", '≸'), _defineProperty(_htmlEntityTable, "ntriangleleft", '⋪'), _defineProperty(_htmlEntityTable, "ntrianglelefteq", '⋬'), _defineProperty(_htmlEntityTable, "ntriangleright", '⋫'), _defineProperty(_htmlEntityTable, "ntrianglerighteq", '⋭'), _defineProperty(_htmlEntityTable, "Nu", 'Ν'), _defineProperty(_htmlEntityTable, "nu", 'ν'), _defineProperty(_htmlEntityTable, "num", '#'), _defineProperty(_htmlEntityTable, "numero", '№'), _defineProperty(_htmlEntityTable, "numsp", ' '), _defineProperty(_htmlEntityTable, "nvap", '≍⃒'), _defineProperty(_htmlEntityTable, "nvdash", '⊬'), _defineProperty(_htmlEntityTable, "nvDash", '⊭'), _defineProperty(_htmlEntityTable, "nVdash", '⊮'), _defineProperty(_htmlEntityTable, "nVDash", '⊯'), _defineProperty(_htmlEntityTable, "nvge", '≥⃒'), _defineProperty(_htmlEntityTable, "nvgt", '>⃒'), _defineProperty(_htmlEntityTable, "nvHarr", '⤄'), _defineProperty(_htmlEntityTable, "nvinfin", '⧞'), _defineProperty(_htmlEntityTable, "nvlArr", '⤂'), _defineProperty(_htmlEntityTable, "nvle", '≤⃒'), _defineProperty(_htmlEntityTable, "nvlt", '<⃒'), _defineProperty(_htmlEntityTable, "nvltrie", '⊴⃒'), _defineProperty(_htmlEntityTable, "nvrArr", '⤃'), _defineProperty(_htmlEntityTable, "nvrtrie", '⊵⃒'), _defineProperty(_htmlEntityTable, "nvsim", '∼⃒'), _defineProperty(_htmlEntityTable, "nwarhk", '⤣'), _defineProperty(_htmlEntityTable, "nwarr", '↖'), _defineProperty(_htmlEntityTable, "nwArr", '⇖'), _defineProperty(_htmlEntityTable, "nwarrow", '↖'), _defineProperty(_htmlEntityTable, "nwnear", '⤧'), _defineProperty(_htmlEntityTable, "Oacute", 'Ó'), _defineProperty(_htmlEntityTable, "Oacut", 'Ó'), _defineProperty(_htmlEntityTable, "oacute", 'ó'), _defineProperty(_htmlEntityTable, "oacut", 'ó'), _defineProperty(_htmlEntityTable, "oast", '⊛'), _defineProperty(_htmlEntityTable, "Ocirc", 'Ô'), _defineProperty(_htmlEntityTable, "Ocir", 'Ô'), _defineProperty(_htmlEntityTable, "ocirc", 'ô'), _defineProperty(_htmlEntityTable, "ocir", 'ô'), _defineProperty(_htmlEntityTable, "ocir", '⊚'), _defineProperty(_htmlEntityTable, "Ocy", 'О'), _defineProperty(_htmlEntityTable, "ocy", 'о'), _defineProperty(_htmlEntityTable, "odash", '⊝'), _defineProperty(_htmlEntityTable, "Odblac", 'Ő'), _defineProperty(_htmlEntityTable, "odblac", 'ő'), _defineProperty(_htmlEntityTable, "odiv", '⨸'), _defineProperty(_htmlEntityTable, "odot", '⊙'), _defineProperty(_htmlEntityTable, "odsold", '⦼'), _defineProperty(_htmlEntityTable, "OElig", 'Œ'), _defineProperty(_htmlEntityTable, "oelig", 'œ'), _defineProperty(_htmlEntityTable, "ofcir", '⦿'), _defineProperty(_htmlEntityTable, "Ofr", '𝔒'), _defineProperty(_htmlEntityTable, "ofr", '𝔬'), _defineProperty(_htmlEntityTable, "ogon", '˛'), _defineProperty(_htmlEntityTable, "Ograve", 'Ò'), _defineProperty(_htmlEntityTable, "Ograv", 'Ò'), _defineProperty(_htmlEntityTable, "ograve", 'ò'), _defineProperty(_htmlEntityTable, "ograv", 'ò'), _defineProperty(_htmlEntityTable, "ogt", '⧁'), _defineProperty(_htmlEntityTable, "ohbar", '⦵'), _defineProperty(_htmlEntityTable, "ohm", 'Ω'), _defineProperty(_htmlEntityTable, "oint", '∮'), _defineProperty(_htmlEntityTable, "olarr", '↺'), _defineProperty(_htmlEntityTable, "olcir", '⦾'), _defineProperty(_htmlEntityTable, "olcross", '⦻'), _defineProperty(_htmlEntityTable, "oline", '‾'), _defineProperty(_htmlEntityTable, "olt", '⧀'), _defineProperty(_htmlEntityTable, "Omacr", 'Ō'), _defineProperty(_htmlEntityTable, "omacr", 'ō'), _defineProperty(_htmlEntityTable, "Omega", 'Ω'), _defineProperty(_htmlEntityTable, "omega", 'ω'), _defineProperty(_htmlEntityTable, "Omicron", 'Ο'), _defineProperty(_htmlEntityTable, "omicron", 'ο'), _defineProperty(_htmlEntityTable, "omid", '⦶'), _defineProperty(_htmlEntityTable, "ominus", '⊖'), _defineProperty(_htmlEntityTable, "Oopf", '𝕆'), _defineProperty(_htmlEntityTable, "oopf", '𝕠'), _defineProperty(_htmlEntityTable, "opar", '⦷'), _defineProperty(_htmlEntityTable, "OpenCurlyDoubleQuote", '“'), _defineProperty(_htmlEntityTable, "OpenCurlyQuote", '‘'), _defineProperty(_htmlEntityTable, "operp", '⦹'), _defineProperty(_htmlEntityTable, "oplus", '⊕'), _defineProperty(_htmlEntityTable, "orarr", '↻'), _defineProperty(_htmlEntityTable, "Or", '⩔'), _defineProperty(_htmlEntityTable, "or", '∨'), _defineProperty(_htmlEntityTable, "ord", '⩝'), _defineProperty(_htmlEntityTable, "order", 'ℴ'), _defineProperty(_htmlEntityTable, "orderof", 'ℴ'), _defineProperty(_htmlEntityTable, "ordf", 'ª'), _defineProperty(_htmlEntityTable, "ord", 'ª'), _defineProperty(_htmlEntityTable, "ordm", 'º'), _defineProperty(_htmlEntityTable, "ord", 'º'), _defineProperty(_htmlEntityTable, "origof", '⊶'), _defineProperty(_htmlEntityTable, "oror", '⩖'), _defineProperty(_htmlEntityTable, "orslope", '⩗'), _defineProperty(_htmlEntityTable, "orv", '⩛'), _defineProperty(_htmlEntityTable, "oS", 'Ⓢ'), _defineProperty(_htmlEntityTable, "Oscr", '𝒪'), _defineProperty(_htmlEntityTable, "oscr", 'ℴ'), _defineProperty(_htmlEntityTable, "Oslash", 'Ø'), _defineProperty(_htmlEntityTable, "Oslas", 'Ø'), _defineProperty(_htmlEntityTable, "oslash", 'ø'), _defineProperty(_htmlEntityTable, "oslas", 'ø'), _defineProperty(_htmlEntityTable, "osol", '⊘'), _defineProperty(_htmlEntityTable, "Otilde", 'Õ'), _defineProperty(_htmlEntityTable, "Otild", 'Õ'), _defineProperty(_htmlEntityTable, "otilde", 'õ'), _defineProperty(_htmlEntityTable, "otild", 'õ'), _defineProperty(_htmlEntityTable, "otimesas", '⨶'), _defineProperty(_htmlEntityTable, "Otimes", '⨷'), _defineProperty(_htmlEntityTable, "otimes", '⊗'), _defineProperty(_htmlEntityTable, "Ouml", 'Ö'), _defineProperty(_htmlEntityTable, "Oum", 'Ö'), _defineProperty(_htmlEntityTable, "ouml", 'ö'), _defineProperty(_htmlEntityTable, "oum", 'ö'), _defineProperty(_htmlEntityTable, "ovbar", '⌽'), _defineProperty(_htmlEntityTable, "OverBar", '‾'), _defineProperty(_htmlEntityTable, "OverBrace", '⏞'), _defineProperty(_htmlEntityTable, "OverBracket", '⎴'), _defineProperty(_htmlEntityTable, "OverParenthesis", '⏜'), _defineProperty(_htmlEntityTable, "para", '¶'), _defineProperty(_htmlEntityTable, "par", '¶'), _defineProperty(_htmlEntityTable, "parallel", '∥'), _defineProperty(_htmlEntityTable, "par", '∥'), _defineProperty(_htmlEntityTable, "parsim", '⫳'), _defineProperty(_htmlEntityTable, "parsl", '⫽'), _defineProperty(_htmlEntityTable, "part", '∂'), _defineProperty(_htmlEntityTable, "PartialD", '∂'), _defineProperty(_htmlEntityTable, "Pcy", 'П'), _defineProperty(_htmlEntityTable, "pcy", 'п'), _defineProperty(_htmlEntityTable, "percnt", '%'), _defineProperty(_htmlEntityTable, "period", '.'), _defineProperty(_htmlEntityTable, "permil", '‰'), _defineProperty(_htmlEntityTable, "perp", '⊥'), _defineProperty(_htmlEntityTable, "pertenk", '‱'), _defineProperty(_htmlEntityTable, "Pfr", '𝔓'), _defineProperty(_htmlEntityTable, "pfr", '𝔭'), _defineProperty(_htmlEntityTable, "Phi", 'Φ'), _defineProperty(_htmlEntityTable, "phi", 'φ'), _defineProperty(_htmlEntityTable, "phiv", 'ϕ'), _defineProperty(_htmlEntityTable, "phmmat", 'ℳ'), _defineProperty(_htmlEntityTable, "phone", '☎'), _defineProperty(_htmlEntityTable, "Pi", 'Π'), _defineProperty(_htmlEntityTable, "pi", 'π'), _defineProperty(_htmlEntityTable, "pitchfork", '⋔'), _defineProperty(_htmlEntityTable, "piv", 'ϖ'), _defineProperty(_htmlEntityTable, "planck", 'ℏ'), _defineProperty(_htmlEntityTable, "planckh", 'ℎ'), _defineProperty(_htmlEntityTable, "plankv", 'ℏ'), _defineProperty(_htmlEntityTable, "plusacir", '⨣'), _defineProperty(_htmlEntityTable, "plusb", '⊞'), _defineProperty(_htmlEntityTable, "pluscir", '⨢'), _defineProperty(_htmlEntityTable, "plus", '+'), _defineProperty(_htmlEntityTable, "plusdo", '∔'), _defineProperty(_htmlEntityTable, "plusdu", '⨥'), _defineProperty(_htmlEntityTable, "pluse", '⩲'), _defineProperty(_htmlEntityTable, "PlusMinus", '±'), _defineProperty(_htmlEntityTable, "plusmn", '±'), _defineProperty(_htmlEntityTable, "plusm", '±'), _defineProperty(_htmlEntityTable, "plussim", '⨦'), _defineProperty(_htmlEntityTable, "plustwo", '⨧'), _defineProperty(_htmlEntityTable, "pm", '±'), _defineProperty(_htmlEntityTable, "Poincareplane", 'ℌ'), _defineProperty(_htmlEntityTable, "pointint", '⨕'), _defineProperty(_htmlEntityTable, "popf", '𝕡'), _defineProperty(_htmlEntityTable, "Popf", 'ℙ'), _defineProperty(_htmlEntityTable, "pound", '£'), _defineProperty(_htmlEntityTable, "poun", '£'), _defineProperty(_htmlEntityTable, "prap", '⪷'), _defineProperty(_htmlEntityTable, "Pr", '⪻'), _defineProperty(_htmlEntityTable, "pr", '≺'), _defineProperty(_htmlEntityTable, "prcue", '≼'), _defineProperty(_htmlEntityTable, "precapprox", '⪷'), _defineProperty(_htmlEntityTable, "prec", '≺'), _defineProperty(_htmlEntityTable, "preccurlyeq", '≼'), _defineProperty(_htmlEntityTable, "Precedes", '≺'), _defineProperty(_htmlEntityTable, "PrecedesEqual", '⪯'), _defineProperty(_htmlEntityTable, "PrecedesSlantEqual", '≼'), _defineProperty(_htmlEntityTable, "PrecedesTilde", '≾'), _defineProperty(_htmlEntityTable, "preceq", '⪯'), _defineProperty(_htmlEntityTable, "precnapprox", '⪹'), _defineProperty(_htmlEntityTable, "precneqq", '⪵'), _defineProperty(_htmlEntityTable, "precnsim", '⋨'), _defineProperty(_htmlEntityTable, "pre", '⪯'), _defineProperty(_htmlEntityTable, "prE", '⪳'), _defineProperty(_htmlEntityTable, "precsim", '≾'), _defineProperty(_htmlEntityTable, "prime", '′'), _defineProperty(_htmlEntityTable, "Prime", '″'), _defineProperty(_htmlEntityTable, "primes", 'ℙ'), _defineProperty(_htmlEntityTable, "prnap", '⪹'), _defineProperty(_htmlEntityTable, "prnE", '⪵'), _defineProperty(_htmlEntityTable, "prnsim", '⋨'), _defineProperty(_htmlEntityTable, "prod", '∏'), _defineProperty(_htmlEntityTable, "Product", '∏'), _defineProperty(_htmlEntityTable, "profalar", '⌮'), _defineProperty(_htmlEntityTable, "profline", '⌒'), _defineProperty(_htmlEntityTable, "profsurf", '⌓'), _defineProperty(_htmlEntityTable, "prop", '∝'), _defineProperty(_htmlEntityTable, "Proportional", '∝'), _defineProperty(_htmlEntityTable, "Proportion", '∷'), _defineProperty(_htmlEntityTable, "propto", '∝'), _defineProperty(_htmlEntityTable, "prsim", '≾'), _defineProperty(_htmlEntityTable, "prurel", '⊰'), _defineProperty(_htmlEntityTable, "Pscr", '𝒫'), _defineProperty(_htmlEntityTable, "pscr", '𝓅'), _defineProperty(_htmlEntityTable, "Psi", 'Ψ'), _defineProperty(_htmlEntityTable, "psi", 'ψ'), _defineProperty(_htmlEntityTable, "puncsp", ' '), _defineProperty(_htmlEntityTable, "Qfr", '𝔔'), _defineProperty(_htmlEntityTable, "qfr", '𝔮'), _defineProperty(_htmlEntityTable, "qint", '⨌'), _defineProperty(_htmlEntityTable, "qopf", '𝕢'), _defineProperty(_htmlEntityTable, "Qopf", 'ℚ'), _defineProperty(_htmlEntityTable, "qprime", '⁗'), _defineProperty(_htmlEntityTable, "Qscr", '𝒬'), _defineProperty(_htmlEntityTable, "qscr", '𝓆'), _defineProperty(_htmlEntityTable, "quaternions", 'ℍ'), _defineProperty(_htmlEntityTable, "quatint", '⨖'), _defineProperty(_htmlEntityTable, "quest", '?'), _defineProperty(_htmlEntityTable, "questeq", '≟'), _defineProperty(_htmlEntityTable, "quot", '"'), _defineProperty(_htmlEntityTable, "quo", '"'), _defineProperty(_htmlEntityTable, "QUOT", '"'), _defineProperty(_htmlEntityTable, "QUO", '"'), _defineProperty(_htmlEntityTable, "rAarr", '⇛'), _defineProperty(_htmlEntityTable, "race", '∽̱'), _defineProperty(_htmlEntityTable, "Racute", 'Ŕ'), _defineProperty(_htmlEntityTable, "racute", 'ŕ'), _defineProperty(_htmlEntityTable, "radic", '√'), _defineProperty(_htmlEntityTable, "raemptyv", '⦳'), _defineProperty(_htmlEntityTable, "rang", '⟩'), _defineProperty(_htmlEntityTable, "Rang", '⟫'), _defineProperty(_htmlEntityTable, "rangd", '⦒'), _defineProperty(_htmlEntityTable, "range", '⦥'), _defineProperty(_htmlEntityTable, "rangle", '⟩'), _defineProperty(_htmlEntityTable, "raquo", '»'), _defineProperty(_htmlEntityTable, "raqu", '»'), _defineProperty(_htmlEntityTable, "rarrap", '⥵'), _defineProperty(_htmlEntityTable, "rarrb", '⇥'), _defineProperty(_htmlEntityTable, "rarrbfs", '⤠'), _defineProperty(_htmlEntityTable, "rarrc", '⤳'), _defineProperty(_htmlEntityTable, "rarr", '→'), _defineProperty(_htmlEntityTable, "Rarr", '↠'), _defineProperty(_htmlEntityTable, "rArr", '⇒'), _defineProperty(_htmlEntityTable, "rarrfs", '⤞'), _defineProperty(_htmlEntityTable, "rarrhk", '↪'), _defineProperty(_htmlEntityTable, "rarrlp", '↬'), _defineProperty(_htmlEntityTable, "rarrpl", '⥅'), _defineProperty(_htmlEntityTable, "rarrsim", '⥴'), _defineProperty(_htmlEntityTable, "Rarrtl", '⤖'), _defineProperty(_htmlEntityTable, "rarrtl", '↣'), _defineProperty(_htmlEntityTable, "rarrw", '↝'), _defineProperty(_htmlEntityTable, "ratail", '⤚'), _defineProperty(_htmlEntityTable, "rAtail", '⤜'), _defineProperty(_htmlEntityTable, "ratio", '∶'), _defineProperty(_htmlEntityTable, "rationals", 'ℚ'), _defineProperty(_htmlEntityTable, "rbarr", '⤍'), _defineProperty(_htmlEntityTable, "rBarr", '⤏'), _defineProperty(_htmlEntityTable, "RBarr", '⤐'), _defineProperty(_htmlEntityTable, "rbbrk", '❳'), _defineProperty(_htmlEntityTable, "rbrace", '}'), _defineProperty(_htmlEntityTable, "rbrack", ']'), _defineProperty(_htmlEntityTable, "rbrke", '⦌'), _defineProperty(_htmlEntityTable, "rbrksld", '⦎'), _defineProperty(_htmlEntityTable, "rbrkslu", '⦐'), _defineProperty(_htmlEntityTable, "Rcaron", 'Ř'), _defineProperty(_htmlEntityTable, "rcaron", 'ř'), _defineProperty(_htmlEntityTable, "Rcedil", 'Ŗ'), _defineProperty(_htmlEntityTable, "rcedil", 'ŗ'), _defineProperty(_htmlEntityTable, "rceil", '⌉'), _defineProperty(_htmlEntityTable, "rcub", '}'), _defineProperty(_htmlEntityTable, "Rcy", 'Р'), _defineProperty(_htmlEntityTable, "rcy", 'р'), _defineProperty(_htmlEntityTable, "rdca", '⤷'), _defineProperty(_htmlEntityTable, "rdldhar", '⥩'), _defineProperty(_htmlEntityTable, "rdquo", '”'), _defineProperty(_htmlEntityTable, "rdquor", '”'), _defineProperty(_htmlEntityTable, "rdsh", '↳'), _defineProperty(_htmlEntityTable, "real", 'ℜ'), _defineProperty(_htmlEntityTable, "realine", 'ℛ'), _defineProperty(_htmlEntityTable, "realpart", 'ℜ'), _defineProperty(_htmlEntityTable, "reals", 'ℝ'), _defineProperty(_htmlEntityTable, "Re", 'ℜ'), _defineProperty(_htmlEntityTable, "rect", '▭'), _defineProperty(_htmlEntityTable, "reg", '®'), _defineProperty(_htmlEntityTable, "re", '®'), _defineProperty(_htmlEntityTable, "REG", '®'), _defineProperty(_htmlEntityTable, "RE", '®'), _defineProperty(_htmlEntityTable, "ReverseElement", '∋'), _defineProperty(_htmlEntityTable, "ReverseEquilibrium", '⇋'), _defineProperty(_htmlEntityTable, "ReverseUpEquilibrium", '⥯'), _defineProperty(_htmlEntityTable, "rfisht", '⥽'), _defineProperty(_htmlEntityTable, "rfloor", '⌋'), _defineProperty(_htmlEntityTable, "rfr", '𝔯'), _defineProperty(_htmlEntityTable, "Rfr", 'ℜ'), _defineProperty(_htmlEntityTable, "rHar", '⥤'), _defineProperty(_htmlEntityTable, "rhard", '⇁'), _defineProperty(_htmlEntityTable, "rharu", '⇀'), _defineProperty(_htmlEntityTable, "rharul", '⥬'), _defineProperty(_htmlEntityTable, "Rho", 'Ρ'), _defineProperty(_htmlEntityTable, "rho", 'ρ'), _defineProperty(_htmlEntityTable, "rhov", 'ϱ'), _defineProperty(_htmlEntityTable, "RightAngleBracket", '⟩'), _defineProperty(_htmlEntityTable, "RightArrowBar", '⇥'), _defineProperty(_htmlEntityTable, "rightarrow", '→'), _defineProperty(_htmlEntityTable, "RightArrow", '→'), _defineProperty(_htmlEntityTable, "Rightarrow", '⇒'), _defineProperty(_htmlEntityTable, "RightArrowLeftArrow", '⇄'), _defineProperty(_htmlEntityTable, "rightarrowtail", '↣'), _defineProperty(_htmlEntityTable, "RightCeiling", '⌉'), _defineProperty(_htmlEntityTable, "RightDoubleBracket", '⟧'), _defineProperty(_htmlEntityTable, "RightDownTeeVector", '⥝'), _defineProperty(_htmlEntityTable, "RightDownVectorBar", '⥕'), _defineProperty(_htmlEntityTable, "RightDownVector", '⇂'), _defineProperty(_htmlEntityTable, "RightFloor", '⌋'), _defineProperty(_htmlEntityTable, "rightharpoondown", '⇁'), _defineProperty(_htmlEntityTable, "rightharpoonup", '⇀'), _defineProperty(_htmlEntityTable, "rightleftarrows", '⇄'), _defineProperty(_htmlEntityTable, "rightleftharpoons", '⇌'), _defineProperty(_htmlEntityTable, "rightrightarrows", '⇉'), _defineProperty(_htmlEntityTable, "rightsquigarrow", '↝'), _defineProperty(_htmlEntityTable, "RightTeeArrow", '↦'), _defineProperty(_htmlEntityTable, "RightTee", '⊢'), _defineProperty(_htmlEntityTable, "RightTeeVector", '⥛'), _defineProperty(_htmlEntityTable, "rightthreetimes", '⋌'), _defineProperty(_htmlEntityTable, "RightTriangleBar", '⧐'), _defineProperty(_htmlEntityTable, "RightTriangle", '⊳'), _defineProperty(_htmlEntityTable, "RightTriangleEqual", '⊵'), _defineProperty(_htmlEntityTable, "RightUpDownVector", '⥏'), _defineProperty(_htmlEntityTable, "RightUpTeeVector", '⥜'), _defineProperty(_htmlEntityTable, "RightUpVectorBar", '⥔'), _defineProperty(_htmlEntityTable, "RightUpVector", '↾'), _defineProperty(_htmlEntityTable, "RightVectorBar", '⥓'), _defineProperty(_htmlEntityTable, "RightVector", '⇀'), _defineProperty(_htmlEntityTable, "ring", '˚'), _defineProperty(_htmlEntityTable, "risingdotseq", '≓'), _defineProperty(_htmlEntityTable, "rlarr", '⇄'), _defineProperty(_htmlEntityTable, "rlhar", '⇌'), _defineProperty(_htmlEntityTable, "rlm", '‏'), _defineProperty(_htmlEntityTable, "rmoustache", '⎱'), _defineProperty(_htmlEntityTable, "rmoust", '⎱'), _defineProperty(_htmlEntityTable, "rnmid", '⫮'), _defineProperty(_htmlEntityTable, "roang", '⟭'), _defineProperty(_htmlEntityTable, "roarr", '⇾'), _defineProperty(_htmlEntityTable, "robrk", '⟧'), _defineProperty(_htmlEntityTable, "ropar", '⦆'), _defineProperty(_htmlEntityTable, "ropf", '𝕣'), _defineProperty(_htmlEntityTable, "Ropf", 'ℝ'), _defineProperty(_htmlEntityTable, "roplus", '⨮'), _defineProperty(_htmlEntityTable, "rotimes", '⨵'), _defineProperty(_htmlEntityTable, "RoundImplies", '⥰'), _defineProperty(_htmlEntityTable, "rpar", ')'), _defineProperty(_htmlEntityTable, "rpargt", '⦔'), _defineProperty(_htmlEntityTable, "rppolint", '⨒'), _defineProperty(_htmlEntityTable, "rrarr", '⇉'), _defineProperty(_htmlEntityTable, "Rrightarrow", '⇛'), _defineProperty(_htmlEntityTable, "rsaquo", '›'), _defineProperty(_htmlEntityTable, "rscr", '𝓇'), _defineProperty(_htmlEntityTable, "Rscr", 'ℛ'), _defineProperty(_htmlEntityTable, "rsh", '↱'), _defineProperty(_htmlEntityTable, "Rsh", '↱'), _defineProperty(_htmlEntityTable, "rsqb", ']'), _defineProperty(_htmlEntityTable, "rsquo", '’'), _defineProperty(_htmlEntityTable, "rsquor", '’'), _defineProperty(_htmlEntityTable, "rthree", '⋌'), _defineProperty(_htmlEntityTable, "rtimes", '⋊'), _defineProperty(_htmlEntityTable, "rtri", '▹'), _defineProperty(_htmlEntityTable, "rtrie", '⊵'), _defineProperty(_htmlEntityTable, "rtrif", '▸'), _defineProperty(_htmlEntityTable, "rtriltri", '⧎'), _defineProperty(_htmlEntityTable, "RuleDelayed", '⧴'), _defineProperty(_htmlEntityTable, "ruluhar", '⥨'), _defineProperty(_htmlEntityTable, "rx", '℞'), _defineProperty(_htmlEntityTable, "Sacute", 'Ś'), _defineProperty(_htmlEntityTable, "sacute", 'ś'), _defineProperty(_htmlEntityTable, "sbquo", '‚'), _defineProperty(_htmlEntityTable, "scap", '⪸'), _defineProperty(_htmlEntityTable, "Scaron", 'Š'), _defineProperty(_htmlEntityTable, "scaron", 'š'), _defineProperty(_htmlEntityTable, "Sc", '⪼'), _defineProperty(_htmlEntityTable, "sc", '≻'), _defineProperty(_htmlEntityTable, "sccue", '≽'), _defineProperty(_htmlEntityTable, "sce", '⪰'), _defineProperty(_htmlEntityTable, "scE", '⪴'), _defineProperty(_htmlEntityTable, "Scedil", 'Ş'), _defineProperty(_htmlEntityTable, "scedil", 'ş'), _defineProperty(_htmlEntityTable, "Scirc", 'Ŝ'), _defineProperty(_htmlEntityTable, "scirc", 'ŝ'), _defineProperty(_htmlEntityTable, "scnap", '⪺'), _defineProperty(_htmlEntityTable, "scnE", '⪶'), _defineProperty(_htmlEntityTable, "scnsim", '⋩'), _defineProperty(_htmlEntityTable, "scpolint", '⨓'), _defineProperty(_htmlEntityTable, "scsim", '≿'), _defineProperty(_htmlEntityTable, "Scy", 'С'), _defineProperty(_htmlEntityTable, "scy", 'с'), _defineProperty(_htmlEntityTable, "sdotb", '⊡'), _defineProperty(_htmlEntityTable, "sdot", '⋅'), _defineProperty(_htmlEntityTable, "sdote", '⩦'), _defineProperty(_htmlEntityTable, "searhk", '⤥'), _defineProperty(_htmlEntityTable, "searr", '↘'), _defineProperty(_htmlEntityTable, "seArr", '⇘'), _defineProperty(_htmlEntityTable, "searrow", '↘'), _defineProperty(_htmlEntityTable, "sect", '§'), _defineProperty(_htmlEntityTable, "sec", '§'), _defineProperty(_htmlEntityTable, "semi", ';'), _defineProperty(_htmlEntityTable, "seswar", '⤩'), _defineProperty(_htmlEntityTable, "setminus", '∖'), _defineProperty(_htmlEntityTable, "setmn", '∖'), _defineProperty(_htmlEntityTable, "sext", '✶'), _defineProperty(_htmlEntityTable, "Sfr", '𝔖'), _defineProperty(_htmlEntityTable, "sfr", '𝔰'), _defineProperty(_htmlEntityTable, "sfrown", '⌢'), _defineProperty(_htmlEntityTable, "sharp", '♯'), _defineProperty(_htmlEntityTable, "SHCHcy", 'Щ'), _defineProperty(_htmlEntityTable, "shchcy", 'щ'), _defineProperty(_htmlEntityTable, "SHcy", 'Ш'), _defineProperty(_htmlEntityTable, "shcy", 'ш'), _defineProperty(_htmlEntityTable, "ShortDownArrow", '↓'), _defineProperty(_htmlEntityTable, "ShortLeftArrow", '←'), _defineProperty(_htmlEntityTable, "shortmid", '∣'), _defineProperty(_htmlEntityTable, "shortparallel", '∥'), _defineProperty(_htmlEntityTable, "ShortRightArrow", '→'), _defineProperty(_htmlEntityTable, "ShortUpArrow", '↑'), _defineProperty(_htmlEntityTable, "shy", '­'), _defineProperty(_htmlEntityTable, "sh", '­'), _defineProperty(_htmlEntityTable, "Sigma", 'Σ'), _defineProperty(_htmlEntityTable, "sigma", 'σ'), _defineProperty(_htmlEntityTable, "sigmaf", 'ς'), _defineProperty(_htmlEntityTable, "sigmav", 'ς'), _defineProperty(_htmlEntityTable, "sim", '∼'), _defineProperty(_htmlEntityTable, "simdot", '⩪'), _defineProperty(_htmlEntityTable, "sime", '≃'), _defineProperty(_htmlEntityTable, "simeq", '≃'), _defineProperty(_htmlEntityTable, "simg", '⪞'), _defineProperty(_htmlEntityTable, "simgE", '⪠'), _defineProperty(_htmlEntityTable, "siml", '⪝'), _defineProperty(_htmlEntityTable, "simlE", '⪟'), _defineProperty(_htmlEntityTable, "simne", '≆'), _defineProperty(_htmlEntityTable, "simplus", '⨤'), _defineProperty(_htmlEntityTable, "simrarr", '⥲'), _defineProperty(_htmlEntityTable, "slarr", '←'), _defineProperty(_htmlEntityTable, "SmallCircle", '∘'), _defineProperty(_htmlEntityTable, "smallsetminus", '∖'), _defineProperty(_htmlEntityTable, "smashp", '⨳'), _defineProperty(_htmlEntityTable, "smeparsl", '⧤'), _defineProperty(_htmlEntityTable, "smid", '∣'), _defineProperty(_htmlEntityTable, "smile", '⌣'), _defineProperty(_htmlEntityTable, "smt", '⪪'), _defineProperty(_htmlEntityTable, "smte", '⪬'), _defineProperty(_htmlEntityTable, "smtes", '⪬︀'), _defineProperty(_htmlEntityTable, "SOFTcy", 'Ь'), _defineProperty(_htmlEntityTable, "softcy", 'ь'), _defineProperty(_htmlEntityTable, "solbar", '⌿'), _defineProperty(_htmlEntityTable, "solb", '⧄'), _defineProperty(_htmlEntityTable, "sol", '/'), _defineProperty(_htmlEntityTable, "Sopf", '𝕊'), _defineProperty(_htmlEntityTable, "sopf", '𝕤'), _defineProperty(_htmlEntityTable, "spades", '♠'), _defineProperty(_htmlEntityTable, "spadesuit", '♠'), _defineProperty(_htmlEntityTable, "spar", '∥'), _defineProperty(_htmlEntityTable, "sqcap", '⊓'), _defineProperty(_htmlEntityTable, "sqcaps", '⊓︀'), _defineProperty(_htmlEntityTable, "sqcup", '⊔'), _defineProperty(_htmlEntityTable, "sqcups", '⊔︀'), _defineProperty(_htmlEntityTable, "Sqrt", '√'), _defineProperty(_htmlEntityTable, "sqsub", '⊏'), _defineProperty(_htmlEntityTable, "sqsube", '⊑'), _defineProperty(_htmlEntityTable, "sqsubset", '⊏'), _defineProperty(_htmlEntityTable, "sqsubseteq", '⊑'), _defineProperty(_htmlEntityTable, "sqsup", '⊐'), _defineProperty(_htmlEntityTable, "sqsupe", '⊒'), _defineProperty(_htmlEntityTable, "sqsupset", '⊐'), _defineProperty(_htmlEntityTable, "sqsupseteq", '⊒'), _defineProperty(_htmlEntityTable, "square", '□'), _defineProperty(_htmlEntityTable, "Square", '□'), _defineProperty(_htmlEntityTable, "SquareIntersection", '⊓'), _defineProperty(_htmlEntityTable, "SquareSubset", '⊏'), _defineProperty(_htmlEntityTable, "SquareSubsetEqual", '⊑'), _defineProperty(_htmlEntityTable, "SquareSuperset", '⊐'), _defineProperty(_htmlEntityTable, "SquareSupersetEqual", '⊒'), _defineProperty(_htmlEntityTable, "SquareUnion", '⊔'), _defineProperty(_htmlEntityTable, "squarf", '▪'), _defineProperty(_htmlEntityTable, "squ", '□'), _defineProperty(_htmlEntityTable, "squf", '▪'), _defineProperty(_htmlEntityTable, "srarr", '→'), _defineProperty(_htmlEntityTable, "Sscr", '𝒮'), _defineProperty(_htmlEntityTable, "sscr", '𝓈'), _defineProperty(_htmlEntityTable, "ssetmn", '∖'), _defineProperty(_htmlEntityTable, "ssmile", '⌣'), _defineProperty(_htmlEntityTable, "sstarf", '⋆'), _defineProperty(_htmlEntityTable, "Star", '⋆'), _defineProperty(_htmlEntityTable, "star", '☆'), _defineProperty(_htmlEntityTable, "starf", '★'), _defineProperty(_htmlEntityTable, "straightepsilon", 'ϵ'), _defineProperty(_htmlEntityTable, "straightphi", 'ϕ'), _defineProperty(_htmlEntityTable, "strns", '¯'), _defineProperty(_htmlEntityTable, "sub", '⊂'), _defineProperty(_htmlEntityTable, "Sub", '⋐'), _defineProperty(_htmlEntityTable, "subdot", '⪽'), _defineProperty(_htmlEntityTable, "subE", '⫅'), _defineProperty(_htmlEntityTable, "sube", '⊆'), _defineProperty(_htmlEntityTable, "subedot", '⫃'), _defineProperty(_htmlEntityTable, "submult", '⫁'), _defineProperty(_htmlEntityTable, "subnE", '⫋'), _defineProperty(_htmlEntityTable, "subne", '⊊'), _defineProperty(_htmlEntityTable, "subplus", '⪿'), _defineProperty(_htmlEntityTable, "subrarr", '⥹'), _defineProperty(_htmlEntityTable, "subset", '⊂'), _defineProperty(_htmlEntityTable, "Subset", '⋐'), _defineProperty(_htmlEntityTable, "subseteq", '⊆'), _defineProperty(_htmlEntityTable, "subseteqq", '⫅'), _defineProperty(_htmlEntityTable, "SubsetEqual", '⊆'), _defineProperty(_htmlEntityTable, "subsetneq", '⊊'), _defineProperty(_htmlEntityTable, "subsetneqq", '⫋'), _defineProperty(_htmlEntityTable, "subsim", '⫇'), _defineProperty(_htmlEntityTable, "subsub", '⫕'), _defineProperty(_htmlEntityTable, "subsup", '⫓'), _defineProperty(_htmlEntityTable, "succapprox", '⪸'), _defineProperty(_htmlEntityTable, "succ", '≻'), _defineProperty(_htmlEntityTable, "succcurlyeq", '≽'), _defineProperty(_htmlEntityTable, "Succeeds", '≻'), _defineProperty(_htmlEntityTable, "SucceedsEqual", '⪰'), _defineProperty(_htmlEntityTable, "SucceedsSlantEqual", '≽'), _defineProperty(_htmlEntityTable, "SucceedsTilde", '≿'), _defineProperty(_htmlEntityTable, "succeq", '⪰'), _defineProperty(_htmlEntityTable, "succnapprox", '⪺'), _defineProperty(_htmlEntityTable, "succneqq", '⪶'), _defineProperty(_htmlEntityTable, "succnsim", '⋩'), _defineProperty(_htmlEntityTable, "succsim", '≿'), _defineProperty(_htmlEntityTable, "SuchThat", '∋'), _defineProperty(_htmlEntityTable, "sum", '∑'), _defineProperty(_htmlEntityTable, "Sum", '∑'), _defineProperty(_htmlEntityTable, "sung", '♪'), _defineProperty(_htmlEntityTable, "sup1", '¹'), _defineProperty(_htmlEntityTable, "sup", '¹'), _defineProperty(_htmlEntityTable, "sup2", '²'), _defineProperty(_htmlEntityTable, "sup", '²'), _defineProperty(_htmlEntityTable, "sup3", '³'), _defineProperty(_htmlEntityTable, "sup", '³'), _defineProperty(_htmlEntityTable, "sup", '⊃'), _defineProperty(_htmlEntityTable, "Sup", '⋑'), _defineProperty(_htmlEntityTable, "supdot", '⪾'), _defineProperty(_htmlEntityTable, "supdsub", '⫘'), _defineProperty(_htmlEntityTable, "supE", '⫆'), _defineProperty(_htmlEntityTable, "supe", '⊇'), _defineProperty(_htmlEntityTable, "supedot", '⫄'), _defineProperty(_htmlEntityTable, "Superset", '⊃'), _defineProperty(_htmlEntityTable, "SupersetEqual", '⊇'), _defineProperty(_htmlEntityTable, "suphsol", '⟉'), _defineProperty(_htmlEntityTable, "suphsub", '⫗'), _defineProperty(_htmlEntityTable, "suplarr", '⥻'), _defineProperty(_htmlEntityTable, "supmult", '⫂'), _defineProperty(_htmlEntityTable, "supnE", '⫌'), _defineProperty(_htmlEntityTable, "supne", '⊋'), _defineProperty(_htmlEntityTable, "supplus", '⫀'), _defineProperty(_htmlEntityTable, "supset", '⊃'), _defineProperty(_htmlEntityTable, "Supset", '⋑'), _defineProperty(_htmlEntityTable, "supseteq", '⊇'), _defineProperty(_htmlEntityTable, "supseteqq", '⫆'), _defineProperty(_htmlEntityTable, "supsetneq", '⊋'), _defineProperty(_htmlEntityTable, "supsetneqq", '⫌'), _defineProperty(_htmlEntityTable, "supsim", '⫈'), _defineProperty(_htmlEntityTable, "supsub", '⫔'), _defineProperty(_htmlEntityTable, "supsup", '⫖'), _defineProperty(_htmlEntityTable, "swarhk", '⤦'), _defineProperty(_htmlEntityTable, "swarr", '↙'), _defineProperty(_htmlEntityTable, "swArr", '⇙'), _defineProperty(_htmlEntityTable, "swarrow", '↙'), _defineProperty(_htmlEntityTable, "swnwar", '⤪'), _defineProperty(_htmlEntityTable, "szlig", 'ß'), _defineProperty(_htmlEntityTable, "szli", 'ß'), _defineProperty(_htmlEntityTable, "Tab", '	'), _defineProperty(_htmlEntityTable, "target", '⌖'), _defineProperty(_htmlEntityTable, "Tau", 'Τ'), _defineProperty(_htmlEntityTable, "tau", 'τ'), _defineProperty(_htmlEntityTable, "tbrk", '⎴'), _defineProperty(_htmlEntityTable, "Tcaron", 'Ť'), _defineProperty(_htmlEntityTable, "tcaron", 'ť'), _defineProperty(_htmlEntityTable, "Tcedil", 'Ţ'), _defineProperty(_htmlEntityTable, "tcedil", 'ţ'), _defineProperty(_htmlEntityTable, "Tcy", 'Т'), _defineProperty(_htmlEntityTable, "tcy", 'т'), _defineProperty(_htmlEntityTable, "tdot", '⃛'), _defineProperty(_htmlEntityTable, "telrec", '⌕'), _defineProperty(_htmlEntityTable, "Tfr", '𝔗'), _defineProperty(_htmlEntityTable, "tfr", '𝔱'), _defineProperty(_htmlEntityTable, "there4", '∴'), _defineProperty(_htmlEntityTable, "therefore", '∴'), _defineProperty(_htmlEntityTable, "Therefore", '∴'), _defineProperty(_htmlEntityTable, "Theta", 'Θ'), _defineProperty(_htmlEntityTable, "theta", 'θ'), _defineProperty(_htmlEntityTable, "thetasym", 'ϑ'), _defineProperty(_htmlEntityTable, "thetav", 'ϑ'), _defineProperty(_htmlEntityTable, "thickapprox", '≈'), _defineProperty(_htmlEntityTable, "thicksim", '∼'), _defineProperty(_htmlEntityTable, "ThickSpace", '  '), _defineProperty(_htmlEntityTable, "ThinSpace", ' '), _defineProperty(_htmlEntityTable, "thinsp", ' '), _defineProperty(_htmlEntityTable, "thkap", '≈'), _defineProperty(_htmlEntityTable, "thksim", '∼'), _defineProperty(_htmlEntityTable, "THORN", 'Þ'), _defineProperty(_htmlEntityTable, "THOR", 'Þ'), _defineProperty(_htmlEntityTable, "thorn", 'þ'), _defineProperty(_htmlEntityTable, "thor", 'þ'), _defineProperty(_htmlEntityTable, "tilde", '˜'), _defineProperty(_htmlEntityTable, "Tilde", '∼'), _defineProperty(_htmlEntityTable, "TildeEqual", '≃'), _defineProperty(_htmlEntityTable, "TildeFullEqual", '≅'), _defineProperty(_htmlEntityTable, "TildeTilde", '≈'), _defineProperty(_htmlEntityTable, "timesbar", '⨱'), _defineProperty(_htmlEntityTable, "timesb", '⊠'), _defineProperty(_htmlEntityTable, "times", '×'), _defineProperty(_htmlEntityTable, "time", '×'), _defineProperty(_htmlEntityTable, "timesd", '⨰'), _defineProperty(_htmlEntityTable, "tint", '∭'), _defineProperty(_htmlEntityTable, "toea", '⤨'), _defineProperty(_htmlEntityTable, "topbot", '⌶'), _defineProperty(_htmlEntityTable, "topcir", '⫱'), _defineProperty(_htmlEntityTable, "top", '⊤'), _defineProperty(_htmlEntityTable, "Topf", '𝕋'), _defineProperty(_htmlEntityTable, "topf", '𝕥'), _defineProperty(_htmlEntityTable, "topfork", '⫚'), _defineProperty(_htmlEntityTable, "tosa", '⤩'), _defineProperty(_htmlEntityTable, "tprime", '‴'), _defineProperty(_htmlEntityTable, "trade", '™'), _defineProperty(_htmlEntityTable, "TRADE", '™'), _defineProperty(_htmlEntityTable, "triangle", '▵'), _defineProperty(_htmlEntityTable, "triangledown", '▿'), _defineProperty(_htmlEntityTable, "triangleleft", '◃'), _defineProperty(_htmlEntityTable, "trianglelefteq", '⊴'), _defineProperty(_htmlEntityTable, "triangleq", '≜'), _defineProperty(_htmlEntityTable, "triangleright", '▹'), _defineProperty(_htmlEntityTable, "trianglerighteq", '⊵'), _defineProperty(_htmlEntityTable, "tridot", '◬'), _defineProperty(_htmlEntityTable, "trie", '≜'), _defineProperty(_htmlEntityTable, "triminus", '⨺'), _defineProperty(_htmlEntityTable, "TripleDot", '⃛'), _defineProperty(_htmlEntityTable, "triplus", '⨹'), _defineProperty(_htmlEntityTable, "trisb", '⧍'), _defineProperty(_htmlEntityTable, "tritime", '⨻'), _defineProperty(_htmlEntityTable, "trpezium", '⏢'), _defineProperty(_htmlEntityTable, "Tscr", '𝒯'), _defineProperty(_htmlEntityTable, "tscr", '𝓉'), _defineProperty(_htmlEntityTable, "TScy", 'Ц'), _defineProperty(_htmlEntityTable, "tscy", 'ц'), _defineProperty(_htmlEntityTable, "TSHcy", 'Ћ'), _defineProperty(_htmlEntityTable, "tshcy", 'ћ'), _defineProperty(_htmlEntityTable, "Tstrok", 'Ŧ'), _defineProperty(_htmlEntityTable, "tstrok", 'ŧ'), _defineProperty(_htmlEntityTable, "twixt", '≬'), _defineProperty(_htmlEntityTable, "twoheadleftarrow", '↞'), _defineProperty(_htmlEntityTable, "twoheadrightarrow", '↠'), _defineProperty(_htmlEntityTable, "Uacute", 'Ú'), _defineProperty(_htmlEntityTable, "Uacut", 'Ú'), _defineProperty(_htmlEntityTable, "uacute", 'ú'), _defineProperty(_htmlEntityTable, "uacut", 'ú'), _defineProperty(_htmlEntityTable, "uarr", '↑'), _defineProperty(_htmlEntityTable, "Uarr", '↟'), _defineProperty(_htmlEntityTable, "uArr", '⇑'), _defineProperty(_htmlEntityTable, "Uarrocir", '⥉'), _defineProperty(_htmlEntityTable, "Ubrcy", 'Ў'), _defineProperty(_htmlEntityTable, "ubrcy", 'ў'), _defineProperty(_htmlEntityTable, "Ubreve", 'Ŭ'), _defineProperty(_htmlEntityTable, "ubreve", 'ŭ'), _defineProperty(_htmlEntityTable, "Ucirc", 'Û'), _defineProperty(_htmlEntityTable, "Ucir", 'Û'), _defineProperty(_htmlEntityTable, "ucirc", 'û'), _defineProperty(_htmlEntityTable, "ucir", 'û'), _defineProperty(_htmlEntityTable, "Ucy", 'У'), _defineProperty(_htmlEntityTable, "ucy", 'у'), _defineProperty(_htmlEntityTable, "udarr", '⇅'), _defineProperty(_htmlEntityTable, "Udblac", 'Ű'), _defineProperty(_htmlEntityTable, "udblac", 'ű'), _defineProperty(_htmlEntityTable, "udhar", '⥮'), _defineProperty(_htmlEntityTable, "ufisht", '⥾'), _defineProperty(_htmlEntityTable, "Ufr", '𝔘'), _defineProperty(_htmlEntityTable, "ufr", '𝔲'), _defineProperty(_htmlEntityTable, "Ugrave", 'Ù'), _defineProperty(_htmlEntityTable, "Ugrav", 'Ù'), _defineProperty(_htmlEntityTable, "ugrave", 'ù'), _defineProperty(_htmlEntityTable, "ugrav", 'ù'), _defineProperty(_htmlEntityTable, "uHar", '⥣'), _defineProperty(_htmlEntityTable, "uharl", '↿'), _defineProperty(_htmlEntityTable, "uharr", '↾'), _defineProperty(_htmlEntityTable, "uhblk", '▀'), _defineProperty(_htmlEntityTable, "ulcorn", '⌜'), _defineProperty(_htmlEntityTable, "ulcorner", '⌜'), _defineProperty(_htmlEntityTable, "ulcrop", '⌏'), _defineProperty(_htmlEntityTable, "ultri", '◸'), _defineProperty(_htmlEntityTable, "Umacr", 'Ū'), _defineProperty(_htmlEntityTable, "umacr", 'ū'), _defineProperty(_htmlEntityTable, "uml", '¨'), _defineProperty(_htmlEntityTable, "um", '¨'), _defineProperty(_htmlEntityTable, "UnderBar", '_'), _defineProperty(_htmlEntityTable, "UnderBrace", '⏟'), _defineProperty(_htmlEntityTable, "UnderBracket", '⎵'), _defineProperty(_htmlEntityTable, "UnderParenthesis", '⏝'), _defineProperty(_htmlEntityTable, "Union", '⋃'), _defineProperty(_htmlEntityTable, "UnionPlus", '⊎'), _defineProperty(_htmlEntityTable, "Uogon", 'Ų'), _defineProperty(_htmlEntityTable, "uogon", 'ų'), _defineProperty(_htmlEntityTable, "Uopf", '𝕌'), _defineProperty(_htmlEntityTable, "uopf", '𝕦'), _defineProperty(_htmlEntityTable, "UpArrowBar", '⤒'), _defineProperty(_htmlEntityTable, "uparrow", '↑'), _defineProperty(_htmlEntityTable, "UpArrow", '↑'), _defineProperty(_htmlEntityTable, "Uparrow", '⇑'), _defineProperty(_htmlEntityTable, "UpArrowDownArrow", '⇅'), _defineProperty(_htmlEntityTable, "updownarrow", '↕'), _defineProperty(_htmlEntityTable, "UpDownArrow", '↕'), _defineProperty(_htmlEntityTable, "Updownarrow", '⇕'), _defineProperty(_htmlEntityTable, "UpEquilibrium", '⥮'), _defineProperty(_htmlEntityTable, "upharpoonleft", '↿'), _defineProperty(_htmlEntityTable, "upharpoonright", '↾'), _defineProperty(_htmlEntityTable, "uplus", '⊎'), _defineProperty(_htmlEntityTable, "UpperLeftArrow", '↖'), _defineProperty(_htmlEntityTable, "UpperRightArrow", '↗'), _defineProperty(_htmlEntityTable, "upsi", 'υ'), _defineProperty(_htmlEntityTable, "Upsi", 'ϒ'), _defineProperty(_htmlEntityTable, "upsih", 'ϒ'), _defineProperty(_htmlEntityTable, "Upsilon", 'Υ'), _defineProperty(_htmlEntityTable, "upsilon", 'υ'), _defineProperty(_htmlEntityTable, "UpTeeArrow", '↥'), _defineProperty(_htmlEntityTable, "UpTee", '⊥'), _defineProperty(_htmlEntityTable, "upuparrows", '⇈'), _defineProperty(_htmlEntityTable, "urcorn", '⌝'), _defineProperty(_htmlEntityTable, "urcorner", '⌝'), _defineProperty(_htmlEntityTable, "urcrop", '⌎'), _defineProperty(_htmlEntityTable, "Uring", 'Ů'), _defineProperty(_htmlEntityTable, "uring", 'ů'), _defineProperty(_htmlEntityTable, "urtri", '◹'), _defineProperty(_htmlEntityTable, "Uscr", '𝒰'), _defineProperty(_htmlEntityTable, "uscr", '𝓊'), _defineProperty(_htmlEntityTable, "utdot", '⋰'), _defineProperty(_htmlEntityTable, "Utilde", 'Ũ'), _defineProperty(_htmlEntityTable, "utilde", 'ũ'), _defineProperty(_htmlEntityTable, "utri", '▵'), _defineProperty(_htmlEntityTable, "utrif", '▴'), _defineProperty(_htmlEntityTable, "uuarr", '⇈'), _defineProperty(_htmlEntityTable, "Uuml", 'Ü'), _defineProperty(_htmlEntityTable, "Uum", 'Ü'), _defineProperty(_htmlEntityTable, "uuml", 'ü'), _defineProperty(_htmlEntityTable, "uum", 'ü'), _defineProperty(_htmlEntityTable, "uwangle", '⦧'), _defineProperty(_htmlEntityTable, "vangrt", '⦜'), _defineProperty(_htmlEntityTable, "varepsilon", 'ϵ'), _defineProperty(_htmlEntityTable, "varkappa", 'ϰ'), _defineProperty(_htmlEntityTable, "varnothing", '∅'), _defineProperty(_htmlEntityTable, "varphi", 'ϕ'), _defineProperty(_htmlEntityTable, "varpi", 'ϖ'), _defineProperty(_htmlEntityTable, "varpropto", '∝'), _defineProperty(_htmlEntityTable, "varr", '↕'), _defineProperty(_htmlEntityTable, "vArr", '⇕'), _defineProperty(_htmlEntityTable, "varrho", 'ϱ'), _defineProperty(_htmlEntityTable, "varsigma", 'ς'), _defineProperty(_htmlEntityTable, "varsubsetneq", '⊊︀'), _defineProperty(_htmlEntityTable, "varsubsetneqq", '⫋︀'), _defineProperty(_htmlEntityTable, "varsupsetneq", '⊋︀'), _defineProperty(_htmlEntityTable, "varsupsetneqq", '⫌︀'), _defineProperty(_htmlEntityTable, "vartheta", 'ϑ'), _defineProperty(_htmlEntityTable, "vartriangleleft", '⊲'), _defineProperty(_htmlEntityTable, "vartriangleright", '⊳'), _defineProperty(_htmlEntityTable, "vBar", '⫨'), _defineProperty(_htmlEntityTable, "Vbar", '⫫'), _defineProperty(_htmlEntityTable, "vBarv", '⫩'), _defineProperty(_htmlEntityTable, "Vcy", 'В'), _defineProperty(_htmlEntityTable, "vcy", 'в'), _defineProperty(_htmlEntityTable, "vdash", '⊢'), _defineProperty(_htmlEntityTable, "vDash", '⊨'), _defineProperty(_htmlEntityTable, "Vdash", '⊩'), _defineProperty(_htmlEntityTable, "VDash", '⊫'), _defineProperty(_htmlEntityTable, "Vdashl", '⫦'), _defineProperty(_htmlEntityTable, "veebar", '⊻'), _defineProperty(_htmlEntityTable, "vee", '∨'), _defineProperty(_htmlEntityTable, "Vee", '⋁'), _defineProperty(_htmlEntityTable, "veeeq", '≚'), _defineProperty(_htmlEntityTable, "vellip", '⋮'), _defineProperty(_htmlEntityTable, "verbar", '|'), _defineProperty(_htmlEntityTable, "Verbar", '‖'), _defineProperty(_htmlEntityTable, "vert", '|'), _defineProperty(_htmlEntityTable, "Vert", '‖'), _defineProperty(_htmlEntityTable, "VerticalBar", '∣'), _defineProperty(_htmlEntityTable, "VerticalLine", '|'), _defineProperty(_htmlEntityTable, "VerticalSeparator", '❘'), _defineProperty(_htmlEntityTable, "VerticalTilde", '≀'), _defineProperty(_htmlEntityTable, "VeryThinSpace", ' '), _defineProperty(_htmlEntityTable, "Vfr", '𝔙'), _defineProperty(_htmlEntityTable, "vfr", '𝔳'), _defineProperty(_htmlEntityTable, "vltri", '⊲'), _defineProperty(_htmlEntityTable, "vnsub", '⊂⃒'), _defineProperty(_htmlEntityTable, "vnsup", '⊃⃒'), _defineProperty(_htmlEntityTable, "Vopf", '𝕍'), _defineProperty(_htmlEntityTable, "vopf", '𝕧'), _defineProperty(_htmlEntityTable, "vprop", '∝'), _defineProperty(_htmlEntityTable, "vrtri", '⊳'), _defineProperty(_htmlEntityTable, "Vscr", '𝒱'), _defineProperty(_htmlEntityTable, "vscr", '𝓋'), _defineProperty(_htmlEntityTable, "vsubnE", '⫋︀'), _defineProperty(_htmlEntityTable, "vsubne", '⊊︀'), _defineProperty(_htmlEntityTable, "vsupnE", '⫌︀'), _defineProperty(_htmlEntityTable, "vsupne", '⊋︀'), _defineProperty(_htmlEntityTable, "Vvdash", '⊪'), _defineProperty(_htmlEntityTable, "vzigzag", '⦚'), _defineProperty(_htmlEntityTable, "Wcirc", 'Ŵ'), _defineProperty(_htmlEntityTable, "wcirc", 'ŵ'), _defineProperty(_htmlEntityTable, "wedbar", '⩟'), _defineProperty(_htmlEntityTable, "wedge", '∧'), _defineProperty(_htmlEntityTable, "Wedge", '⋀'), _defineProperty(_htmlEntityTable, "wedgeq", '≙'), _defineProperty(_htmlEntityTable, "weierp", '℘'), _defineProperty(_htmlEntityTable, "Wfr", '𝔚'), _defineProperty(_htmlEntityTable, "wfr", '𝔴'), _defineProperty(_htmlEntityTable, "Wopf", '𝕎'), _defineProperty(_htmlEntityTable, "wopf", '𝕨'), _defineProperty(_htmlEntityTable, "wp", '℘'), _defineProperty(_htmlEntityTable, "wr", '≀'), _defineProperty(_htmlEntityTable, "wreath", '≀'), _defineProperty(_htmlEntityTable, "Wscr", '𝒲'), _defineProperty(_htmlEntityTable, "wscr", '𝓌'), _defineProperty(_htmlEntityTable, "xcap", '⋂'), _defineProperty(_htmlEntityTable, "xcirc", '◯'), _defineProperty(_htmlEntityTable, "xcup", '⋃'), _defineProperty(_htmlEntityTable, "xdtri", '▽'), _defineProperty(_htmlEntityTable, "Xfr", '𝔛'), _defineProperty(_htmlEntityTable, "xfr", '𝔵'), _defineProperty(_htmlEntityTable, "xharr", '⟷'), _defineProperty(_htmlEntityTable, "xhArr", '⟺'), _defineProperty(_htmlEntityTable, "Xi", 'Ξ'), _defineProperty(_htmlEntityTable, "xi", 'ξ'), _defineProperty(_htmlEntityTable, "xlarr", '⟵'), _defineProperty(_htmlEntityTable, "xlArr", '⟸'), _defineProperty(_htmlEntityTable, "xmap", '⟼'), _defineProperty(_htmlEntityTable, "xnis", '⋻'), _defineProperty(_htmlEntityTable, "xodot", '⨀'), _defineProperty(_htmlEntityTable, "Xopf", '𝕏'), _defineProperty(_htmlEntityTable, "xopf", '𝕩'), _defineProperty(_htmlEntityTable, "xoplus", '⨁'), _defineProperty(_htmlEntityTable, "xotime", '⨂'), _defineProperty(_htmlEntityTable, "xrarr", '⟶'), _defineProperty(_htmlEntityTable, "xrArr", '⟹'), _defineProperty(_htmlEntityTable, "Xscr", '𝒳'), _defineProperty(_htmlEntityTable, "xscr", '𝓍'), _defineProperty(_htmlEntityTable, "xsqcup", '⨆'), _defineProperty(_htmlEntityTable, "xuplus", '⨄'), _defineProperty(_htmlEntityTable, "xutri", '△'), _defineProperty(_htmlEntityTable, "xvee", '⋁'), _defineProperty(_htmlEntityTable, "xwedge", '⋀'), _defineProperty(_htmlEntityTable, "Yacute", 'Ý'), _defineProperty(_htmlEntityTable, "Yacut", 'Ý'), _defineProperty(_htmlEntityTable, "yacute", 'ý'), _defineProperty(_htmlEntityTable, "yacut", 'ý'), _defineProperty(_htmlEntityTable, "YAcy", 'Я'), _defineProperty(_htmlEntityTable, "yacy", 'я'), _defineProperty(_htmlEntityTable, "Ycirc", 'Ŷ'), _defineProperty(_htmlEntityTable, "ycirc", 'ŷ'), _defineProperty(_htmlEntityTable, "Ycy", 'Ы'), _defineProperty(_htmlEntityTable, "ycy", 'ы'), _defineProperty(_htmlEntityTable, "yen", '¥'), _defineProperty(_htmlEntityTable, "ye", '¥'), _defineProperty(_htmlEntityTable, "Yfr", '𝔜'), _defineProperty(_htmlEntityTable, "yfr", '𝔶'), _defineProperty(_htmlEntityTable, "YIcy", 'Ї'), _defineProperty(_htmlEntityTable, "yicy", 'ї'), _defineProperty(_htmlEntityTable, "Yopf", '𝕐'), _defineProperty(_htmlEntityTable, "yopf", '𝕪'), _defineProperty(_htmlEntityTable, "Yscr", '𝒴'), _defineProperty(_htmlEntityTable, "yscr", '𝓎'), _defineProperty(_htmlEntityTable, "YUcy", 'Ю'), _defineProperty(_htmlEntityTable, "yucy", 'ю'), _defineProperty(_htmlEntityTable, "yuml", 'ÿ'), _defineProperty(_htmlEntityTable, "yum", 'ÿ'), _defineProperty(_htmlEntityTable, "Yuml", 'Ÿ'), _defineProperty(_htmlEntityTable, "Zacute", 'Ź'), _defineProperty(_htmlEntityTable, "zacute", 'ź'), _defineProperty(_htmlEntityTable, "Zcaron", 'Ž'), _defineProperty(_htmlEntityTable, "zcaron", 'ž'), _defineProperty(_htmlEntityTable, "Zcy", 'З'), _defineProperty(_htmlEntityTable, "zcy", 'з'), _defineProperty(_htmlEntityTable, "Zdot", 'Ż'), _defineProperty(_htmlEntityTable, "zdot", 'ż'), _defineProperty(_htmlEntityTable, "zeetrf", 'ℨ'), _defineProperty(_htmlEntityTable, "ZeroWidthSpace", '​'), _defineProperty(_htmlEntityTable, "Zeta", 'Ζ'), _defineProperty(_htmlEntityTable, "zeta", 'ζ'), _defineProperty(_htmlEntityTable, "zfr", '𝔷'), _defineProperty(_htmlEntityTable, "Zfr", 'ℨ'), _defineProperty(_htmlEntityTable, "ZHcy", 'Ж'), _defineProperty(_htmlEntityTable, "zhcy", 'ж'), _defineProperty(_htmlEntityTable, "zigrarr", '⇝'), _defineProperty(_htmlEntityTable, "zopf", '𝕫'), _defineProperty(_htmlEntityTable, "Zopf", 'ℤ'), _defineProperty(_htmlEntityTable, "Zscr", '𝒵'), _defineProperty(_htmlEntityTable, "zscr", '𝓏'), _defineProperty(_htmlEntityTable, "zwj", '‍'), _defineProperty(_htmlEntityTable, "zwnj", '‌'), _htmlEntityTable);
+  ecolon: '≕',
+  ecy: 'э',
+  edot: 'ė',
+  ee: 'ⅇ',
+  efDot: '≒',
+  efr: '𝔢',
+  eg: '⪚',
+  egrave: 'è',
+  egs: '⪖',
+  egsdot: '⪘',
+  el: '⪙',
+  elinters: '⏧',
+  ell: 'ℓ',
+  els: '⪕',
+  elsdot: '⪗',
+  emacr: 'ē',
+  empty: '∅',
+  emptyset: '∅',
+  emptyv: '∅',
+  emsp13: ' ',
+  emsp14: ' ',
+  emsp: ' ',
+  eng: 'ŋ',
+  ensp: ' ',
+  eogon: 'ę',
+  eopf: '𝕖',
+  epar: '⋕',
+  eparsl: '⧣',
+  eplus: '⩱',
+  epsi: 'ε',
+  epsilon: 'ε',
+  epsiv: 'ϵ',
+  eqcirc: '≖',
+  eqcolon: '≕',
+  eqsim: '≂',
+  eqslantgtr: '⪖',
+  eqslantless: '⪕',
+  equals: '=',
+  equest: '≟',
+  equiv: '≡',
+  equivDD: '⩸',
+  eqvparsl: '⧥',
+  erDot: '≓',
+  erarr: '⥱',
+  escr: 'ℯ',
+  esdot: '≐',
+  esim: '≂',
+  eta: 'η',
+  eth: 'ð',
+  euml: 'ë',
+  euro: '€',
+  excl: '!',
+  exist: '∃',
+  expectation: 'ℰ',
+  exponentiale: 'ⅇ',
+  fallingdotseq: '≒',
+  fcy: 'ф',
+  female: '♀',
+  ffilig: 'ﬃ',
+  fflig: 'ﬀ',
+  ffllig: 'ﬄ',
+  ffr: '𝔣',
+  filig: 'ﬁ',
+  fjlig: 'fj',
+  flat: '♭',
+  fllig: 'ﬂ',
+  fltns: '▱',
+  fnof: 'ƒ',
+  fopf: '𝕗',
+  forall: '∀',
+  fork: '⋔',
+  forkv: '⫙',
+  fpartint: '⨍',
+  frac12: '½',
+  frac13: '⅓',
+  frac14: '¼',
+  frac15: '⅕',
+  frac16: '⅙',
+  frac18: '⅛',
+  frac23: '⅔',
+  frac25: '⅖',
+  frac34: '¾',
+  frac35: '⅗',
+  frac38: '⅜',
+  frac45: '⅘',
+  frac56: '⅚',
+  frac58: '⅝',
+  frac78: '⅞',
+  frasl: '⁄',
+  frown: '⌢',
+  fscr: '𝒻',
+  gE: '≧',
+  gEl: '⪌',
+  gacute: 'ǵ',
+  gamma: 'γ',
+  gammad: 'ϝ',
+  gap: '⪆',
+  gbreve: 'ğ',
+  gcirc: 'ĝ',
+  gcy: 'г',
+  gdot: 'ġ',
+  ge: '≥',
+  gel: '⋛',
+  geq: '≥',
+  geqq: '≧',
+  geqslant: '⩾',
+  ges: '⩾',
+  gescc: '⪩',
+  gesdot: '⪀',
+  gesdoto: '⪂',
+  gesdotol: '⪄',
+  gesl: '⋛︀',
+  gesles: '⪔',
+  gfr: '𝔤',
+  gg: '≫',
+  ggg: '⋙',
+  gimel: 'ℷ',
+  gjcy: 'ѓ',
+  gl: '≷',
+  glE: '⪒',
+  gla: '⪥',
+  glj: '⪤',
+  gnE: '≩',
+  gnap: '⪊',
+  gnapprox: '⪊',
+  gne: '⪈',
+  gneq: '⪈',
+  gneqq: '≩',
+  gnsim: '⋧',
+  gopf: '𝕘',
+  grave: '`',
+  gscr: 'ℊ',
+  gsim: '≳',
+  gsime: '⪎',
+  gsiml: '⪐',
+  gt: '>',
+  gtcc: '⪧',
+  gtcir: '⩺',
+  gtdot: '⋗',
+  gtlPar: '⦕',
+  gtquest: '⩼',
+  gtrapprox: '⪆',
+  gtrarr: '⥸',
+  gtrdot: '⋗',
+  gtreqless: '⋛',
+  gtreqqless: '⪌',
+  gtrless: '≷',
+  gtrsim: '≳',
+  gvertneqq: '≩︀',
+  gvnE: '≩︀',
+  hArr: '⇔',
+  hairsp: ' ',
+  half: '½',
+  hamilt: 'ℋ',
+  hardcy: 'ъ',
+  harr: '↔',
+  harrcir: '⥈',
+  harrw: '↭',
+  hbar: 'ℏ',
+  hcirc: 'ĥ',
+  hearts: '♥',
+  heartsuit: '♥',
+  hellip: '…',
+  hercon: '⊹',
+  hfr: '𝔥',
+  hksearow: '⤥',
+  hkswarow: '⤦',
+  hoarr: '⇿',
+  homtht: '∻',
+  hookleftarrow: '↩',
+  hookrightarrow: '↪',
+  hopf: '𝕙',
+  horbar: '―',
+  hscr: '𝒽',
+  hslash: 'ℏ',
+  hstrok: 'ħ',
+  hybull: '⁃',
+  hyphen: '‐',
+  iacute: 'í',
+  ic: '⁣',
+  icirc: 'î',
+  icy: 'и',
+  iecy: 'е',
+  iexcl: '¡',
+  iff: '⇔',
+  ifr: '𝔦',
+  igrave: 'ì',
+  ii: 'ⅈ',
+  iiiint: '⨌',
+  iiint: '∭',
+  iinfin: '⧜',
+  iiota: '℩',
+  ijlig: 'ĳ',
+  imacr: 'ī',
+  image: 'ℑ',
+  imagline: 'ℐ',
+  imagpart: 'ℑ',
+  imath: 'ı',
+  imof: '⊷',
+  imped: 'Ƶ',
+  "in": '∈',
+  incare: '℅',
+  infin: '∞',
+  infintie: '⧝',
+  inodot: 'ı',
+  "int": '∫',
+  intcal: '⊺',
+  integers: 'ℤ',
+  intercal: '⊺',
+  intlarhk: '⨗',
+  intprod: '⨼',
+  iocy: 'ё',
+  iogon: 'į',
+  iopf: '𝕚',
+  iota: 'ι',
+  iprod: '⨼',
+  iquest: '¿',
+  iscr: '𝒾',
+  isin: '∈',
+  isinE: '⋹',
+  isindot: '⋵',
+  isins: '⋴',
+  isinsv: '⋳',
+  isinv: '∈',
+  it: '⁢',
+  itilde: 'ĩ',
+  iukcy: 'і',
+  iuml: 'ï',
+  jcirc: 'ĵ',
+  jcy: 'й',
+  jfr: '𝔧',
+  jmath: 'ȷ',
+  jopf: '𝕛',
+  jscr: '𝒿',
+  jsercy: 'ј',
+  jukcy: 'є',
+  kappa: 'κ',
+  kappav: 'ϰ',
+  kcedil: 'ķ',
+  kcy: 'к',
+  kfr: '𝔨',
+  kgreen: 'ĸ',
+  khcy: 'х',
+  kjcy: 'ќ',
+  kopf: '𝕜',
+  kscr: '𝓀',
+  lAarr: '⇚',
+  lArr: '⇐',
+  lAtail: '⤛',
+  lBarr: '⤎',
+  lE: '≦',
+  lEg: '⪋',
+  lHar: '⥢',
+  lacute: 'ĺ',
+  laemptyv: '⦴',
+  lagran: 'ℒ',
+  lambda: 'λ',
+  lang: '⟨',
+  langd: '⦑',
+  langle: '⟨',
+  lap: '⪅',
+  laquo: '«',
+  larr: '←',
+  larrb: '⇤',
+  larrbfs: '⤟',
+  larrfs: '⤝',
+  larrhk: '↩',
+  larrlp: '↫',
+  larrpl: '⤹',
+  larrsim: '⥳',
+  larrtl: '↢',
+  lat: '⪫',
+  latail: '⤙',
+  late: '⪭',
+  lates: '⪭︀',
+  lbarr: '⤌',
+  lbbrk: '❲',
+  lbrace: '{',
+  lbrack: '[',
+  lbrke: '⦋',
+  lbrksld: '⦏',
+  lbrkslu: '⦍',
+  lcaron: 'ľ',
+  lcedil: 'ļ',
+  lceil: '⌈',
+  lcub: '{',
+  lcy: 'л',
+  ldca: '⤶',
+  ldquo: '“',
+  ldquor: '„',
+  ldrdhar: '⥧',
+  ldrushar: '⥋',
+  ldsh: '↲',
+  le: '≤',
+  leftarrow: '←',
+  leftarrowtail: '↢',
+  leftharpoondown: '↽',
+  leftharpoonup: '↼',
+  leftleftarrows: '⇇',
+  leftrightarrow: '↔',
+  leftrightarrows: '⇆',
+  leftrightharpoons: '⇋',
+  leftrightsquigarrow: '↭',
+  leftthreetimes: '⋋',
+  leg: '⋚',
+  leq: '≤',
+  leqq: '≦',
+  leqslant: '⩽',
+  les: '⩽',
+  lescc: '⪨',
+  lesdot: '⩿',
+  lesdoto: '⪁',
+  lesdotor: '⪃',
+  lesg: '⋚︀',
+  lesges: '⪓',
+  lessapprox: '⪅',
+  lessdot: '⋖',
+  lesseqgtr: '⋚',
+  lesseqqgtr: '⪋',
+  lessgtr: '≶',
+  lesssim: '≲',
+  lfisht: '⥼',
+  lfloor: '⌊',
+  lfr: '𝔩',
+  lg: '≶',
+  lgE: '⪑',
+  lhard: '↽',
+  lharu: '↼',
+  lharul: '⥪',
+  lhblk: '▄',
+  ljcy: 'љ',
+  ll: '≪',
+  llarr: '⇇',
+  llcorner: '⌞',
+  llhard: '⥫',
+  lltri: '◺',
+  lmidot: 'ŀ',
+  lmoust: '⎰',
+  lmoustache: '⎰',
+  lnE: '≨',
+  lnap: '⪉',
+  lnapprox: '⪉',
+  lne: '⪇',
+  lneq: '⪇',
+  lneqq: '≨',
+  lnsim: '⋦',
+  loang: '⟬',
+  loarr: '⇽',
+  lobrk: '⟦',
+  longleftarrow: '⟵',
+  longleftrightarrow: '⟷',
+  longmapsto: '⟼',
+  longrightarrow: '⟶',
+  looparrowleft: '↫',
+  looparrowright: '↬',
+  lopar: '⦅',
+  lopf: '𝕝',
+  loplus: '⨭',
+  lotimes: '⨴',
+  lowast: '∗',
+  lowbar: '_',
+  loz: '◊',
+  lozenge: '◊',
+  lozf: '⧫',
+  lpar: '(',
+  lparlt: '⦓',
+  lrarr: '⇆',
+  lrcorner: '⌟',
+  lrhar: '⇋',
+  lrhard: '⥭',
+  lrm: '‎',
+  lrtri: '⊿',
+  lsaquo: '‹',
+  lscr: '𝓁',
+  lsh: '↰',
+  lsim: '≲',
+  lsime: '⪍',
+  lsimg: '⪏',
+  lsqb: '[',
+  lsquo: '‘',
+  lsquor: '‚',
+  lstrok: 'ł',
+  lt: '<',
+  ltcc: '⪦',
+  ltcir: '⩹',
+  ltdot: '⋖',
+  lthree: '⋋',
+  ltimes: '⋉',
+  ltlarr: '⥶',
+  ltquest: '⩻',
+  ltrPar: '⦖',
+  ltri: '◃',
+  ltrie: '⊴',
+  ltrif: '◂',
+  lurdshar: '⥊',
+  luruhar: '⥦',
+  lvertneqq: '≨︀',
+  lvnE: '≨︀',
+  mDDot: '∺',
+  macr: '¯',
+  male: '♂',
+  malt: '✠',
+  maltese: '✠',
+  map: '↦',
+  mapsto: '↦',
+  mapstodown: '↧',
+  mapstoleft: '↤',
+  mapstoup: '↥',
+  marker: '▮',
+  mcomma: '⨩',
+  mcy: 'м',
+  mdash: '—',
+  measuredangle: '∡',
+  mfr: '𝔪',
+  mho: '℧',
+  micro: 'µ',
+  mid: '∣',
+  midast: '*',
+  midcir: '⫰',
+  middot: '·',
+  minus: '−',
+  minusb: '⊟',
+  minusd: '∸',
+  minusdu: '⨪',
+  mlcp: '⫛',
+  mldr: '…',
+  mnplus: '∓',
+  models: '⊧',
+  mopf: '𝕞',
+  mp: '∓',
+  mscr: '𝓂',
+  mstpos: '∾',
+  mu: 'μ',
+  multimap: '⊸',
+  mumap: '⊸',
+  nGg: '⋙̸',
+  nGt: '≫⃒',
+  nGtv: '≫̸',
+  nLeftarrow: '⇍',
+  nLeftrightarrow: '⇎',
+  nLl: '⋘̸',
+  nLt: '≪⃒',
+  nLtv: '≪̸',
+  nRightarrow: '⇏',
+  nVDash: '⊯',
+  nVdash: '⊮',
+  nabla: '∇',
+  nacute: 'ń',
+  nang: '∠⃒',
+  nap: '≉',
+  napE: '⩰̸',
+  napid: '≋̸',
+  napos: 'ŉ',
+  napprox: '≉',
+  natur: '♮',
+  natural: '♮',
+  naturals: 'ℕ',
+  nbsp: ' ',
+  nbump: '≎̸',
+  nbumpe: '≏̸',
+  ncap: '⩃',
+  ncaron: 'ň',
+  ncedil: 'ņ',
+  ncong: '≇',
+  ncongdot: '⩭̸',
+  ncup: '⩂',
+  ncy: 'н',
+  ndash: '–',
+  ne: '≠',
+  neArr: '⇗',
+  nearhk: '⤤',
+  nearr: '↗',
+  nearrow: '↗',
+  nedot: '≐̸',
+  nequiv: '≢',
+  nesear: '⤨',
+  nesim: '≂̸',
+  nexist: '∄',
+  nexists: '∄',
+  nfr: '𝔫',
+  ngE: '≧̸',
+  nge: '≱',
+  ngeq: '≱',
+  ngeqq: '≧̸',
+  ngeqslant: '⩾̸',
+  nges: '⩾̸',
+  ngsim: '≵',
+  ngt: '≯',
+  ngtr: '≯',
+  nhArr: '⇎',
+  nharr: '↮',
+  nhpar: '⫲',
+  ni: '∋',
+  nis: '⋼',
+  nisd: '⋺',
+  niv: '∋',
+  njcy: 'њ',
+  nlArr: '⇍',
+  nlE: '≦̸',
+  nlarr: '↚',
+  nldr: '‥',
+  nle: '≰',
+  nleftarrow: '↚',
+  nleftrightarrow: '↮',
+  nleq: '≰',
+  nleqq: '≦̸',
+  nleqslant: '⩽̸',
+  nles: '⩽̸',
+  nless: '≮',
+  nlsim: '≴',
+  nlt: '≮',
+  nltri: '⋪',
+  nltrie: '⋬',
+  nmid: '∤',
+  nopf: '𝕟',
+  not: '¬',
+  notin: '∉',
+  notinE: '⋹̸',
+  notindot: '⋵̸',
+  notinva: '∉',
+  notinvb: '⋷',
+  notinvc: '⋶',
+  notni: '∌',
+  notniva: '∌',
+  notnivb: '⋾',
+  notnivc: '⋽',
+  npar: '∦',
+  nparallel: '∦',
+  nparsl: '⫽⃥',
+  npart: '∂̸',
+  npolint: '⨔',
+  npr: '⊀',
+  nprcue: '⋠',
+  npre: '⪯̸',
+  nprec: '⊀',
+  npreceq: '⪯̸',
+  nrArr: '⇏',
+  nrarr: '↛',
+  nrarrc: '⤳̸',
+  nrarrw: '↝̸',
+  nrightarrow: '↛',
+  nrtri: '⋫',
+  nrtrie: '⋭',
+  nsc: '⊁',
+  nsccue: '⋡',
+  nsce: '⪰̸',
+  nscr: '𝓃',
+  nshortmid: '∤',
+  nshortparallel: '∦',
+  nsim: '≁',
+  nsime: '≄',
+  nsimeq: '≄',
+  nsmid: '∤',
+  nspar: '∦',
+  nsqsube: '⋢',
+  nsqsupe: '⋣',
+  nsub: '⊄',
+  nsubE: '⫅̸',
+  nsube: '⊈',
+  nsubset: '⊂⃒',
+  nsubseteq: '⊈',
+  nsubseteqq: '⫅̸',
+  nsucc: '⊁',
+  nsucceq: '⪰̸',
+  nsup: '⊅',
+  nsupE: '⫆̸',
+  nsupe: '⊉',
+  nsupset: '⊃⃒',
+  nsupseteq: '⊉',
+  nsupseteqq: '⫆̸',
+  ntgl: '≹',
+  ntilde: 'ñ',
+  ntlg: '≸',
+  ntriangleleft: '⋪',
+  ntrianglelefteq: '⋬',
+  ntriangleright: '⋫',
+  ntrianglerighteq: '⋭',
+  nu: 'ν',
+  num: '#',
+  numero: '№',
+  numsp: ' ',
+  nvDash: '⊭',
+  nvHarr: '⤄',
+  nvap: '≍⃒',
+  nvdash: '⊬',
+  nvge: '≥⃒',
+  nvgt: '>⃒',
+  nvinfin: '⧞',
+  nvlArr: '⤂',
+  nvle: '≤⃒',
+  nvlt: '<⃒',
+  nvltrie: '⊴⃒',
+  nvrArr: '⤃',
+  nvrtrie: '⊵⃒',
+  nvsim: '∼⃒',
+  nwArr: '⇖',
+  nwarhk: '⤣',
+  nwarr: '↖',
+  nwarrow: '↖',
+  nwnear: '⤧',
+  oS: 'Ⓢ',
+  oacute: 'ó',
+  oast: '⊛',
+  ocir: '⊚',
+  ocirc: 'ô',
+  ocy: 'о',
+  odash: '⊝',
+  odblac: 'ő',
+  odiv: '⨸',
+  odot: '⊙',
+  odsold: '⦼',
+  oelig: 'œ',
+  ofcir: '⦿',
+  ofr: '𝔬',
+  ogon: '˛',
+  ograve: 'ò',
+  ogt: '⧁',
+  ohbar: '⦵',
+  ohm: 'Ω',
+  oint: '∮',
+  olarr: '↺',
+  olcir: '⦾',
+  olcross: '⦻',
+  oline: '‾',
+  olt: '⧀',
+  omacr: 'ō',
+  omega: 'ω',
+  omicron: 'ο',
+  omid: '⦶',
+  ominus: '⊖',
+  oopf: '𝕠',
+  opar: '⦷',
+  operp: '⦹',
+  oplus: '⊕',
+  or: '∨',
+  orarr: '↻',
+  ord: '⩝',
+  order: 'ℴ',
+  orderof: 'ℴ',
+  ordf: 'ª',
+  ordm: 'º',
+  origof: '⊶',
+  oror: '⩖',
+  orslope: '⩗',
+  orv: '⩛',
+  oscr: 'ℴ',
+  oslash: 'ø',
+  osol: '⊘',
+  otilde: 'õ',
+  otimes: '⊗',
+  otimesas: '⨶',
+  ouml: 'ö',
+  ovbar: '⌽',
+  par: '∥',
+  para: '¶',
+  parallel: '∥',
+  parsim: '⫳',
+  parsl: '⫽',
+  part: '∂',
+  pcy: 'п',
+  percnt: '%',
+  period: '.',
+  permil: '‰',
+  perp: '⊥',
+  pertenk: '‱',
+  pfr: '𝔭',
+  phi: 'φ',
+  phiv: 'ϕ',
+  phmmat: 'ℳ',
+  phone: '☎',
+  pi: 'π',
+  pitchfork: '⋔',
+  piv: 'ϖ',
+  planck: 'ℏ',
+  planckh: 'ℎ',
+  plankv: 'ℏ',
+  plus: '+',
+  plusacir: '⨣',
+  plusb: '⊞',
+  pluscir: '⨢',
+  plusdo: '∔',
+  plusdu: '⨥',
+  pluse: '⩲',
+  plusmn: '±',
+  plussim: '⨦',
+  plustwo: '⨧',
+  pm: '±',
+  pointint: '⨕',
+  popf: '𝕡',
+  pound: '£',
+  pr: '≺',
+  prE: '⪳',
+  prap: '⪷',
+  prcue: '≼',
+  pre: '⪯',
+  prec: '≺',
+  precapprox: '⪷',
+  preccurlyeq: '≼',
+  preceq: '⪯',
+  precnapprox: '⪹',
+  precneqq: '⪵',
+  precnsim: '⋨',
+  precsim: '≾',
+  prime: '′',
+  primes: 'ℙ',
+  prnE: '⪵',
+  prnap: '⪹',
+  prnsim: '⋨',
+  prod: '∏',
+  profalar: '⌮',
+  profline: '⌒',
+  profsurf: '⌓',
+  prop: '∝',
+  propto: '∝',
+  prsim: '≾',
+  prurel: '⊰',
+  pscr: '𝓅',
+  psi: 'ψ',
+  puncsp: ' ',
+  qfr: '𝔮',
+  qint: '⨌',
+  qopf: '𝕢',
+  qprime: '⁗',
+  qscr: '𝓆',
+  quaternions: 'ℍ',
+  quatint: '⨖',
+  quest: '?',
+  questeq: '≟',
+  quot: '"',
+  rAarr: '⇛',
+  rArr: '⇒',
+  rAtail: '⤜',
+  rBarr: '⤏',
+  rHar: '⥤',
+  race: '∽̱',
+  racute: 'ŕ',
+  radic: '√',
+  raemptyv: '⦳',
+  rang: '⟩',
+  rangd: '⦒',
+  range: '⦥',
+  rangle: '⟩',
+  raquo: '»',
+  rarr: '→',
+  rarrap: '⥵',
+  rarrb: '⇥',
+  rarrbfs: '⤠',
+  rarrc: '⤳',
+  rarrfs: '⤞',
+  rarrhk: '↪',
+  rarrlp: '↬',
+  rarrpl: '⥅',
+  rarrsim: '⥴',
+  rarrtl: '↣',
+  rarrw: '↝',
+  ratail: '⤚',
+  ratio: '∶',
+  rationals: 'ℚ',
+  rbarr: '⤍',
+  rbbrk: '❳',
+  rbrace: '}',
+  rbrack: ']',
+  rbrke: '⦌',
+  rbrksld: '⦎',
+  rbrkslu: '⦐',
+  rcaron: 'ř',
+  rcedil: 'ŗ',
+  rceil: '⌉',
+  rcub: '}',
+  rcy: 'р',
+  rdca: '⤷',
+  rdldhar: '⥩',
+  rdquo: '”',
+  rdquor: '”',
+  rdsh: '↳',
+  real: 'ℜ',
+  realine: 'ℛ',
+  realpart: 'ℜ',
+  reals: 'ℝ',
+  rect: '▭',
+  reg: '®',
+  rfisht: '⥽',
+  rfloor: '⌋',
+  rfr: '𝔯',
+  rhard: '⇁',
+  rharu: '⇀',
+  rharul: '⥬',
+  rho: 'ρ',
+  rhov: 'ϱ',
+  rightarrow: '→',
+  rightarrowtail: '↣',
+  rightharpoondown: '⇁',
+  rightharpoonup: '⇀',
+  rightleftarrows: '⇄',
+  rightleftharpoons: '⇌',
+  rightrightarrows: '⇉',
+  rightsquigarrow: '↝',
+  rightthreetimes: '⋌',
+  ring: '˚',
+  risingdotseq: '≓',
+  rlarr: '⇄',
+  rlhar: '⇌',
+  rlm: '‏',
+  rmoust: '⎱',
+  rmoustache: '⎱',
+  rnmid: '⫮',
+  roang: '⟭',
+  roarr: '⇾',
+  robrk: '⟧',
+  ropar: '⦆',
+  ropf: '𝕣',
+  roplus: '⨮',
+  rotimes: '⨵',
+  rpar: ')',
+  rpargt: '⦔',
+  rppolint: '⨒',
+  rrarr: '⇉',
+  rsaquo: '›',
+  rscr: '𝓇',
+  rsh: '↱',
+  rsqb: ']',
+  rsquo: '’',
+  rsquor: '’',
+  rthree: '⋌',
+  rtimes: '⋊',
+  rtri: '▹',
+  rtrie: '⊵',
+  rtrif: '▸',
+  rtriltri: '⧎',
+  ruluhar: '⥨',
+  rx: '℞',
+  sacute: 'ś',
+  sbquo: '‚',
+  sc: '≻',
+  scE: '⪴',
+  scap: '⪸',
+  scaron: 'š',
+  sccue: '≽',
+  sce: '⪰',
+  scedil: 'ş',
+  scirc: 'ŝ',
+  scnE: '⪶',
+  scnap: '⪺',
+  scnsim: '⋩',
+  scpolint: '⨓',
+  scsim: '≿',
+  scy: 'с',
+  sdot: '⋅',
+  sdotb: '⊡',
+  sdote: '⩦',
+  seArr: '⇘',
+  searhk: '⤥',
+  searr: '↘',
+  searrow: '↘',
+  sect: '§',
+  semi: ';',
+  seswar: '⤩',
+  setminus: '∖',
+  setmn: '∖',
+  sext: '✶',
+  sfr: '𝔰',
+  sfrown: '⌢',
+  sharp: '♯',
+  shchcy: 'щ',
+  shcy: 'ш',
+  shortmid: '∣',
+  shortparallel: '∥',
+  shy: '­',
+  sigma: 'σ',
+  sigmaf: 'ς',
+  sigmav: 'ς',
+  sim: '∼',
+  simdot: '⩪',
+  sime: '≃',
+  simeq: '≃',
+  simg: '⪞',
+  simgE: '⪠',
+  siml: '⪝',
+  simlE: '⪟',
+  simne: '≆',
+  simplus: '⨤',
+  simrarr: '⥲',
+  slarr: '←',
+  smallsetminus: '∖',
+  smashp: '⨳',
+  smeparsl: '⧤',
+  smid: '∣',
+  smile: '⌣',
+  smt: '⪪',
+  smte: '⪬',
+  smtes: '⪬︀',
+  softcy: 'ь',
+  sol: '/',
+  solb: '⧄',
+  solbar: '⌿',
+  sopf: '𝕤',
+  spades: '♠',
+  spadesuit: '♠',
+  spar: '∥',
+  sqcap: '⊓',
+  sqcaps: '⊓︀',
+  sqcup: '⊔',
+  sqcups: '⊔︀',
+  sqsub: '⊏',
+  sqsube: '⊑',
+  sqsubset: '⊏',
+  sqsubseteq: '⊑',
+  sqsup: '⊐',
+  sqsupe: '⊒',
+  sqsupset: '⊐',
+  sqsupseteq: '⊒',
+  squ: '□',
+  square: '□',
+  squarf: '▪',
+  squf: '▪',
+  srarr: '→',
+  sscr: '𝓈',
+  ssetmn: '∖',
+  ssmile: '⌣',
+  sstarf: '⋆',
+  star: '☆',
+  starf: '★',
+  straightepsilon: 'ϵ',
+  straightphi: 'ϕ',
+  strns: '¯',
+  sub: '⊂',
+  subE: '⫅',
+  subdot: '⪽',
+  sube: '⊆',
+  subedot: '⫃',
+  submult: '⫁',
+  subnE: '⫋',
+  subne: '⊊',
+  subplus: '⪿',
+  subrarr: '⥹',
+  subset: '⊂',
+  subseteq: '⊆',
+  subseteqq: '⫅',
+  subsetneq: '⊊',
+  subsetneqq: '⫋',
+  subsim: '⫇',
+  subsub: '⫕',
+  subsup: '⫓',
+  succ: '≻',
+  succapprox: '⪸',
+  succcurlyeq: '≽',
+  succeq: '⪰',
+  succnapprox: '⪺',
+  succneqq: '⪶',
+  succnsim: '⋩',
+  succsim: '≿',
+  sum: '∑',
+  sung: '♪',
+  sup1: '¹',
+  sup2: '²',
+  sup3: '³',
+  sup: '⊃',
+  supE: '⫆',
+  supdot: '⪾',
+  supdsub: '⫘',
+  supe: '⊇',
+  supedot: '⫄',
+  suphsol: '⟉',
+  suphsub: '⫗',
+  suplarr: '⥻',
+  supmult: '⫂',
+  supnE: '⫌',
+  supne: '⊋',
+  supplus: '⫀',
+  supset: '⊃',
+  supseteq: '⊇',
+  supseteqq: '⫆',
+  supsetneq: '⊋',
+  supsetneqq: '⫌',
+  supsim: '⫈',
+  supsub: '⫔',
+  supsup: '⫖',
+  swArr: '⇙',
+  swarhk: '⤦',
+  swarr: '↙',
+  swarrow: '↙',
+  swnwar: '⤪',
+  szlig: 'ß',
+  target: '⌖',
+  tau: 'τ',
+  tbrk: '⎴',
+  tcaron: 'ť',
+  tcedil: 'ţ',
+  tcy: 'т',
+  tdot: '⃛',
+  telrec: '⌕',
+  tfr: '𝔱',
+  there4: '∴',
+  therefore: '∴',
+  theta: 'θ',
+  thetasym: 'ϑ',
+  thetav: 'ϑ',
+  thickapprox: '≈',
+  thicksim: '∼',
+  thinsp: ' ',
+  thkap: '≈',
+  thksim: '∼',
+  thorn: 'þ',
+  tilde: '˜',
+  times: '×',
+  timesb: '⊠',
+  timesbar: '⨱',
+  timesd: '⨰',
+  tint: '∭',
+  toea: '⤨',
+  top: '⊤',
+  topbot: '⌶',
+  topcir: '⫱',
+  topf: '𝕥',
+  topfork: '⫚',
+  tosa: '⤩',
+  tprime: '‴',
+  trade: '™',
+  triangle: '▵',
+  triangledown: '▿',
+  triangleleft: '◃',
+  trianglelefteq: '⊴',
+  triangleq: '≜',
+  triangleright: '▹',
+  trianglerighteq: '⊵',
+  tridot: '◬',
+  trie: '≜',
+  triminus: '⨺',
+  triplus: '⨹',
+  trisb: '⧍',
+  tritime: '⨻',
+  trpezium: '⏢',
+  tscr: '𝓉',
+  tscy: 'ц',
+  tshcy: 'ћ',
+  tstrok: 'ŧ',
+  twixt: '≬',
+  twoheadleftarrow: '↞',
+  twoheadrightarrow: '↠',
+  uArr: '⇑',
+  uHar: '⥣',
+  uacute: 'ú',
+  uarr: '↑',
+  ubrcy: 'ў',
+  ubreve: 'ŭ',
+  ucirc: 'û',
+  ucy: 'у',
+  udarr: '⇅',
+  udblac: 'ű',
+  udhar: '⥮',
+  ufisht: '⥾',
+  ufr: '𝔲',
+  ugrave: 'ù',
+  uharl: '↿',
+  uharr: '↾',
+  uhblk: '▀',
+  ulcorn: '⌜',
+  ulcorner: '⌜',
+  ulcrop: '⌏',
+  ultri: '◸',
+  umacr: 'ū',
+  uml: '¨',
+  uogon: 'ų',
+  uopf: '𝕦',
+  uparrow: '↑',
+  updownarrow: '↕',
+  upharpoonleft: '↿',
+  upharpoonright: '↾',
+  uplus: '⊎',
+  upsi: 'υ',
+  upsih: 'ϒ',
+  upsilon: 'υ',
+  upuparrows: '⇈',
+  urcorn: '⌝',
+  urcorner: '⌝',
+  urcrop: '⌎',
+  uring: 'ů',
+  urtri: '◹',
+  uscr: '𝓊',
+  utdot: '⋰',
+  utilde: 'ũ',
+  utri: '▵',
+  utrif: '▴',
+  uuarr: '⇈',
+  uuml: 'ü',
+  uwangle: '⦧',
+  vArr: '⇕',
+  vBar: '⫨',
+  vBarv: '⫩',
+  vDash: '⊨',
+  vangrt: '⦜',
+  varepsilon: 'ϵ',
+  varkappa: 'ϰ',
+  varnothing: '∅',
+  varphi: 'ϕ',
+  varpi: 'ϖ',
+  varpropto: '∝',
+  varr: '↕',
+  varrho: 'ϱ',
+  varsigma: 'ς',
+  varsubsetneq: '⊊︀',
+  varsubsetneqq: '⫋︀',
+  varsupsetneq: '⊋︀',
+  varsupsetneqq: '⫌︀',
+  vartheta: 'ϑ',
+  vartriangleleft: '⊲',
+  vartriangleright: '⊳',
+  vcy: 'в',
+  vdash: '⊢',
+  vee: '∨',
+  veebar: '⊻',
+  veeeq: '≚',
+  vellip: '⋮',
+  verbar: '|',
+  vert: '|',
+  vfr: '𝔳',
+  vltri: '⊲',
+  vnsub: '⊂⃒',
+  vnsup: '⊃⃒',
+  vopf: '𝕧',
+  vprop: '∝',
+  vrtri: '⊳',
+  vscr: '𝓋',
+  vsubnE: '⫋︀',
+  vsubne: '⊊︀',
+  vsupnE: '⫌︀',
+  vsupne: '⊋︀',
+  vzigzag: '⦚',
+  wcirc: 'ŵ',
+  wedbar: '⩟',
+  wedge: '∧',
+  wedgeq: '≙',
+  weierp: '℘',
+  wfr: '𝔴',
+  wopf: '𝕨',
+  wp: '℘',
+  wr: '≀',
+  wreath: '≀',
+  wscr: '𝓌',
+  xcap: '⋂',
+  xcirc: '◯',
+  xcup: '⋃',
+  xdtri: '▽',
+  xfr: '𝔵',
+  xhArr: '⟺',
+  xharr: '⟷',
+  xi: 'ξ',
+  xlArr: '⟸',
+  xlarr: '⟵',
+  xmap: '⟼',
+  xnis: '⋻',
+  xodot: '⨀',
+  xopf: '𝕩',
+  xoplus: '⨁',
+  xotime: '⨂',
+  xrArr: '⟹',
+  xrarr: '⟶',
+  xscr: '𝓍',
+  xsqcup: '⨆',
+  xuplus: '⨄',
+  xutri: '△',
+  xvee: '⋁',
+  xwedge: '⋀',
+  yacute: 'ý',
+  yacy: 'я',
+  ycirc: 'ŷ',
+  ycy: 'ы',
+  yen: '¥',
+  yfr: '𝔶',
+  yicy: 'ї',
+  yopf: '𝕪',
+  yscr: '𝓎',
+  yucy: 'ю',
+  yuml: 'ÿ',
+  zacute: 'ź',
+  zcaron: 'ž',
+  zcy: 'з',
+  zdot: 'ż',
+  zeetrf: 'ℨ',
+  zeta: 'ζ',
+  zfr: '𝔷',
+  zhcy: 'ж',
+  zigrarr: '⇝',
+  zopf: '𝕫',
+  zscr: '𝓏',
+  zwj: '‍',
+  zwnj: '‌'
+};
 
-function decodeHtmlEntities(html) {
+function decodeHTMLEntities(html) {
   if (!html) {
     return html;
   }
@@ -1292,7 +3152,7 @@ function () {
       this.rules = block$1.gfm;
     }
 
-    this.captureFunctions = [this.captureNewline, this.captureCode, this.captureFences, this.captureHeading, this.capturePipelessTable, this.captureHorizontalRule, this.captureBlockquote, this.captureList, this.captureHtml, this.captureDefinition, this.captureTable, this.captureUnderlineHeading, this.captureParagraph, this.captureText];
+    this.captureFunctions = [this.captureNewline, this.captureCode, this.captureFences, this.captureHeading, this.capturePipelessTable, this.captureHorizontalRule, this.captureBlockquote, this.captureList, this.captureHTML, this.captureDefinition, this.captureTable, this.captureUnderlineHeading, this.captureParagraph, this.captureText];
     Object.assign(this, props);
   }
 
@@ -1963,8 +3823,8 @@ function () {
       }
     }
   }, {
-    key: "captureHtml",
-    value: function captureHtml() {
+    key: "captureHTML",
+    value: function captureHTML() {
       var cap = this.capture('html');
 
       if (cap) {
@@ -2007,27 +3867,27 @@ function () {
       if (cap) {
         var type = 'def';
         var name = cap[1].toLowerCase().replace(/\s+/g, ' ');
-        var hrefHtml = cap[2];
-        var titleHtml;
+        var hrefHTML = cap[2];
+        var titleHTML;
 
         if (cap[3]) {
-          titleHtml = cap[3].substring(1, cap[3].length - 1);
+          titleHTML = cap[3].substring(1, cap[3].length - 1);
         }
-        var title = this.decodeEntities(titleHtml);
-        var href = this.decodeEntities(hrefHtml);
+        var title = this.decodeEntities(titleHTML);
+        var href = this.decodeEntities(hrefHTML);
         this.setRefLink(name, {
           href: href,
-          hrefHtml: hrefHtml,
+          hrefHTML: hrefHTML,
           title: title,
-          titleHtml: titleHtml
+          titleHTML: titleHTML
         });
         return {
           type: type,
           name: name,
           href: href,
-          hrefHtml: hrefHtml,
+          hrefHTML: hrefHTML,
           title: title,
-          titleHtml: titleHtml
+          titleHTML: titleHTML
         };
       }
     }
@@ -2080,7 +3940,7 @@ function () {
   }, {
     key: "decodeEntities",
     value: function decodeEntities(html) {
-      return decodeHtmlEntities(html);
+      return decodeHTMLEntities(html);
     }
   }, {
     key: "setRefLink",
@@ -2399,48 +4259,48 @@ function () {
 
       if (cap) {
         var type = cap[0].charAt(0) === '!' ? 'image' : 'link';
-        var hrefHtml = cap[2];
-        var titleHtml = cap[3];
-        var lastParenIndex = findClosingBracket$1(hrefHtml, '()');
+        var hrefHTML = cap[2];
+        var titleHTML = cap[3];
+        var lastParenIndex = findClosingBracket$1(hrefHTML, '()');
 
         if (lastParenIndex > -1) {
           var start = type === 'image' ? 5 : 4;
           var linkLen = start + cap[1].length + lastParenIndex;
-          hrefHtml = hrefHtml.substring(0, lastParenIndex);
-          titleHtml = undefined;
+          hrefHTML = hrefHTML.substring(0, lastParenIndex);
+          titleHTML = undefined;
           var capZero = cap[0].substring(0, linkLen).trim();
           this.backpedal(cap[0].substr(capZero.length));
         }
 
         if (this.options.pedantic) {
-          var link = /^([^'"]*[^\s])\s+(['"])(.*)\2/.exec(hrefHtml);
+          var link = /^([^'"]*[^\s])\s+(['"])(.*)\2/.exec(hrefHTML);
 
           if (link) {
-            hrefHtml = link[1];
-            titleHtml = link[3];
+            hrefHTML = link[1];
+            titleHTML = link[3];
           }
-        } else if (titleHtml) {
-          titleHtml = titleHtml.slice(1, -1);
+        } else if (titleHTML) {
+          titleHTML = titleHTML.slice(1, -1);
         }
 
-        if (!titleHtml) {
-          titleHtml = undefined;
+        if (!titleHTML) {
+          titleHTML = undefined;
         }
 
-        hrefHtml = hrefHtml.trim().replace(/^<([\s\S]*)>$/, '$1');
-        hrefHtml = this.unescapeSlashes(hrefHtml);
-        titleHtml = this.unescapeSlashes(titleHtml);
-        var title = this.decodeEntities(titleHtml);
-        var href = this.decodeEntities(hrefHtml);
+        hrefHTML = hrefHTML.trim().replace(/^<([\s\S]*)>$/, '$1');
+        hrefHTML = this.unescapeSlashes(hrefHTML);
+        titleHTML = this.unescapeSlashes(titleHTML);
+        var title = this.decodeEntities(titleHTML);
+        var href = this.decodeEntities(hrefHTML);
 
         if (type === 'image') {
           var text = cap[1];
           return {
             type: type,
             href: href,
-            hrefHtml: hrefHtml,
+            hrefHTML: hrefHTML,
             title: title,
-            titleHtml: titleHtml,
+            titleHTML: titleHTML,
             text: text
           };
         } else {
@@ -2449,9 +4309,9 @@ function () {
           return {
             type: type,
             href: href,
-            hrefHtml: hrefHtml,
+            hrefHTML: hrefHTML,
             title: title,
-            titleHtml: titleHtml,
+            titleHTML: titleHTML,
             markdown: markdown,
             children: children
           };
@@ -2475,9 +4335,9 @@ function () {
 
         if (link) {
           var href = link.href,
-              hrefHtml = link.hrefHtml,
+              hrefHTML = link.hrefHTML,
               title = link.title,
-              titleHtml = link.titleHtml;
+              titleHTML = link.titleHTML;
 
           if (type === 'image') {
             var text = cap[1];
@@ -2485,9 +4345,9 @@ function () {
               type: type,
               ref: ref,
               href: href,
-              hrefHtml: hrefHtml,
+              hrefHTML: hrefHTML,
               title: title,
-              titleHtml: titleHtml,
+              titleHTML: titleHTML,
               text: text
             };
           } else {
@@ -2497,9 +4357,9 @@ function () {
               type: type,
               ref: ref,
               href: href,
-              hrefHtml: hrefHtml,
+              hrefHTML: hrefHTML,
               title: title,
-              titleHtml: titleHtml,
+              titleHTML: titleHTML,
               markdown: markdown,
               children: children
             };
@@ -2644,7 +4504,7 @@ function () {
   }, {
     key: "decodeEntities",
     value: function decodeEntities(html) {
-      return decodeHtmlEntities(html);
+      return decodeHTMLEntities(html);
     }
   }, {
     key: "transformText",
@@ -2752,6 +4612,7 @@ function () {
       this.initialize(text);
       this.processBlocks();
       this.processInline();
+      this.processCode();
       return this.tokens;
     }
   }, {
@@ -2810,6 +4671,46 @@ function () {
         }
       }
     }
+  }, {
+    key: "processCode",
+    value: function processCode() {
+      var highlight = this.options.highlight;
+
+      if (highlight) {
+        var sections = findCodeSections(this.tokens);
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = sections[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var section = _step2.value;
+            var html = highlight(section.text, section.lang);
+
+            if (typeof html === 'string') {
+              var parser = new this.constructor({
+                htmlOnly: true
+              });
+              var tokens = parser.parse(html);
+              section.children = tokens;
+            }
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+              _iterator2["return"]();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
+        }
+      }
+    }
   }]);
 
   return Parser;
@@ -2828,74 +4729,29 @@ function (_InlineLexer) {
 
   _createClass(AsyncInlineLexer, [{
     key: "tokenize",
-    value: function () {
-      var _tokenize = _asyncToGenerator(
-      /*#__PURE__*/
-      _regeneratorRuntime.mark(function _callee(text, containerType) {
-        return _regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                this.initialize(text, containerType);
-                _context.next = 3;
-                return this.process();
+    value: function tokenize(text, containerType) {
+      var _this = this;
 
-              case 3:
-                return _context.abrupt("return", this.tokens);
-
-              case 4:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function tokenize(_x, _x2) {
-        return _tokenize.apply(this, arguments);
-      }
-
-      return tokenize;
-    }()
+      this.initialize(text, containerType);
+      return this.process().then(function () {
+        return _this.tokens;
+      });
+    }
   }, {
     key: "process",
-    value: function () {
-      var _process = _asyncToGenerator(
-      /*#__PURE__*/
-      _regeneratorRuntime.mark(function _callee2() {
-        var token;
-        return _regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                if (!this.remaining) {
-                  _context2.next = 7;
-                  break;
-                }
+    value: function process() {
+      var _this2 = this;
 
-                token = this.captureToken();
-                this.append(token);
-                _context2.next = 5;
-                return nextTick();
+      return loopAsync(function () {
+        if (_this2.remaining) {
+          var token = _this2.captureToken();
 
-              case 5:
-                _context2.next = 0;
-                break;
+          _this2.append(token);
 
-              case 7:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this);
-      }));
-
-      function process() {
-        return _process.apply(this, arguments);
-      }
-
-      return process;
-    }()
+          return nextTick();
+        }
+      });
+    }
   }]);
 
   return AsyncInlineLexer;
@@ -2914,82 +4770,33 @@ function (_BlockLexer) {
 
   _createClass(AsyncBlockLexer, [{
     key: "tokenize",
-    value: function () {
-      var _tokenize = _asyncToGenerator(
-      /*#__PURE__*/
-      _regeneratorRuntime.mark(function _callee(text) {
-        return _regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                this.initialize(text);
-                _context.next = 3;
-                return this.process();
+    value: function tokenize(text) {
+      var _this = this;
 
-              case 3:
-                return _context.abrupt("return", this.tokens);
-
-              case 4:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function tokenize(_x) {
-        return _tokenize.apply(this, arguments);
-      }
-
-      return tokenize;
-    }()
+      this.initialize(text);
+      return this.process().then(function () {
+        return _this.tokens;
+      });
+    }
   }, {
     key: "process",
-    value: function () {
-      var _process = _asyncToGenerator(
-      /*#__PURE__*/
-      _regeneratorRuntime.mark(function _callee2() {
-        var token;
-        return _regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                if (!this.remaining) {
-                  _context2.next = 7;
-                  break;
-                }
+    value: function process() {
+      var _this2 = this;
 
-                token = this.captureToken();
-                this.append(token);
-                _context2.next = 5;
-                return nextTick();
+      return loopAsync(function () {
+        if (_this2.remaining) {
+          var token = _this2.captureToken();
 
-              case 5:
-                _context2.next = 0;
-                break;
+          _this2.append(token);
 
-              case 7:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this);
-      }));
-
-      function process() {
-        return _process.apply(this, arguments);
-      }
-
-      return process;
-    }()
+          return nextTick();
+        }
+      });
+    }
   }]);
 
   return AsyncBlockLexer;
 }(BlockLexer);
-
-function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 var AsyncParser =
 /*#__PURE__*/
@@ -2999,7 +4806,7 @@ function (_Parser) {
   function AsyncParser(options, props) {
     _classCallCheck(this, AsyncParser);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(AsyncParser).call(this, options, _objectSpread$1({
+    return _possibleConstructorReturn(this, _getPrototypeOf(AsyncParser).call(this, options, _objectSpread2({
       blockLexerClass: AsyncBlockLexer,
       inlineLexerClass: AsyncInlineLexer
     }, props)));
@@ -3007,200 +4814,91 @@ function (_Parser) {
 
   _createClass(AsyncParser, [{
     key: "parse",
-    value: function () {
-      var _parse = _asyncToGenerator(
-      /*#__PURE__*/
-      _regeneratorRuntime.mark(function _callee(text) {
-        return _regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                this.initialize(text);
-                _context.next = 3;
-                return this.processBlocks();
+    value: function parse(text) {
+      var _this = this;
 
-              case 3:
-                _context.next = 5;
-                return this.processInline();
-
-              case 5:
-                return _context.abrupt("return", this.tokens);
-
-              case 6:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function parse(_x) {
-        return _parse.apply(this, arguments);
-      }
-
-      return parse;
-    }()
+      this.initialize(text);
+      return this.processBlocks().then(function () {
+        return _this.processInline().then(function () {
+          return _this.processCode().then(function () {
+            return _this.tokens;
+          });
+        });
+      });
+    }
   }, {
     key: "processBlocks",
-    value: function () {
-      var _processBlocks = _asyncToGenerator(
-      /*#__PURE__*/
-      _regeneratorRuntime.mark(function _callee2() {
-        return _regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _context2.next = 2;
-                return this.blockLexer.tokenize(this.text);
+    value: function processBlocks() {
+      var _this2 = this;
 
-              case 2:
-                this.tokens = _context2.sent;
-
-              case 3:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this);
-      }));
-
-      function processBlocks() {
-        return _processBlocks.apply(this, arguments);
+      if (this.options.htmlOnly) {
+        var type = 'html_block';
+        var markdown = this.text;
+        var children = null;
+        this.tokens = [{
+          type: type,
+          markdown: markdown,
+          children: children
+        }];
+        return Promise.resolve();
+      } else {
+        return this.blockLexer.tokenize(this.text).then(function (tokens) {
+          _this2.tokens = tokens;
+        });
       }
-
-      return processBlocks;
-    }()
+    }
   }, {
     key: "processInline",
-    value: function () {
-      var _processInline = _asyncToGenerator(
-      /*#__PURE__*/
-      _regeneratorRuntime.mark(function _callee3(tokens) {
-        return _regeneratorRuntime.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _context3.next = 2;
-                return this.tokenizeInline(this.tokens);
-
-              case 2:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3, this);
-      }));
-
-      function processInline(_x2) {
-        return _processInline.apply(this, arguments);
-      }
-
-      return processInline;
-    }()
+    value: function processInline(tokens) {
+      return this.tokenizeInline(this.tokens);
+    }
   }, {
     key: "tokenizeInline",
-    value: function () {
-      var _tokenizeInline = _asyncToGenerator(
-      /*#__PURE__*/
-      _regeneratorRuntime.mark(function _callee4(tokens) {
-        var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, token, children, markdown, type;
+    value: function tokenizeInline(tokens) {
+      var _this3 = this;
 
-        return _regeneratorRuntime.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                _iteratorNormalCompletion = true;
-                _didIteratorError = false;
-                _iteratorError = undefined;
-                _context4.prev = 3;
-                _iterator = tokens[Symbol.iterator]();
+      return eachAsync(tokens, function (token) {
+        var children = token.children,
+            markdown = token.markdown,
+            type = token.type;
 
-              case 5:
-                if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-                  _context4.next = 20;
-                  break;
-                }
+        if (children) {
+          return _this3.tokenizeInline(children);
+        } else if (markdown) {
+          return _this3.inlineLexer.tokenize(markdown, type).then(function (tokens) {
+            token.children = tokens;
+          });
+        } else {
+          return Promise.resolve();
+        }
+      });
+    }
+  }, {
+    key: "processCode",
+    value: function processCode() {
+      var _this4 = this;
 
-                token = _step.value;
-                children = token.children, markdown = token.markdown, type = token.type;
+      var highlight = this.options.highlight;
 
-                if (!children) {
-                  _context4.next = 13;
-                  break;
-                }
-
-                _context4.next = 11;
-                return this.tokenizeInline(children);
-
-              case 11:
-                _context4.next = 17;
-                break;
-
-              case 13:
-                if (!markdown) {
-                  _context4.next = 17;
-                  break;
-                }
-
-                _context4.next = 16;
-                return this.inlineLexer.tokenize(markdown, type);
-
-              case 16:
-                token.children = _context4.sent;
-
-              case 17:
-                _iteratorNormalCompletion = true;
-                _context4.next = 5;
-                break;
-
-              case 20:
-                _context4.next = 26;
-                break;
-
-              case 22:
-                _context4.prev = 22;
-                _context4.t0 = _context4["catch"](3);
-                _didIteratorError = true;
-                _iteratorError = _context4.t0;
-
-              case 26:
-                _context4.prev = 26;
-                _context4.prev = 27;
-
-                if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-                  _iterator["return"]();
-                }
-
-              case 29:
-                _context4.prev = 29;
-
-                if (!_didIteratorError) {
-                  _context4.next = 32;
-                  break;
-                }
-
-                throw _iteratorError;
-
-              case 32:
-                return _context4.finish(29);
-
-              case 33:
-                return _context4.finish(26);
-
-              case 34:
-              case "end":
-                return _context4.stop();
+      if (highlight) {
+        var sections = findCodeSections(this.tokens);
+        return eachAsync(sections, function (section) {
+          var html = highlight(section.text, section.lang);
+          return Promise.resolve(html).then(function (html) {
+            if (typeof html === 'string') {
+              var parser = new _this4.constructor({
+                htmlOnly: true
+              });
+              return parser.parse(html).then(function (tokens) {
+                section.children = tokens;
+              });
             }
-          }
-        }, _callee4, this, [[3, 22, 26, 34], [27,, 29, 33]]);
-      }));
-
-      function tokenizeInline(_x3) {
-        return _tokenizeInline.apply(this, arguments);
+          });
+        });
+      } else {
+        return Promise.resolve();
       }
-
-      return tokenizeInline;
-    }()
+    }
   }]);
 
   return AsyncParser;
@@ -3495,10 +5193,6 @@ function findTagAlias(tagName) {
   return tagAliases[tagName];
 }
 
-function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
 var BaseRenderer =
 /*#__PURE__*/
 function () {
@@ -3527,11 +5221,11 @@ function () {
       autolink: this.renderAutolink,
       url: this.renderUrl,
       image: this.renderImage,
-      html_block: this.renderHtmlBlock,
+      html_block: this.renderHTMLBlock,
       paragraph: this.renderParagraph,
       code: this.renderCode,
       blockquote: this.renderBlockquote,
-      html_tag: this.renderHtmlTag,
+      html_tag: this.renderHTMLTag,
       heading: this.renderHeading,
       hr: this.renderHorizontalRule,
       list: this.renderList,
@@ -3678,7 +5372,7 @@ function () {
     value: function renderCode(token) {
       var text = token.text,
           lang = token.lang,
-          highlighted = token.highlighted;
+          children = token.children;
       var langPrefix = this.options.langPrefix;
       var className = lang ? langPrefix + lang : undefined;
       this.addElement('pre', null);
@@ -3686,8 +5380,8 @@ function () {
         "class": className
       });
 
-      if (highlighted) {
-        this.addHighlighted(highlighted);
+      if (children) {
+        this.renderTokens(children);
       } else {
         this.addText(text);
       }
@@ -3709,19 +5403,19 @@ function () {
       this.addLinefeed();
     }
   }, {
-    key: "renderHtmlTag",
-    value: function renderHtmlTag(token) {
+    key: "renderHTMLTag",
+    value: function renderHTMLTag(token) {
       var normalizeTags = this.options.normalizeTags;
 
       if (normalizeTags) {
         var html = token.html;
 
-        var _this$parseHtmlTag = this.parseHtmlTag(html),
-            type = _this$parseHtmlTag.type,
-            name = _this$parseHtmlTag.name,
-            attributes = _this$parseHtmlTag.attributes,
-            before = _this$parseHtmlTag.before,
-            after = _this$parseHtmlTag.after;
+        var _this$parseHTMLTag = this.parseHTMLTag(html),
+            type = _this$parseHTMLTag.type,
+            name = _this$parseHTMLTag.name,
+            attributes = _this$parseHTMLTag.attributes,
+            before = _this$parseHTMLTag.before,
+            after = _this$parseHTMLTag.after;
 
         if (before) {
           this.addText(before);
@@ -3977,9 +5671,9 @@ function () {
   }, {
     key: "renderLink",
     value: function renderLink(token) {
-      var hrefHtml = token.hrefHtml,
+      var hrefHTML = token.hrefHTML,
           title = token.title;
-      var href = this.cleanUrl(hrefHtml, true, true);
+      var href = this.cleanUrl(hrefHTML, true, true);
 
       if (href !== null) {
         this.addElement('a', {
@@ -3997,10 +5691,10 @@ function () {
   }, {
     key: "renderImage",
     value: function renderImage(token) {
-      var hrefHtml = token.hrefHtml,
+      var hrefHTML = token.hrefHTML,
           title = token.title,
           alt = token.text;
-      var src = this.cleanUrl(hrefHtml, true, true);
+      var src = this.cleanUrl(hrefHTML, true, true);
 
       if (src !== null) {
         this.addElement('img', {
@@ -4018,8 +5712,8 @@ function () {
       this.addToken(token);
     }
   }, {
-    key: "renderHtmlBlock",
-    value: function renderHtmlBlock(token) {
+    key: "renderHTMLBlock",
+    value: function renderHTMLBlock(token) {
       this.renderTokens(token.children);
     }
   }, {
@@ -4252,7 +5946,7 @@ function () {
                   var closingTag = this.getTagProperties(closingElement.tagName);
 
                   if (closingTag.styles) {
-                    styleElements.push(_objectSpread$2({}, closingElement));
+                    styleElements.push(_objectSpread2({}, closingElement));
                   }
                 }
               }
@@ -4503,8 +6197,8 @@ function () {
       return evictions;
     }
   }, {
-    key: "parseHtmlTag",
-    value: function parseHtmlTag(html) {
+    key: "parseHTMLTag",
+    value: function parseHTMLTag(html) {
       var startTag = /^(\s*)<([a-zA-Z][\w.:-]*)([^>]*)>([\s\S]*)/;
       var endTag = /^(\s*)<\/([a-zA-Z][\w.:-]*)[^>]*>([\s\S]*)/;
       var scap = startTag.exec(html);
@@ -4555,7 +6249,7 @@ function () {
   }, {
     key: "decodeEntities",
     value: function decodeEntities(html) {
-      return decodeHtmlEntities(html);
+      return decodeHTMLEntities(html);
     }
   }, {
     key: "getTagProperties",
@@ -4632,17 +6326,40 @@ function convertAttributes(tagName, attrs, options) {
 }
 
 var camelCaseNames = {
+  accesskey: 'accessKey',
+  allowfullscreen: 'allowFullScreen',
+  allowtransparency: 'allowTransparency',
+  cellpadding: 'cellPadding',
+  cellspacing: 'cellSpacing',
   "class": 'className',
   checked: 'defaultChecked',
   colspan: 'colSpan',
   contenteditable: 'contentEditable',
   contextmenu: 'contextMenu',
+  controlslist: 'controlsList',
+  crossorigin: 'crossOrigin',
+  datetime: 'dateTime',
+  enctype: 'encType',
   "for": 'htmlFor',
+  formaction: 'formAction',
+  formenctype: 'formEncType',
+  formmethod: 'formMethod',
+  formnovalidate: 'formNoValidate',
+  formtarget: 'formTarget',
+  frameborder: 'frameBorder',
+  'http-equiv': 'httpEquiv',
+  inputmode: 'inputMode',
+  marginheight: 'marginHeight',
+  marginwidth: 'marginWidth',
   maxlength: 'maxLength',
+  mediagroup: 'mediaGroup',
   minlength: 'minLength',
   novalidate: 'noValidate',
+  playsinline: 'playsInline',
   readonly: 'readOnly',
+  referrerpolicy: 'referrerPolicy',
   rowspan: 'rowSpan',
+  srcset: 'srcSet',
   tabindex: 'tabIndex'
 };
 
@@ -4651,7 +6368,7 @@ function getDOMName(name) {
   return camelCaseNames[name] || name;
 }
 
-var booleanAttributes = ['checked', 'disabled', 'hidden', 'multiple', 'open', 'readOnly', 'muted', 'noValidate', 'preload', 'selected', 'spellcheck', 'translate', 'wrap'];
+var booleanAttributes = ['allowFullScreen', 'async', 'autoplay', 'capture', 'checked', 'controls', 'default', 'defer', 'disabled', 'formNoValidate', 'hidden', 'loop', 'multiple', 'muted', 'noValidate', 'open', 'playsInline', 'preload', 'readOnly', 'required', 'reversed', 'seamless', 'selected', 'spellcheck', 'translate', 'wrap'];
 
 function isBooleanProp(tagName, attrName) {
   if (booleanAttributes.indexOf(attrName) !== -1) {
@@ -4721,8 +6438,8 @@ function (_BaseRenderer) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(PreactRenderer).call(this, options, props));
     _this.outputFunctions = {
-      html_tag: _this.outputHtmlTag,
-      html_element: _this.outputHtmlElement,
+      html_tag: _this.outputHTMLTag,
+      html_element: _this.outputHTMLElement,
       text: _this.outputText,
       raw: _this.outputRaw
     };
@@ -4789,11 +6506,11 @@ function (_BaseRenderer) {
       }
     }
   }, {
-    key: "outputHtmlTag",
-    value: function outputHtmlTag(token) {}
+    key: "outputHTMLTag",
+    value: function outputHTMLTag(token) {}
   }, {
-    key: "outputHtmlElement",
-    value: function outputHtmlElement(token, key) {
+    key: "outputHTMLElement",
+    value: function outputHTMLElement(token, key) {
       if (this.shouldOmit(token)) {
         return;
       }
@@ -4832,28 +6549,28 @@ function (_BaseRenderer) {
   return PreactRenderer;
 }(BaseRenderer);
 
-var HtmlRenderer =
+var HTMLRenderer =
 /*#__PURE__*/
 function (_BaseRenderer) {
-  _inherits(HtmlRenderer, _BaseRenderer);
+  _inherits(HTMLRenderer, _BaseRenderer);
 
-  function HtmlRenderer(options, props) {
+  function HTMLRenderer(options, props) {
     var _this;
 
-    _classCallCheck(this, HtmlRenderer);
+    _classCallCheck(this, HTMLRenderer);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(HtmlRenderer).call(this, options, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(HTMLRenderer).call(this, options, props));
     _this.outputFunctions = {
-      html_tag: _this.outputHtmlTag,
-      html_element: _this.outputHtmlElement,
-      html_element_end: _this.outputHtmlElementEnd,
+      html_tag: _this.outputHTMLTag,
+      html_element: _this.outputHTMLElement,
+      html_element_end: _this.outputHTMLElementEnd,
       text: _this.outputText,
       raw: _this.outputRaw
     };
     return _this;
   }
 
-  _createClass(HtmlRenderer, [{
+  _createClass(HTMLRenderer, [{
     key: "output",
     value: function output() {
       return this.outputTokens(this.tokens);
@@ -4909,8 +6626,8 @@ function (_BaseRenderer) {
       }
     }
   }, {
-    key: "outputHtmlTag",
-    value: function outputHtmlTag(token) {
+    key: "outputHTMLTag",
+    value: function outputHTMLTag(token) {
       var html = token.html;
 
       if (this.options.omitDeclarations) {
@@ -4928,8 +6645,8 @@ function (_BaseRenderer) {
       return this.sanitize(html);
     }
   }, {
-    key: "outputHtmlElement",
-    value: function outputHtmlElement(token) {
+    key: "outputHTMLElement",
+    value: function outputHTMLElement(token) {
       if (this.shouldOmit(token)) {
         return;
       }
@@ -4972,8 +6689,8 @@ function (_BaseRenderer) {
       return html;
     }
   }, {
-    key: "outputHtmlElementEnd",
-    value: function outputHtmlElementEnd(token) {
+    key: "outputHTMLElementEnd",
+    value: function outputHTMLElementEnd(token) {
       var tagName = token.tagName;
       return "</".concat(tagName, ">");
     }
@@ -5005,13 +6722,13 @@ function (_BaseRenderer) {
     key: "renderLink",
     value: function renderLink(token) {
       if (!this.options.decodeEntities) {
-        var hrefHtml = token.hrefHtml,
-            titleHtml = token.titleHtml;
-        var hrefCleaned = this.cleanUrl(hrefHtml, true, false);
+        var hrefHTML = token.hrefHTML,
+            titleHTML = token.titleHTML;
+        var hrefCleaned = this.cleanUrl(hrefHTML, true, false);
 
         if (hrefCleaned !== null) {
           var href = this.boxAttribute(hrefCleaned, true);
-          var title = this.boxAttribute(titleHtml, true);
+          var title = this.boxAttribute(titleHTML, true);
           this.addElement('a', {
             href: href,
             title: title
@@ -5024,21 +6741,21 @@ function (_BaseRenderer) {
           this.endElement('a');
         }
       } else {
-        _get(_getPrototypeOf(HtmlRenderer.prototype), "renderLink", this).call(this, token);
+        _get(_getPrototypeOf(HTMLRenderer.prototype), "renderLink", this).call(this, token);
       }
     }
   }, {
     key: "renderImage",
     value: function renderImage(token) {
       if (!this.options.decodeEntities) {
-        var hrefHtml = token.hrefHtml,
-            titleHtml = token.titleHtml,
+        var hrefHTML = token.hrefHTML,
+            titleHTML = token.titleHTML,
             alt = token.text;
-        var srcHtml = this.cleanUrl(hrefHtml, true, false);
+        var srcHTML = this.cleanUrl(hrefHTML, true, false);
 
-        if (srcHtml !== null) {
-          var title = this.boxAttribute(titleHtml, true);
-          var src = this.boxAttribute(srcHtml, false);
+        if (srcHTML !== null) {
+          var title = this.boxAttribute(titleHTML, true);
+          var src = this.boxAttribute(srcHTML, false);
           this.addElement('img', {
             src: src,
             alt: alt,
@@ -5048,7 +6765,7 @@ function (_BaseRenderer) {
           this.addText(alt);
         }
       } else {
-        _get(_getPrototypeOf(HtmlRenderer.prototype), "renderImage", this).call(this, token);
+        _get(_getPrototypeOf(HTMLRenderer.prototype), "renderImage", this).call(this, token);
       }
     }
   }, {
@@ -5058,11 +6775,11 @@ function (_BaseRenderer) {
         if (url.startsWith('mailto:')) {
           var address = url.substr(7);
           var mangled = this.mangle(address);
-          return this.boxRawHtml("mailto:".concat(mangled));
+          return this.boxRawHTML("mailto:".concat(mangled));
         }
       }
 
-      return _get(_getPrototypeOf(HtmlRenderer.prototype), "cleanUrl", this).call(this, url, escaped, unescapeAfter);
+      return _get(_getPrototypeOf(HTMLRenderer.prototype), "cleanUrl", this).call(this, url, escaped, unescapeAfter);
     }
   }, {
     key: "sanitize",
@@ -5109,30 +6826,30 @@ function (_BaseRenderer) {
     }
   }]);
 
-  return HtmlRenderer;
+  return HTMLRenderer;
 }(BaseRenderer);
 
-var JsonRenderer =
+var JSONRenderer =
 /*#__PURE__*/
 function (_BaseRenderer) {
-  _inherits(JsonRenderer, _BaseRenderer);
+  _inherits(JSONRenderer, _BaseRenderer);
 
-  function JsonRenderer(options, props) {
+  function JSONRenderer(options, props) {
     var _this;
 
-    _classCallCheck(this, JsonRenderer);
+    _classCallCheck(this, JSONRenderer);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(JsonRenderer).call(this, options, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(JSONRenderer).call(this, options, props));
     _this.outputFunctions = {
-      html_tag: _this.outputHtmlTag,
-      html_element: _this.outputHtmlElement,
+      html_tag: _this.outputHTMLTag,
+      html_element: _this.outputHTMLElement,
       text: _this.outputText,
       raw: _this.outputRaw
     };
     return _this;
   }
 
-  _createClass(JsonRenderer, [{
+  _createClass(JSONRenderer, [{
     key: "output",
     value: function output() {
       return this.outputTokens(this.tokens) || [];
@@ -5191,11 +6908,11 @@ function (_BaseRenderer) {
       }
     }
   }, {
-    key: "outputHtmlTag",
-    value: function outputHtmlTag(token) {}
+    key: "outputHTMLTag",
+    value: function outputHTMLTag(token) {}
   }, {
-    key: "outputHtmlElement",
-    value: function outputHtmlElement(token, key) {
+    key: "outputHTMLElement",
+    value: function outputHTMLElement(token, key) {
       if (this.shouldOmit(token)) {
         return;
       }
@@ -5243,7 +6960,7 @@ function (_BaseRenderer) {
     }
   }]);
 
-  return JsonRenderer;
+  return JSONRenderer;
 }(BaseRenderer);
 
 function parse(text, options) {
@@ -5254,117 +6971,13 @@ function parse(text, options) {
   return fragment;
 }
 
-function parseAsync(_x, _x2) {
-  return _parseAsync.apply(this, arguments);
+function parseAsync(text, options) {
+  var parser = new AsyncParser(options);
+  var renderer = new PreactRenderer(options);
+  return parser.parse(text).then(function (tokens) {
+    var fragment = renderer.render(tokens);
+    return fragment;
+  });
 }
 
-function _parseAsync() {
-  _parseAsync = _asyncToGenerator(
-  /*#__PURE__*/
-  _regeneratorRuntime.mark(function _callee(text, options) {
-    var parser, renderer, tokens, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, token, highlighted, fragment;
-
-    return _regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            parser = new AsyncParser(options);
-            renderer = new PreactRenderer(options);
-            tokens = parser.parse(text);
-
-            if (!(options && options.highlight)) {
-              _context.next = 38;
-              break;
-            }
-
-            _iteratorNormalCompletion = true;
-            _didIteratorError = false;
-            _iteratorError = undefined;
-            _context.prev = 7;
-            _iterator = findCodeSections(tokens)[Symbol.iterator]();
-
-          case 9:
-            if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-              _context.next = 24;
-              break;
-            }
-
-            token = _step.value;
-            _context.next = 13;
-            return options.highlight(token.text, token.lang);
-
-          case 13:
-            highlighted = _context.sent;
-
-            if (!(typeof highlighted === 'string')) {
-              _context.next = 20;
-              break;
-            }
-
-            _context.next = 17;
-            return parseAsync(highlighted, {
-              htmlOnly: true
-            });
-
-          case 17:
-            highlighted = _context.sent;
-            _context.next = 20;
-            return nextTick();
-
-          case 20:
-            token.highlighted = highlighted;
-
-          case 21:
-            _iteratorNormalCompletion = true;
-            _context.next = 9;
-            break;
-
-          case 24:
-            _context.next = 30;
-            break;
-
-          case 26:
-            _context.prev = 26;
-            _context.t0 = _context["catch"](7);
-            _didIteratorError = true;
-            _iteratorError = _context.t0;
-
-          case 30:
-            _context.prev = 30;
-            _context.prev = 31;
-
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
-            }
-
-          case 33:
-            _context.prev = 33;
-
-            if (!_didIteratorError) {
-              _context.next = 36;
-              break;
-            }
-
-            throw _iteratorError;
-
-          case 36:
-            return _context.finish(33);
-
-          case 37:
-            return _context.finish(30);
-
-          case 38:
-            fragment = renderer.render(tokens);
-            return _context.abrupt("return", fragment);
-
-          case 40:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee, null, [[7, 26, 30, 38], [31,, 33, 37]]);
-  }));
-  return _parseAsync.apply(this, arguments);
-}
-
-export { BlockLexer, HtmlRenderer as HTMLRenderer, HtmlRenderer, InlineLexer, JsonRenderer as JSONRenderer, JsonRenderer, Parser, PreactRenderer, PreactRenderer as Renderer, changeDefaults, defaults$1 as defaults, findCodeSections, findTextStrings, getDefaults, mergeDefaults, parse, parseAsync };
+export { AsyncParser, BlockLexer, HTMLRenderer, HTMLRenderer as HtmlRenderer, InlineLexer, JSONRenderer, JSONRenderer as JsonRenderer, Parser, PreactRenderer, changeDefaults, defaults$1 as defaults, findCodeSections, findTextStrings, getDefaults, mergeDefaults, parse, parseAsync };

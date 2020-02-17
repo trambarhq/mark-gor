@@ -20,15 +20,10 @@ module.exports = [
         presets: [
           '@babel/env',
         ],
-        plugins: [
-          '@babel/transform-runtime',
-        ],
-        runtimeHelpers: true,
       }),
-      Resolve({
-        only: [ 'marked' ],
-      }),
+      Resolve(),
       CommonJS(),
-    ]
+    ],
+    external: [ 'react', 'preact' ]
   };
 });

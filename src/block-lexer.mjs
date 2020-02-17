@@ -1,7 +1,7 @@
 import { block } from './rules.mjs';
 import { splitCells, escape } from './helpers.mjs';
 import { mergeDefaults } from './defaults.mjs';
-import { decodeHtmlEntities } from './html-entities.mjs';
+import { decodeHTMLEntities } from './html-entities.mjs';
 
 class BlockLexer {
   constructor(options, props) {
@@ -28,7 +28,7 @@ class BlockLexer {
       this.captureHorizontalRule,
       this.captureBlockquote,
       this.captureList,
-      this.captureHtml,
+      this.captureHTML,
       this.captureDefinition,
       this.captureTable,
       this.captureUnderlineHeading,
@@ -413,7 +413,7 @@ class BlockLexer {
     }
   }
 
-  captureHtml() {
+  captureHTML() {
     const cap = this.capture('html');
     if (cap) {
       let multitag = (cap[0].indexOf('<') !== cap[0].lastIndexOf('<'));
@@ -443,15 +443,15 @@ class BlockLexer {
     if (cap) {
       const type = 'def';
       const name = cap[1].toLowerCase().replace(/\s+/g, ' ');
-      const hrefHtml = cap[2];
-      let titleHtml;
+      const hrefHTML = cap[2];
+      let titleHTML;
       if (cap[3]) {
-        titleHtml = cap[3].substring(1, cap[3].length - 1);
+        titleHTML = cap[3].substring(1, cap[3].length - 1);
       };
-      const title = this.decodeEntities(titleHtml);
-      const href = this.decodeEntities(hrefHtml);
-      this.setRefLink(name, { href, hrefHtml, title, titleHtml });
-      return { type, name, href, hrefHtml, title, titleHtml };
+      const title = this.decodeEntities(titleHTML);
+      const href = this.decodeEntities(hrefHTML);
+      this.setRefLink(name, { href, hrefHTML, title, titleHTML });
+      return { type, name, href, hrefHTML, title, titleHTML };
     }
   }
 
@@ -486,7 +486,7 @@ class BlockLexer {
   }
 
   decodeEntities(html) {
-    return decodeHtmlEntities(html);
+    return decodeHTMLEntities(html);
   }
 
   setRefLink(name, link) {
@@ -498,5 +498,4 @@ class BlockLexer {
 
 export {
   BlockLexer,
-  BlockLexer as default,
 };

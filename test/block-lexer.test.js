@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { BlockLexer } from '../src/block-lexer.mjs';
+import { BlockLexer } from '../html.mjs';
 
 describe('BlockLexer', function() {
   it ('should capture paragraphs', function() {

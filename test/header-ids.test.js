@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { parse } from '../src/html.mjs';
+import { parse } from '../html.mjs';
 import { parse as parseMarked } from 'marked';
 
 describe('Header IDs', function() {

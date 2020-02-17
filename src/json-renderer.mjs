@@ -2,13 +2,13 @@ import { BaseRenderer } from './base-renderer.mjs';
 import { convertAttributes } from './html-attributes.mjs';
 import { mergeStrings } from './helpers.mjs';
 
-class JsonRenderer extends BaseRenderer {
+class JSONRenderer extends BaseRenderer {
   constructor(options, props) {
     super(options, props);
 
     this.outputFunctions = {
-      html_tag: this.outputHtmlTag,
-      html_element: this.outputHtmlElement,
+      html_tag: this.outputHTMLTag,
+      html_element: this.outputHTMLElement,
       text: this.outputText,
       raw: this.outputRaw,
     };
@@ -42,10 +42,10 @@ class JsonRenderer extends BaseRenderer {
     }
   }
 
-  outputHtmlTag(token) {
+  outputHTMLTag(token) {
   }
 
-  outputHtmlElement(token, key) {
+  outputHTMLElement(token, key) {
     if (this.shouldOmit(token)) {
       return;
     }
@@ -80,6 +80,6 @@ class JsonRenderer extends BaseRenderer {
 }
 
 export {
-  JsonRenderer,
-  JsonRenderer as default,
+  JSONRenderer,
+  JSONRenderer as JsonRenderer,
 };

@@ -27,8 +27,8 @@ function changeDefaults(options) {
 }
 
 export {
-    defaults,
-    getDefaults,
-    mergeDefaults,
-    changeDefaults,
+  defaults,
+  getDefaults,
+  mergeDefaults,
+  changeDefaults,
 };

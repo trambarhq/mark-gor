@@ -1,23 +1,25 @@
 import { InlineLexer } from './inline-lexer.mjs';
-import { nextTick } from './helpers.mjs';
+import { nextTick, loopAsync } from './helpers.mjs';
 
 class AsyncInlineLexer extends InlineLexer {
-  async tokenize(text, containerType) {
+  tokenize(text, containerType) {
     this.initialize(text, containerType);
-    await this.process();
-    return this.tokens;
+    return this.process().then(() => {
+      return this.tokens;
+    });
   }
 
-  async process() {
-    while (this.remaining) {
-      const token = this.captureToken();
-      this.append(token);
-      await nextTick();
-    }
+  process() {
+    return loopAsync(() => {
+      if (this.remaining) {
+        const token = this.captureToken();
+        this.append(token);
+        return nextTick();
+      }
+    });
   }
 }
 
 export {
   AsyncInlineLexer,
-  AsyncInlineLexer as default,
 };

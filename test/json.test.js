@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import { render } from 'react-dom';
 import FrontMatter from 'front-matter';
 
-import { Parser, JsonRenderer, ReactRenderer } from '../src/react.mjs';
-import { reactivate } from '../src/reactivate.mjs';
+import { Parser, JsonRenderer, ReactRenderer } from '../react.mjs';
+import { reactivate } from '../reactivate.mjs';
 
 const singleTest = '';
 
