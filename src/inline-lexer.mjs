@@ -136,7 +136,7 @@ class InlineLexer {
     this.remaining = text + this.remaining;
   }
 
-  findRefLink(name) {
+  findRefLink(name, type) {
     if (this.links.hasOwnProperty(name)) {
       const link = this.links[name];
       if (link.href) {
@@ -293,7 +293,7 @@ class InlineLexer {
       const ref = (cap[2] || cap[1])
                   .replace(/\s+/g, ' ')
                   .toLowerCase();
-      const link = this.findRefLink(ref);
+      const link = this.findRefLink(ref, type);
       if (link) {
         const { href, hrefHTML, title, titleHTML } = link;
         if (type === 'image') {

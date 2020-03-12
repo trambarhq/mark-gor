@@ -4096,7 +4096,7 @@
       }
     }, {
       key: "findRefLink",
-      value: function findRefLink(name) {
+      value: function findRefLink(name, type) {
         if (this.links.hasOwnProperty(name)) {
           var link = this.links[name];
 
@@ -4337,7 +4337,7 @@
         if (cap) {
           var type = cap[0].charAt(0) === '!' ? 'image' : 'link';
           var ref = (cap[2] || cap[1]).replace(/\s+/g, ' ').toLowerCase();
-          var link = this.findRefLink(ref);
+          var link = this.findRefLink(ref, type);
 
           if (link) {
             var href = link.href,
