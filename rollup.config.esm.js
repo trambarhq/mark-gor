@@ -1,8 +1,8 @@
-const Babel = require('rollup-plugin-babel');
-const Resolve = require('@rollup/plugin-node-resolve');
-const CommonJS = require('@rollup/plugin-commonjs');
+import Babel from 'rollup-plugin-babel';
+import Resolve from '@rollup/plugin-node-resolve';
+import CommonJS from '@rollup/plugin-commonjs';
 
-module.exports = [
+export default [
   'html',
   'react',
   'preact',

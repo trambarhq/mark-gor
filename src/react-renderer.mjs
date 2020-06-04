@@ -15,9 +15,9 @@ class ReactRenderer extends BaseRenderer {
     };
   }
 
-  output() {
+  output(props) {
     const elements = this.outputTokens(this.tokens);
-    return React.createElement(React.Fragment, null, elements);
+    return React.createElement(React.Fragment, props, elements);
   }
 
   outputTokens(tokens) {
